@@ -95,6 +95,7 @@
 - Web UI expansion on 2026-05-19: literature comparison table generation was added to the browser console.
 - Web UI expansion on 2026-05-19: writing dashboard, literature map, and literature tracking plan generation were added to the browser console.
 - Web UI refactor on 2026-05-19: the browser console UI moved from an inline Python HTML string to static `workflow/web_assets/index.html`, `styles.css`, and `app.js`; Python now serves those assets and keeps the existing `/action` API bridge.
+- Web UI polish on 2026-05-19: `workflow/web_assets/styles.css` was tuned toward a modern SaaS/professional workbench style with tighter density, restrained borders/shadows, clearer button hierarchy, and compact responsive controls.
 - User preference update on 2026-05-19: when adding several features, add backend/workflow functionality first and batch-sync the web UI at the end for efficiency.
 
 ## Next Steps

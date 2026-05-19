@@ -9,9 +9,9 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="eyebrow">本地科研工具</div>
+      <div class="eyebrow">LOCAL WORKBENCH</div>
       <h1>科研工作流控制台</h1>
-      <div class="topbar-note">先设置课题目录，再按阶段运行检查、文献、笔记、仿真、图表和稿件工具。</div>
+      <div class="topbar-note">面向文献、笔记、仿真数据、图表和稿件检查的本地工作台。</div>
     </div>
     <div id="statusText" class="status-pill">就绪</div>
   </header>
@@ -20,7 +20,7 @@
     <aside class="sidebar">
       <section class="panel">
         <div class="panel-title"><h2>课题目录</h2></div>
-        <p class="description">所有操作都会围绕这个课题文件夹执行。</p>
+        <p class="description">当前会话的工作目录，所有操作都会围绕它执行。</p>
         <div class="field">
           <label for="projectRoot">项目根目录</label>
           <input id="projectRoot" value="__DEFAULT_PROJECT_ROOT__" placeholder="例如 C:\Users\22676\Documents\fixture-study">
@@ -35,7 +35,7 @@
 
       <section class="panel">
         <div class="panel-title"><h2>新建课题</h2></div>
-        <p class="description">第一次使用时在这里创建课题目录。</p>
+        <p class="description">生成标准目录、默认配置和追踪模板。</p>
         <div class="field-grid single">
           <div class="field"><label for="baseDir">保存到哪个文件夹</label><input id="baseDir" placeholder="例如 C:\Users\22676\Documents"></div>
           <div class="field"><label for="projectSlug">课题文件夹名</label><input id="projectSlug" placeholder="fixture-study"></div>
