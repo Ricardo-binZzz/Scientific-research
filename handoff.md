@@ -45,6 +45,7 @@
 - Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
 - GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 - README language switch on 2026-05-19: `README.md` now links to `README.zh-CN.md`, and the Chinese README links back to the English entry point while keeping `USER_GUIDE.md` as the detailed beginner tutorial.
+- Usage guide language switch on 2026-05-19: `USER_GUIDE.en.md` was added as the English beginner guide, `USER_GUIDE.md` links to it, and both README entry pages now point to the appropriate usage guides.
 
 ## Next Steps
 

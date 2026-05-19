@@ -45,3 +45,4 @@
 - `USER_GUIDE.md` is the beginner-facing Chinese usage tutorial. Future user-facing features, command changes, workflow changes, or assumption changes should be reflected there.
 - The repository remote is `https://github.com/Ricardo-binZzz/Scientific-research.git`; local branch `main` tracks `origin/main`.
 - GitHub landing documentation uses `README.md` as the English entry point and `README.zh-CN.md` as the Chinese entry point, linked from the top of each file.
+- Beginner usage guidance now exists in both `USER_GUIDE.md` (Chinese) and `USER_GUIDE.en.md` (English), with language links at the top of each guide.
