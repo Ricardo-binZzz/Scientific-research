@@ -66,6 +66,7 @@ C:\Users\22676\Documents\fixture-study
 - 项目状态。
 - 文献库统计。
 - 文献搜索。
+- 导入 CSV 文献元数据。
 - 检查缺 PDF。
 - 检查缺笔记。
 - 添加文献。

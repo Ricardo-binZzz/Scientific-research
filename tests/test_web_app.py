@@ -48,6 +48,29 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("已创建课题", body)
         self.assertTrue(exists)
 
+    def test_handle_library_import_csv_action_imports_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            csv_path = project / "papers.csv"
+            csv_path.write_text(
+                "Title,Authors,Year,Journal,DOI,File,Note\n"
+                "Fixture stiffness,Zhang,2024,Journal A,10.1000/a,a.pdf,notes/a.md\n",
+                encoding="utf-8",
+            )
+
+            status, _content_type, body = handle_web_action(
+                {"action": "library_import_csv", "project_root": str(project), "csv_path": str(csv_path)}
+            )
+
+            search_status, _content_type, search_body = handle_web_action(
+                {"action": "library_search", "project_root": str(project), "query": "Fixture"}
+            )
+
+        self.assertEqual(status, 200)
+        self.assertIn("已导入", body)
+        self.assertEqual(search_status, 200)
+        self.assertIn("Fixture stiffness", search_body)
+
     def test_handle_library_search_action_returns_matches(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

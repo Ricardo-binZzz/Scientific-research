@@ -12,10 +12,12 @@ from urllib.parse import parse_qs
 from workflow.bootstrap import bootstrap_workspace
 from workflow.library import (
     LibraryEntry,
+    LibraryIndex,
     add_entry,
     inspect_library_stats,
     inspect_note_inventory,
     inspect_pdf_inventory,
+    import_csv_metadata,
     load_index,
     render_library_stats,
     render_note_inventory_report,
@@ -148,6 +150,9 @@ def render_home_page(default_project_root: str = "") -> str:
         <button data-action="library_check_pdfs" class="secondary">检查缺 PDF</button>
         <button data-action="library_check_notes" class="secondary">检查缺笔记</button>
       </div>
+      <label for="csvPath">CSV 元数据文件路径</label>
+      <input id="csvPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\papers.csv">
+      <button data-action="library_import_csv">导入 CSV 文献</button>
 
       <h2 style="margin-top:20px">添加文献</h2>
       <label for="title">题名</label>
@@ -223,6 +228,7 @@ def render_home_page(default_project_root: str = "") -> str:
         project_name: document.getElementById("projectName").value,
         project_root: document.getElementById("projectRoot").value,
         query: document.getElementById("libraryQuery").value,
+        csv_path: document.getElementById("csvPath").value,
         title: document.getElementById("title").value,
         authors: document.getElementById("authors").value,
         year: document.getElementById("year").value,
@@ -295,6 +301,13 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
         if action == "library_search":
             index = load_index(literature_root)
             return _text(render_search_results(search_library(index, payload.get("query", ""))))
+        if action == "library_import_csv":
+            imported = import_csv_metadata(Path(payload.get("csv_path", "").strip()).read_text(encoding="utf-8-sig"))
+            combined = LibraryIndex(entries=[])
+            for entry in load_index(literature_root).entries + imported.entries:
+                combined = add_entry(literature_root, combined, entry)
+            combined.save(literature_root)
+            return _text(f"已导入 {len(imported.entries)} 条，当前文献库共有 {len(load_index(literature_root).entries)} 条。")
         if action == "library_check_pdfs":
             return _text(render_pdf_inventory_report(inspect_pdf_inventory(literature_root, load_index(literature_root))))
         if action == "library_check_notes":
