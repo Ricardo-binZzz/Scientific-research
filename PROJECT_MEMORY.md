@@ -29,6 +29,7 @@
 - The manuscript checker can read `.docx` text directly from `word/document.xml` without requiring Office.
 - Manuscript checks can compare extracted citation keys against a local library index via `--library-root` and report missing citations.
 - Simulation data can be validated with `simulation validate-data` for required columns and numeric columns.
+- Simulation data can be previewed with `simulation inspect-data`, which prints normalized columns and a few sample rows before validation or plotting.
 - `README.md` documents the main CLI workflow and uses the bundled Python path because PATH `python` may be unavailable.
 - User-facing tutorial updates must be merged into `USER_GUIDE.md`; do not create extra tutorial files for feature additions unless the user explicitly asks.
 - Project status can be summarized with `project report`, which counts library entries, notes, figure bundles, simulation exports, and manuscript files.

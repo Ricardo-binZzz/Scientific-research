@@ -19,6 +19,7 @@
 - Manuscript checking can compare citation keys against the local library through `--library-root`.
 - Simulation data validation reports missing columns and non-numeric columns.
 - Simulation CSV loading normalizes common ANSYS, Abaqus, and COMSOL export headers to stable names for validation and plotting.
+- `simulation inspect-data` prints normalized columns and sample rows before validation or plotting.
 - `README.md` documents the main workflow commands using the bundled Python executable.
 - `unittest discover -v` now discovers and runs the full test suite.
 - `project report` prints a compact status count for the active research workspace.
@@ -42,6 +43,7 @@
 - Workflow expansion on 2026-05-19: `project check` was added as a one-command health report, and new workspaces now get a default `project-check.json`.
 - Workflow expansion on 2026-05-19: Scopus and Web of Science CSV metadata imports were covered with focused tests and documented in `USER_GUIDE.md`.
 - Workflow expansion on 2026-05-19: common ANSYS, Abaqus, and COMSOL CSV result headers now normalize to stable simulation columns, with focused tests and `USER_GUIDE.md` updates.
+- Workflow expansion on 2026-05-19: `simulation inspect-data` was added as a beginner-friendly preview step before validation and plotting.
 - Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
 - GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 - README language switch on 2026-05-19: `README.md` now links to `README.zh-CN.md`, and the Chinese README links back to the English entry point while keeping `USER_GUIDE.md` as the detailed beginner tutorial.

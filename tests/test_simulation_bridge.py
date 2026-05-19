@@ -8,7 +8,9 @@ from workflow.simulation import (
     SimulationCase,
     build_case_manifest,
     collect_export_files,
+    inspect_dataset,
     render_case_manifest,
+    render_dataset_inspection,
     load_unit_metadata,
     validate_dataset_columns,
 )
@@ -163,6 +165,44 @@ class SimulationBridgeTests(unittest.TestCase):
             text = output.getvalue()
             self.assertIn("strain", text)
             self.assertIn("stress", text)
+
+    def test_inspect_dataset_reports_normalized_columns_and_sample_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            path = root / "ansys.csv"
+            path.write_text(
+                "Time [s],Equivalent Stress [MPa],Total Deformation [mm]\n"
+                "0,12.5,0.01\n"
+                "1,18.0,0.02\n"
+                "2,19.5,0.03\n",
+                encoding="utf-8",
+            )
+            dataset = load_tabular_result(path)
+
+            inspection = inspect_dataset(dataset, sample_size=2)
+            text = render_dataset_inspection(inspection)
+
+        self.assertEqual(inspection.columns, ["time", "stress", "displacement"])
+        self.assertEqual(len(inspection.sample_rows), 2)
+        self.assertIn("Columns: time, stress, displacement", text)
+        self.assertIn("0 | 12.5 | 0.01", text)
+        self.assertNotIn("19.5", text)
+
+    def test_cli_simulation_inspect_data_prints_normalized_columns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            path = root / "result.csv"
+            path.write_text("Step Time,S: Mises,U: Magnitude\n0,100,0.05\n1,120,0.07\n", encoding="utf-8")
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["simulation", "inspect-data", str(path), "--rows", "1"])
+
+        self.assertEqual(exit_code, 0)
+        text = output.getvalue()
+        self.assertIn("Columns: time, stress, displacement", text)
+        self.assertIn("0 | 100 | 0.05", text)
+        self.assertNotIn("120", text)
 
     def test_load_unit_metadata_reads_column_units(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

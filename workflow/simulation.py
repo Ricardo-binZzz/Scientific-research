@@ -40,6 +40,14 @@ class DatasetValidationReport:
         )
 
 
+@dataclass(frozen=True)
+class DatasetInspection:
+    source_name: str
+    columns: list[str]
+    row_count: int
+    sample_rows: list[dict[str, object]]
+
+
 def build_case_manifest(case: SimulationCase) -> str:
     return render_case_manifest(case)
 
@@ -97,6 +105,33 @@ def validate_dataset_columns(
         empty_unit_columns=empty_units,
         extra_unit_columns=extra_units,
     )
+
+
+def inspect_dataset(dataset: SimulationDataset, *, sample_size: int = 5) -> DatasetInspection:
+    return DatasetInspection(
+        source_name=dataset.source.name,
+        columns=dataset.columns,
+        row_count=len(dataset.rows),
+        sample_rows=dataset.rows[: max(0, sample_size)],
+    )
+
+
+def render_dataset_inspection(inspection: DatasetInspection) -> str:
+    lines = ["# Dataset Inspection", ""]
+    lines.append(f"- Source: {inspection.source_name}")
+    lines.append(f"- Rows: {inspection.row_count}")
+    lines.append(f"- Columns: {', '.join(inspection.columns) if inspection.columns else 'None'}")
+    lines.append("")
+    lines.append("## Sample Rows")
+    if not inspection.sample_rows:
+        lines.append("- None")
+        lines.append("")
+        return "\n".join(lines)
+    lines.append(" | ".join(inspection.columns))
+    for row in inspection.sample_rows:
+        lines.append(" | ".join(str(row.get(column, "")) for column in inspection.columns))
+    lines.append("")
+    return "\n".join(lines)
 
 
 def render_dataset_validation_report(report: DatasetValidationReport) -> str:
