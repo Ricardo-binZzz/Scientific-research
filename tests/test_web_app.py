@@ -14,6 +14,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("项目体检", html)
         self.assertIn("文献库统计", html)
         self.assertIn("仿真数据", html)
+        self.assertIn("稿件检查", html)
         self.assertIn(r"C:\Research\demo", html)
 
     def test_handle_project_check_action_returns_report(self) -> None:
@@ -78,6 +79,26 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("stress", summarize_body)
         self.assertEqual(validate_status, 200)
         self.assertIn("# Dataset Validation Report", validate_body)
+
+    def test_handle_manuscript_check_action_returns_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            manuscript_path = project / "manuscript" / "chapter.md"
+            manuscript_path.write_text("# Introduction\n\nFigure 1.\n", encoding="utf-8")
+
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "manuscript_check",
+                    "project_root": str(project),
+                    "manuscript_path": str(manuscript_path),
+                    "required_sections": "Introduction,Method",
+                    "expected_figures": "Figure 1",
+                }
+            )
+
+        self.assertEqual(status, 200)
+        self.assertIn("# Manuscript Check Report", body)
+        self.assertIn("Missing section: Method", body)
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ from workflow.library import (
     render_search_results,
     search_library,
 )
+from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
 from workflow.python.sim_result_loader import load_tabular_result
 from workflow.simulation import (
@@ -164,6 +165,15 @@ def render_home_page(default_project_root: str = "") -> str:
         <button data-action="simulation_summarize" class="secondary">汇总数值范围</button>
         <button data-action="simulation_validate" class="secondary">校验数据</button>
       </div>
+
+      <h2 style="margin-top:20px">稿件检查</h2>
+      <label for="manuscriptPath">稿件路径</label>
+      <input id="manuscriptPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\manuscript\\chapter.md">
+      <label for="requiredSections">必需章节，多个用逗号隔开</label>
+      <input id="requiredSections" placeholder="Introduction,Method,Results">
+      <label for="expectedFigures">预期图号，多个用逗号隔开</label>
+      <input id="expectedFigures" placeholder="Figure 1,Figure 2">
+      <button data-action="manuscript_check">检查稿件</button>
     </section>
     <section>
       <h2>运行结果</h2>
@@ -185,7 +195,10 @@ def render_home_page(default_project_root: str = "") -> str:
         note_path: document.getElementById("notePath").value,
         data_path: document.getElementById("dataPath").value,
         required_columns: document.getElementById("requiredColumns").value,
-        numeric_columns: document.getElementById("numericColumns").value
+        numeric_columns: document.getElementById("numericColumns").value,
+        manuscript_path: document.getElementById("manuscriptPath").value,
+        required_sections: document.getElementById("requiredSections").value,
+        expected_figures: document.getElementById("expectedFigures").value
       }};
       const output = document.getElementById("output");
       output.textContent = "运行中...";
@@ -249,6 +262,17 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                         dataset,
                         required_columns=_split_csv_input(payload.get("required_columns", "")),
                         numeric_columns=_split_csv_input(payload.get("numeric_columns", "")),
+                    )
+                )
+            )
+        if action == "manuscript_check":
+            return _text(
+                render_report_from_inspection(
+                    inspect_manuscript(
+                        Path(payload.get("manuscript_path", "").strip()),
+                        required_sections=_split_csv_input(payload.get("required_sections", "")),
+                        expected_figures=_split_csv_input(payload.get("expected_figures", "")),
+                        library_index=load_index(project_root / "literature"),
                     )
                 )
             )

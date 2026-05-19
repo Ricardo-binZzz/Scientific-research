@@ -23,7 +23,7 @@
 - `simulation summarize-data` prints numeric count/min/max and flags columns containing non-numeric cells.
 - `simulation check-ranges` checks expected numeric ranges with repeated `--range column:min:max` arguments.
 - `README.md` documents the main workflow commands using the bundled Python executable.
-- `start_web.bat` starts a local browser UI backed by `workflow.web_app` on `127.0.0.1:8000` for common project, literature, and simulation inspection actions.
+- `start_web.bat` starts a local browser UI backed by `workflow.web_app` on `127.0.0.1:8000` for common project, literature, simulation inspection, and manuscript check actions.
 - `unittest discover -v` now discovers and runs the full test suite.
 - `project report` prints a compact status count for the active research workspace.
 - `project check` prints a consolidated project health report using `project-check.json`.
@@ -73,6 +73,7 @@
 - Usage guide language switch on 2026-05-19: `USER_GUIDE.en.md` was added as the English beginner guide, `USER_GUIDE.md` links to it, and both README entry pages now point to the appropriate usage guides.
 - Web UI expansion on 2026-05-19: first local browser console added for project check/report, writing pack, library stats/search/checks, and adding literature entries.
 - Web UI expansion on 2026-05-19: simulation data preview, numeric summary, and validation actions were added to the browser console.
+- Web UI expansion on 2026-05-19: manuscript checking was added to the browser console with manuscript path, required sections, and expected figures.
 
 ## Next Steps
 

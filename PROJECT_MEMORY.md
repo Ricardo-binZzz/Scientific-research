@@ -33,7 +33,7 @@
 - Simulation data can be summarized with `simulation summarize-data`, which reports count/min/max for numeric values and flags columns that contain non-numeric cells.
 - Simulation data can be range-checked with `simulation check-ranges --range column:min:max`, reporting out-of-range and non-numeric counts.
 - `README.md` documents the main CLI workflow and uses the bundled Python path because PATH `python` may be unavailable.
-- A local browser UI is available through `start_web.bat`, which runs `workflow.web_app` on `127.0.0.1:8000` for common project, library, and simulation inspection actions without typing Python commands.
+- A local browser UI is available through `start_web.bat`, which runs `workflow.web_app` on `127.0.0.1:8000` for common project, library, simulation inspection, and manuscript check actions without typing Python commands.
 - User-facing tutorial updates must be merged into `USER_GUIDE.md`; do not create extra tutorial files for feature additions unless the user explicitly asks.
 - Project status can be summarized with `project report`, which counts library entries, notes, figure bundles, simulation exports, and manuscript files.
 - Project health can be checked with `project check`, which uses `project-check.json` to inspect literature PDFs, simulation exports, manuscript issues, and a summary count.
