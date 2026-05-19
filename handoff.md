@@ -42,12 +42,11 @@
 - Workflow expansion on 2026-05-19: `project check` was added as a one-command health report, and new workspaces now get a default `project-check.json`.
 - Workflow expansion on 2026-05-19: Scopus and Web of Science CSV metadata imports were covered with focused tests and documented in `USER_GUIDE.md`.
 - Workflow expansion on 2026-05-19: common ANSYS, Abaqus, and COMSOL CSV result headers now normalize to stable simulation columns, with focused tests and `USER_GUIDE.md` updates.
-- Git setup on 2026-05-19: the folder already contains a local `.git` repository with no commits yet; `unittest discover -v` passed 74 tests before the first commit/push attempt.
-- GitHub push status on 2026-05-19: no remote is configured, Git commit identity is not configured locally, and the GitHub CLI (`gh`) is not installed on PATH, so creating the remote/pushing still needs a GitHub repository URL plus commit author identity or an installed/logged-in `gh`.
+- Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
+- GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 
 ## Next Steps
 
-- The user has now explicitly asked to make this folder a Git project and push it to GitHub; create the first commit once commit author identity is provided, then add the GitHub remote and push.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.

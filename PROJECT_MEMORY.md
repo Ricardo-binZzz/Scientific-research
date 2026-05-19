@@ -43,3 +43,4 @@
 - Manuscript checks report duplicate English figure markers and skipped English figure numbers.
 - `library check-pdfs` reports which indexed PDF files are present or missing.
 - `USER_GUIDE.md` is the beginner-facing Chinese usage tutorial. Future user-facing features, command changes, workflow changes, or assumption changes should be reflected there.
+- The repository remote is `https://github.com/Ricardo-binZzz/Scientific-research.git`; local branch `main` tracks `origin/main`.
