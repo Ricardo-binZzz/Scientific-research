@@ -11,11 +11,13 @@ from workflow.library import (
     export_bibtex,
     import_csv_metadata,
     import_bibtex,
+    inspect_note_inventory,
     inspect_pdf_inventory,
     inspect_library_stats,
     load_index,
     render_index,
     render_library_stats,
+    render_note_inventory_report,
     render_pdf_inventory_report,
     render_search_results,
     search_library,
@@ -229,6 +231,9 @@ def _handle_library(args: Namespace) -> int:
         return 0
     if args.library_command == "check-pdfs":
         print(render_pdf_inventory_report(inspect_pdf_inventory(root, load_index(root))))
+        return 0
+    if args.library_command == "check-notes":
+        print(render_note_inventory_report(inspect_note_inventory(root, load_index(root))))
         return 0
     if args.library_command == "stats":
         index = load_index(root)

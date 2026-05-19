@@ -50,6 +50,7 @@
 - Manuscript checks report duplicate English figure markers and skipped English figure numbers.
 - Manuscript checks report skipped Chinese figure numbers such as missing `图 2` between `图 1` and `图 3`.
 - `library check-pdfs` reports which indexed PDF files are present or missing.
+- `library check-notes` reports which indexed note paths exist or are missing, resolving `notes/...` from the project root when the library root is `literature`.
 - `library stats` reports literature entry count, year range, missing PDF count, source distribution, and author distribution.
 - `library search` searches literature entries by title, author, source, or DOI with case-insensitive keyword matching.
 - `USER_GUIDE.md` is the beginner-facing Chinese usage tutorial. Future user-facing features, command changes, workflow changes, or assumption changes should be reflected there.

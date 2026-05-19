@@ -12,12 +12,14 @@ from workflow.library import (
     export_bibtex,
     import_csv_metadata,
     import_bibtex,
+    inspect_note_inventory,
     inspect_pdf_inventory,
     inspect_library_stats,
     load_index,
     make_citekey,
     render_index,
     render_library_stats,
+    render_note_inventory_report,
     render_search_results,
     search_library,
 )
@@ -376,6 +378,77 @@ class LibraryTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertIn("missing.pdf", output.getvalue())
+
+    def test_inspect_note_inventory_reports_missing_notes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "literature"
+            notes_dir = Path(tmpdir) / "notes"
+            notes_dir.mkdir(parents=True)
+            (notes_dir / "present.md").write_text("# Present", encoding="utf-8")
+            index = LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Present note paper",
+                        authors=["Zhang"],
+                        year=2024,
+                        source="Journal",
+                        doi="10.1000/present-note",
+                        pdf_name="present.pdf",
+                        note_path="notes/present.md",
+                    ),
+                    LibraryEntry(
+                        title="Missing note paper",
+                        authors=["Li"],
+                        year=2023,
+                        source="Journal",
+                        doi="10.1000/missing-note",
+                        pdf_name="missing.pdf",
+                        note_path="notes/missing.md",
+                    ),
+                    LibraryEntry(
+                        title="Blank note paper",
+                        authors=["Wang"],
+                        year=2022,
+                        source="Journal",
+                        doi="10.1000/blank-note",
+                        pdf_name="blank.pdf",
+                        note_path="",
+                    ),
+                ]
+            )
+
+            report = inspect_note_inventory(root, index)
+            text = render_note_inventory_report(report)
+
+        self.assertEqual(report.present_note_paths, ["notes/present.md"])
+        self.assertEqual(report.missing_note_paths, ["notes/missing.md", ""])
+        self.assertIn("notes/present.md", text)
+        self.assertIn("notes/missing.md", text)
+
+    def test_cli_library_check_notes_prints_missing_notes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "literature"
+            root.mkdir()
+            LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Missing note paper",
+                        authors=["Li"],
+                        year=2023,
+                        source="Journal",
+                        doi="10.1000/missing-note",
+                        pdf_name="missing.pdf",
+                        note_path="notes/missing.md",
+                    )
+                ]
+            ).save(root)
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["library", "check-notes", str(root)])
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("notes/missing.md", output.getvalue())
 
     def test_inspect_library_stats_counts_years_sources_and_missing_pdfs(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

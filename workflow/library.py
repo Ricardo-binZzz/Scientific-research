@@ -41,6 +41,12 @@ class PdfInventoryReport:
 
 
 @dataclass(frozen=True)
+class NoteInventoryReport:
+    present_note_paths: list[str]
+    missing_note_paths: list[str]
+
+
+@dataclass(frozen=True)
 class LibraryStats:
     total_entries: int
     year_min: int | None
@@ -121,6 +127,31 @@ def render_pdf_inventory_report(report: PdfInventoryReport) -> str:
     lines.append("")
     lines.append("## Missing")
     lines.extend([f"- {name}" for name in report.missing_pdf_names] or ["- None"])
+    lines.append("")
+    return "\n".join(lines)
+
+
+def inspect_note_inventory(root: Path, index: LibraryIndex) -> NoteInventoryReport:
+    present: list[str] = []
+    missing: list[str] = []
+    for entry in index.entries:
+        if not entry.note_path:
+            missing.append(entry.note_path)
+            continue
+        if _resolve_note_path(root, entry.note_path).exists():
+            present.append(entry.note_path)
+        else:
+            missing.append(entry.note_path)
+    return NoteInventoryReport(present_note_paths=present, missing_note_paths=missing)
+
+
+def render_note_inventory_report(report: NoteInventoryReport) -> str:
+    lines = ["# Note Inventory Report", ""]
+    lines.append("## Present")
+    lines.extend([f"- {path}" for path in report.present_note_paths] or ["- None"])
+    lines.append("")
+    lines.append("## Missing")
+    lines.extend([f"- {path}" for path in report.missing_note_paths] or ["- None"])
     lines.append("")
     return "\n".join(lines)
 
@@ -288,6 +319,14 @@ def _same_entry(left: LibraryEntry, right: LibraryEntry) -> bool:
 def _entry_matches_query(entry: LibraryEntry, needle: str) -> bool:
     haystack = " ".join([entry.title, *entry.authors, entry.source, entry.doi]).lower()
     return needle in haystack
+
+
+def _resolve_note_path(root: Path, note_path: str) -> Path:
+    path = Path(note_path)
+    if path.is_absolute():
+        return path
+    project_root = root.parent if root.name == "literature" else root
+    return project_root / path
 
 
 def _normalize_title(title: str) -> str:
