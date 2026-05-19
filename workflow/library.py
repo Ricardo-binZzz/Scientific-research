@@ -209,6 +209,17 @@ def search_library(index: LibraryIndex, query: str) -> list[LibraryEntry]:
     return [entry for entry in index.entries if _entry_matches_query(entry, needle)]
 
 
+def filter_library_by_year(index: LibraryIndex, since_year: int) -> list[LibraryEntry]:
+    return [entry for entry in index.entries if entry.year >= since_year]
+
+
+def filter_library_by_source(index: LibraryIndex, source_query: str) -> list[LibraryEntry]:
+    needle = source_query.strip().lower()
+    if not needle:
+        return []
+    return [entry for entry in index.entries if needle in entry.source.lower()]
+
+
 def render_search_results(entries: list[LibraryEntry]) -> str:
     lines = ["# Library Search Results", ""]
     if not entries:

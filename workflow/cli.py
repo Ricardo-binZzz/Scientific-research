@@ -141,6 +141,14 @@ def build_parser() -> argparse.ArgumentParser:
     search_library_parser.add_argument("root_dir", help="library root directory")
     search_library_parser.add_argument("query", help="keyword to search in title, author, source, or DOI")
 
+    recent_library_parser = library_subparsers.add_parser("recent", help="list literature entries since a year")
+    recent_library_parser.add_argument("root_dir", help="library root directory")
+    recent_library_parser.add_argument("--since", required=True, type=int, help="minimum publication year")
+
+    source_library_parser = library_subparsers.add_parser("source", help="list literature entries matching a source keyword")
+    source_library_parser.add_argument("root_dir", help="library root directory")
+    source_library_parser.add_argument("query", help="source journal or conference keyword")
+
     figure_parser = subparsers.add_parser("figure", help="generate figure assets")
     figure_subparsers = figure_parser.add_subparsers(dest="figure_command", required=True)
 

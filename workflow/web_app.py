@@ -14,6 +14,8 @@ from workflow.library import (
     LibraryEntry,
     LibraryIndex,
     add_entry,
+    filter_library_by_source,
+    filter_library_by_year,
     inspect_library_stats,
     inspect_note_inventory,
     inspect_pdf_inventory,
@@ -145,8 +147,14 @@ def render_home_page(default_project_root: str = "") -> str:
       <h2 style="margin-top:20px">文献库</h2>
       <label for="libraryQuery">搜索关键词</label>
       <input id="libraryQuery" placeholder="题名、作者、期刊或 DOI">
+      <label for="sinceYear">只看某年之后</label>
+      <input id="sinceYear" placeholder="2020">
+      <label for="sourceQuery">来源关键词</label>
+      <input id="sourceQuery" placeholder="Manufacturing">
       <div>
         <button data-action="library_search">搜索文献</button>
+        <button data-action="library_recent" class="secondary">按年份过滤</button>
+        <button data-action="library_source" class="secondary">按来源过滤</button>
         <button data-action="library_stats" class="secondary">文献库统计</button>
         <button data-action="library_check_pdfs" class="secondary">检查缺 PDF</button>
         <button data-action="library_check_notes" class="secondary">检查缺笔记</button>
@@ -277,6 +285,8 @@ def render_home_page(default_project_root: str = "") -> str:
         project_name: document.getElementById("projectName").value,
         project_root: document.getElementById("projectRoot").value,
         query: document.getElementById("libraryQuery").value,
+        since_year: document.getElementById("sinceYear").value,
+        source_query: document.getElementById("sourceQuery").value,
         csv_path: document.getElementById("csvPath").value,
         title: document.getElementById("title").value,
         authors: document.getElementById("authors").value,
@@ -371,6 +381,12 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
         if action == "library_search":
             index = load_index(literature_root)
             return _text(render_search_results(search_library(index, payload.get("query", ""))))
+        if action == "library_recent":
+            index = load_index(literature_root)
+            return _text(render_search_results(filter_library_by_year(index, int(payload.get("since_year", "0").strip() or 0))))
+        if action == "library_source":
+            index = load_index(literature_root)
+            return _text(render_search_results(filter_library_by_source(index, payload.get("source_query", ""))))
         if action == "library_import_csv":
             imported = import_csv_metadata(Path(payload.get("csv_path", "").strip()).read_text(encoding="utf-8-sig"))
             combined = LibraryIndex(entries=[])

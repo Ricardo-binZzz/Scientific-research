@@ -47,6 +47,8 @@
 - `library check-notes` reports present and missing note files for indexed literature entries.
 - `library stats` reports entry count, year range, missing PDF count, missing note count, source distribution, and author distribution.
 - `library search` finds matching literature entries by title, author, source, or DOI.
+- `library recent --since YEAR` lists entries published in or after a selected year.
+- `library source QUERY` lists entries whose source contains a journal or conference keyword.
 - Global function check on 2026-05-18: `unittest discover -v` ran 54 tests with OK; CLI help, simulation validation, manuscript check, figure generation, and project report entry points were exercised successfully.
 - Workflow expansion on 2026-05-19: CSV metadata import, error-bar plotting, manuscript figure-number quality checks, and stricter simulation unit metadata checks were implemented with focused tests.
 - `USER_GUIDE.md` was added as the beginner-facing Chinese tutorial, and project instructions now require updating it when user-facing functionality changes.
@@ -62,6 +64,8 @@
 - Workflow expansion on 2026-05-19: `project check` now applies configured simulation range rules from `project-check.json`.
 - Workflow expansion on 2026-05-19: `library stats` was added and expanded for quick source and author distribution checks before writing.
 - Workflow expansion on 2026-05-19: `library search` was added for quick keyword lookup across title, authors, source, and DOI.
+- Workflow expansion on 2026-05-19: `library recent --since YEAR` was added for quick recent-literature filtering.
+- Workflow expansion on 2026-05-19: `library source QUERY` was added for quick source/journal filtering.
 - Workflow expansion on 2026-05-19: `library check-notes` was added to find literature entries whose summary cards or reading notes are missing.
 - Workflow expansion on 2026-05-19: `library stats` now includes missing note count alongside missing PDF count.
 - Workflow expansion on 2026-05-19: `project writing-pack` now includes the same key library overview fields.

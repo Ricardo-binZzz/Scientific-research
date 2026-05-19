@@ -22,6 +22,8 @@ from workflow.library import (
     render_note_inventory_report,
     render_search_results,
     search_library,
+    filter_library_by_year,
+    filter_library_by_source,
 )
 
 
@@ -566,6 +568,62 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual([entry.title for entry in source_matches], ["Adaptive clamping fixture"])
         self.assertEqual([entry.title for entry in doi_matches], ["Heat treatment simulation"])
 
+    def test_filter_library_by_year_keeps_entries_since_year(self) -> None:
+        index = LibraryIndex(
+            entries=[
+                LibraryEntry(
+                    title="Older paper",
+                    authors=["Zhang"],
+                    year=2019,
+                    source="Journal",
+                    doi="10.1000/old",
+                    pdf_name="old.pdf",
+                    note_path="notes/old.md",
+                ),
+                LibraryEntry(
+                    title="Recent paper",
+                    authors=["Li"],
+                    year=2024,
+                    source="Journal",
+                    doi="10.1000/recent",
+                    pdf_name="recent.pdf",
+                    note_path="notes/recent.md",
+                ),
+            ]
+        )
+
+        matches = filter_library_by_year(index, since_year=2020)
+
+        self.assertEqual([entry.title for entry in matches], ["Recent paper"])
+
+    def test_filter_library_by_source_matches_source_keyword(self) -> None:
+        index = LibraryIndex(
+            entries=[
+                LibraryEntry(
+                    title="Journal paper",
+                    authors=["Zhang"],
+                    year=2024,
+                    source="Journal of Manufacturing Systems",
+                    doi="10.1000/journal",
+                    pdf_name="journal.pdf",
+                    note_path="notes/journal.md",
+                ),
+                LibraryEntry(
+                    title="Conference paper",
+                    authors=["Li"],
+                    year=2024,
+                    source="CIRP Conference",
+                    doi="10.1000/conference",
+                    pdf_name="conference.pdf",
+                    note_path="notes/conference.md",
+                ),
+            ]
+        )
+
+        matches = filter_library_by_source(index, "manufacturing")
+
+        self.assertEqual([entry.title for entry in matches], ["Journal paper"])
+
     def test_cli_library_search_prints_matching_entries(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -602,6 +660,74 @@ class LibraryTests(unittest.TestCase):
         self.assertIn("Adaptive clamping fixture", text)
         self.assertNotIn("Heat treatment simulation", text)
         self.assertIn("10.1000/fixture", text)
+
+    def test_cli_library_recent_prints_entries_since_year(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Older paper",
+                        authors=["Zhang"],
+                        year=2019,
+                        source="Journal",
+                        doi="10.1000/old",
+                        pdf_name="old.pdf",
+                        note_path="notes/old.md",
+                    ),
+                    LibraryEntry(
+                        title="Recent paper",
+                        authors=["Li"],
+                        year=2024,
+                        source="Journal",
+                        doi="10.1000/recent",
+                        pdf_name="recent.pdf",
+                        note_path="notes/recent.md",
+                    ),
+                ]
+            ).save(root)
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["library", "recent", tmpdir, "--since", "2020"])
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Recent paper", output.getvalue())
+        self.assertNotIn("Older paper", output.getvalue())
+
+    def test_cli_library_source_prints_entries_matching_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Journal paper",
+                        authors=["Zhang"],
+                        year=2024,
+                        source="Journal of Manufacturing Systems",
+                        doi="10.1000/journal",
+                        pdf_name="journal.pdf",
+                        note_path="notes/journal.md",
+                    ),
+                    LibraryEntry(
+                        title="Conference paper",
+                        authors=["Li"],
+                        year=2024,
+                        source="CIRP Conference",
+                        doi="10.1000/conference",
+                        pdf_name="conference.pdf",
+                        note_path="notes/conference.md",
+                    ),
+                ]
+            ).save(root)
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["library", "source", tmpdir, "manufacturing"])
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Journal paper", output.getvalue())
+        self.assertNotIn("Conference paper", output.getvalue())
 
 
 if __name__ == "__main__":

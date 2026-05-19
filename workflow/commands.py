@@ -9,6 +9,8 @@ from workflow.library import (
     LibraryIndex,
     add_entry,
     export_bibtex,
+    filter_library_by_source,
+    filter_library_by_year,
     import_csv_metadata,
     import_bibtex,
     inspect_note_inventory,
@@ -241,6 +243,12 @@ def _handle_library(args: Namespace) -> int:
         return 0
     if args.library_command == "search":
         print(render_search_results(search_library(load_index(root), args.query)))
+        return 0
+    if args.library_command == "recent":
+        print(render_search_results(filter_library_by_year(load_index(root), args.since)))
+        return 0
+    if args.library_command == "source":
+        print(render_search_results(filter_library_by_source(load_index(root), args.query)))
         return 0
     raise ValueError(f"Unsupported library command: {args.library_command}")
 

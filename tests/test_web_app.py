@@ -71,6 +71,31 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(search_status, 200)
         self.assertIn("Fixture stiffness", search_body)
 
+    def test_handle_library_recent_and_source_actions_return_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            csv_path = project / "papers.csv"
+            csv_path.write_text(
+                "Title,Authors,Year,Journal,DOI,File,Note\n"
+                "Old fixture,Zhang,2018,Old Journal,10.1000/old,old.pdf,notes/old.md\n"
+                "Recent fixture,Li,2024,Journal of Manufacturing Systems,10.1000/recent,recent.pdf,notes/recent.md\n",
+                encoding="utf-8",
+            )
+            handle_web_action({"action": "library_import_csv", "project_root": str(project), "csv_path": str(csv_path)})
+
+            recent_status, _content_type, recent_body = handle_web_action(
+                {"action": "library_recent", "project_root": str(project), "since_year": "2020"}
+            )
+            source_status, _content_type, source_body = handle_web_action(
+                {"action": "library_source", "project_root": str(project), "source_query": "manufacturing"}
+            )
+
+        self.assertEqual(recent_status, 200)
+        self.assertIn("Recent fixture", recent_body)
+        self.assertNotIn("Old fixture", recent_body)
+        self.assertEqual(source_status, 200)
+        self.assertIn("Recent fixture", source_body)
+
     def test_handle_paper_summary_action_writes_note(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

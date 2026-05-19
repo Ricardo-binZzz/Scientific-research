@@ -57,6 +57,8 @@
 - `library check-notes` reports which indexed note paths exist or are missing, resolving `notes/...` from the project root when the library root is `literature`.
 - `library stats` reports literature entry count, year range, missing PDF count, missing note count, source distribution, and author distribution.
 - `library search` searches literature entries by title, author, source, or DOI with case-insensitive keyword matching.
+- `library recent --since YEAR` lists literature entries published in or after the given year.
+- `library source QUERY` lists literature entries whose source/journal/conference contains the query.
 - `USER_GUIDE.md` is the beginner-facing Chinese usage tutorial. Future user-facing features, command changes, workflow changes, or assumption changes should be reflected there.
 - The repository remote is `https://github.com/Ricardo-binZzz/Scientific-research.git`; local branch `main` tracks `origin/main`.
 - GitHub landing documentation uses `README.md` as the English entry point and `README.zh-CN.md` as the Chinese entry point, linked from the top of each file.
