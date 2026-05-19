@@ -1,9 +1,10 @@
 import tempfile
 import unittest
 from pathlib import Path
+from http.server import BaseHTTPRequestHandler
 
 from workflow.bootstrap import bootstrap_workspace
-from workflow.web_app import handle_web_action, render_home_page
+from workflow.web_app import _create_server, handle_web_action, render_home_page
 
 
 class WebAppTests(unittest.TestCase):
@@ -130,6 +131,25 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("stress-response.svg", body)
         self.assertTrue(svg_exists)
         self.assertTrue(json_exists)
+
+    def test_create_server_uses_next_port_when_requested_port_is_busy(self) -> None:
+        probe = _create_server("127.0.0.1", 8000, _QuietHandler)
+        busy_port = probe.server_address[1]
+        probe.server_close()
+        first_server = _create_server("127.0.0.1", busy_port, _QuietHandler)
+        try:
+            second_server = _create_server("127.0.0.1", busy_port, _QuietHandler)
+            try:
+                self.assertEqual(second_server.server_address[1], busy_port + 1)
+            finally:
+                second_server.server_close()
+        finally:
+            first_server.server_close()
+
+
+class _QuietHandler(BaseHTTPRequestHandler):
+    def log_message(self, format: str, *args) -> None:
+        return
 
 
 if __name__ == "__main__":

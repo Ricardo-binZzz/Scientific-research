@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import socket
+import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs
@@ -331,10 +333,14 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
     return 400, "text/plain; charset=utf-8", f"不支持的操作：{action}"
 
 
-def run_server(host: str = "127.0.0.1", port: int = 8000, default_project_root: str = "") -> None:
+def run_server(host: str = "127.0.0.1", port: int = 8000, default_project_root: str = "", open_browser: bool = False) -> None:
     handler = _make_handler(default_project_root)
-    server = ThreadingHTTPServer((host, port), handler)
-    print(f"Open http://{host}:{port}")
+    server = _create_server(host, port, handler)
+    actual_port = server.server_address[1]
+    url = f"http://{host}:{actual_port}"
+    print(f"Open {url}", flush=True)
+    if open_browser:
+        webbrowser.open(url)
     server.serve_forever()
 
 
@@ -343,8 +349,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", default=8000, type=int)
     parser.add_argument("--project-root", default="")
+    parser.add_argument("--open-browser", action="store_true")
     args = parser.parse_args(argv)
-    run_server(host=args.host, port=args.port, default_project_root=args.project_root)
+    run_server(host=args.host, port=args.port, default_project_root=args.project_root, open_browser=args.open_browser)
     return 0
 
 
@@ -403,6 +410,24 @@ def _make_handler(default_project_root: str):
             self.wfile.write(data)
 
     return WorkflowRequestHandler
+
+
+def _create_server(host: str, port: int, handler) -> ThreadingHTTPServer:
+    last_error: OSError | None = None
+    for candidate in range(port, port + 10):
+        if _port_is_listening(host, candidate):
+            continue
+        try:
+            return ThreadingHTTPServer((host, candidate), handler)
+        except OSError as exc:
+            last_error = exc
+    raise OSError(f"No available port from {port} to {port + 9}") from last_error
+
+
+def _port_is_listening(host: str, port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.settimeout(0.2)
+        return probe.connect_ex((host, port)) == 0
 
 
 def _text(body: str) -> ContentResponse:

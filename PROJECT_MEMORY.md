@@ -34,6 +34,7 @@
 - Simulation data can be range-checked with `simulation check-ranges --range column:min:max`, reporting out-of-range and non-numeric counts.
 - `README.md` documents the main CLI workflow and uses the bundled Python path because PATH `python` may be unavailable.
 - A local browser UI is available through `start_web.bat`, which runs `workflow.web_app` on `127.0.0.1:8000` for common project, library, simulation inspection, figure generation, and manuscript check actions without typing Python commands.
+- `workflow.web_app` automatically tries the next local port up to `8009` when the requested port is already listening, and `start_web.bat` lets Python open the actual URL after binding.
 - User-facing tutorial updates must be merged into `USER_GUIDE.md`; do not create extra tutorial files for feature additions unless the user explicitly asks.
 - Project status can be summarized with `project report`, which counts library entries, notes, figure bundles, simulation exports, and manuscript files.
 - Project health can be checked with `project check`, which uses `project-check.json` to inspect literature PDFs, simulation exports, manuscript issues, and a summary count.

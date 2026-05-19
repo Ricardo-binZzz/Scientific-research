@@ -24,6 +24,7 @@
 - `simulation check-ranges` checks expected numeric ranges with repeated `--range column:min:max` arguments.
 - `README.md` documents the main workflow commands using the bundled Python executable.
 - `start_web.bat` starts a local browser UI backed by `workflow.web_app` on `127.0.0.1:8000` for common project, literature, simulation inspection, figure generation, and manuscript check actions.
+- The web server now opens the browser after binding the actual port and automatically tries later ports through `8009` if the requested port is busy.
 - `unittest discover -v` now discovers and runs the full test suite.
 - `project report` prints a compact status count for the active research workspace.
 - `project check` prints a consolidated project health report using `project-check.json`.
@@ -75,6 +76,7 @@
 - Web UI expansion on 2026-05-19: simulation data preview, numeric summary, and validation actions were added to the browser console.
 - Web UI expansion on 2026-05-19: manuscript checking was added to the browser console with manuscript path, required sections, and expected figures.
 - Web UI expansion on 2026-05-19: basic SVG figure generation from CSV/JSON was added to the browser console for trend/bar style x-y plots.
+- Web UI robustness on 2026-05-19: startup now falls back from busy port `8000` to the next available local port and opens the actual bound URL.
 
 ## Next Steps
 
