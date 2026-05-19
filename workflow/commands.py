@@ -34,11 +34,13 @@ from workflow.python.figure_exporter import build_contour_spec_from_dataset, bui
 from workflow.python.sim_result_loader import load_tabular_result
 from workflow.simulation import (
     SimulationCase,
+    check_dataset_ranges,
     collect_export_files,
     inspect_dataset,
     render_case_manifest,
     render_dataset_inspection,
     render_dataset_summary,
+    render_range_check_report,
     render_dataset_validation_report,
     summarize_dataset,
     load_unit_metadata,
@@ -164,6 +166,10 @@ def _handle_simulation(args: Namespace) -> int:
     if args.sim_command == "summarize-data":
         dataset = load_tabular_result(Path(args.data_path))
         print(render_dataset_summary(summarize_dataset(dataset)))
+        return 0
+    if args.sim_command == "check-ranges":
+        dataset = load_tabular_result(Path(args.data_path))
+        print(render_range_check_report(check_dataset_ranges(dataset, _parse_range_specs(args.ranges))))
         return 0
     if args.sim_command == "validate-data":
         dataset = load_tabular_result(Path(args.data_path))
@@ -304,3 +310,14 @@ def _handle_project(args: Namespace) -> int:
             print(content)
         return 0
     raise ValueError(f"Unsupported project command: {args.project_command}")
+
+
+def _parse_range_specs(items: list[str]) -> dict[str, tuple[float, float]]:
+    ranges: dict[str, tuple[float, float]] = {}
+    for item in items:
+        parts = item.split(":")
+        if len(parts) != 3:
+            raise ValueError(f"Range must use column:min:max format: {item}")
+        column, minimum, maximum = parts
+        ranges[column] = (float(minimum), float(maximum))
+    return ranges

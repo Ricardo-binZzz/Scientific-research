@@ -10,8 +10,10 @@ from workflow.simulation import (
     collect_export_files,
     inspect_dataset,
     render_case_manifest,
+    render_range_check_report,
     render_dataset_inspection,
     render_dataset_summary,
+    check_dataset_ranges,
     summarize_dataset,
     load_unit_metadata,
     validate_dataset_columns,
@@ -246,6 +248,38 @@ class SimulationBridgeTests(unittest.TestCase):
         self.assertIn("time | 2 | 0 | 1", text)
         self.assertIn("stress | 2 | 12.5 | 18", text)
         self.assertIn("Non-numeric columns: label", text)
+
+    def test_check_dataset_ranges_reports_out_of_range_values(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            path = root / "result.csv"
+            path.write_text("time,stress,displacement\n0,50,0.01\n1,120,0.03\n2,bad,0.08\n", encoding="utf-8")
+            dataset = load_tabular_result(path)
+
+            report = check_dataset_ranges(dataset, {"stress": (0.0, 100.0), "displacement": (0.0, 0.05)})
+            text = render_range_check_report(report)
+
+        self.assertFalse(report.ok)
+        self.assertEqual(report.findings["stress"].out_of_range_count, 1)
+        self.assertEqual(report.findings["stress"].non_numeric_count, 1)
+        self.assertEqual(report.findings["displacement"].out_of_range_count, 1)
+        self.assertIn("stress | 0 | 100 | 1 | 1", text)
+        self.assertIn("displacement | 0 | 0.05 | 1 | 0", text)
+
+    def test_cli_simulation_check_ranges_prints_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            path = root / "result.csv"
+            path.write_text("Time [s],Equivalent Stress [MPa]\n0,50\n1,120\n", encoding="utf-8")
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["simulation", "check-ranges", str(path), "--range", "stress:0:100"])
+
+        self.assertEqual(exit_code, 0)
+        text = output.getvalue()
+        self.assertIn("OK: False", text)
+        self.assertIn("stress | 0 | 100 | 1 | 0", text)
 
     def test_load_unit_metadata_reads_column_units(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -63,6 +63,29 @@ class DatasetSummary:
     non_numeric_columns: list[str]
 
 
+@dataclass(frozen=True)
+class RangeFinding:
+    minimum: float
+    maximum: float
+    out_of_range_count: int
+    non_numeric_count: int
+
+
+@dataclass(frozen=True)
+class RangeCheckReport:
+    source_name: str
+    row_count: int
+    findings: dict[str, RangeFinding]
+    missing_columns: list[str]
+
+    @property
+    def ok(self) -> bool:
+        return (
+            not self.missing_columns
+            and all(item.out_of_range_count == 0 and item.non_numeric_count == 0 for item in self.findings.values())
+        )
+
+
 def build_case_manifest(case: SimulationCase) -> str:
     return render_case_manifest(case)
 
@@ -187,6 +210,55 @@ def render_dataset_summary(summary: DatasetSummary) -> str:
     lines.append("Column | Count | Min | Max")
     for column, item in summary.numeric_columns.items():
         lines.append(f"{column} | {item.count} | {_format_number(item.minimum)} | {_format_number(item.maximum)}")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def check_dataset_ranges(dataset: SimulationDataset, ranges: dict[str, tuple[float, float]]) -> RangeCheckReport:
+    findings: dict[str, RangeFinding] = {}
+    missing_columns: list[str] = []
+    for column, (minimum, maximum) in ranges.items():
+        if column not in dataset.columns:
+            missing_columns.append(column)
+            continue
+        out_of_range = 0
+        non_numeric = 0
+        for row in dataset.rows:
+            value = _try_float(row.get(column))
+            if value is None:
+                non_numeric += 1
+                continue
+            if value < minimum or value > maximum:
+                out_of_range += 1
+        findings[column] = RangeFinding(
+            minimum=minimum,
+            maximum=maximum,
+            out_of_range_count=out_of_range,
+            non_numeric_count=non_numeric,
+        )
+    return RangeCheckReport(
+        source_name=dataset.source.name,
+        row_count=len(dataset.rows),
+        findings=findings,
+        missing_columns=missing_columns,
+    )
+
+
+def render_range_check_report(report: RangeCheckReport) -> str:
+    lines = ["# Range Check Report", ""]
+    lines.append(f"- Source: {report.source_name}")
+    lines.append(f"- Rows: {report.row_count}")
+    lines.append(f"- OK: {report.ok}")
+    lines.append(f"- Missing columns: {', '.join(report.missing_columns) if report.missing_columns else 'None'}")
+    lines.append("")
+    lines.append("Column | Min | Max | Out-of-range | Non-numeric")
+    if not report.findings:
+        lines.append("- None")
+    for column, finding in report.findings.items():
+        lines.append(
+            f"{column} | {_format_number(finding.minimum)} | {_format_number(finding.maximum)} | "
+            f"{finding.out_of_range_count} | {finding.non_numeric_count}"
+        )
     lines.append("")
     return "\n".join(lines)
 

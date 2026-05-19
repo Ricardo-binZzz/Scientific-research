@@ -296,6 +296,16 @@ Columns: time, stress, displacement
 
 它会列出每个数值列的有效数量、最小值和最大值。若某列既有数字又有坏值，仍会显示数字部分的范围，并在 `Non-numeric columns` 中提醒你这列需要回到原始数据检查。
 
+如果你已经知道某些结果的合理范围，可以先做范围检查：
+
+```powershell
+& $PY -m workflow.cli simulation check-ranges C:\Users\22676\Documents\fixture-study\simulation\result.csv `
+  --range stress:0:500 `
+  --range displacement:0:5
+```
+
+`--range` 的格式是 `列名:最小值:最大值`，可以重复写多次。报告里的 `Out-of-range` 表示超出范围的行数，`Non-numeric` 表示该列里不能转成数字的单元格数量。
+
 如果里面有 `time` 和 `stress` 两列，再检查数据：
 
 ```powershell
@@ -474,6 +484,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 → 做仿真并导出 CSV/JSON
 → simulation inspect-data
 → simulation summarize-data
+→ simulation check-ranges
 → simulation validate-data
 → figure from-data
 → manuscript check

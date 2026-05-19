@@ -31,6 +31,7 @@
 - Simulation data can be validated with `simulation validate-data` for required columns and numeric columns.
 - Simulation data can be previewed with `simulation inspect-data`, which prints normalized columns and a few sample rows before validation or plotting.
 - Simulation data can be summarized with `simulation summarize-data`, which reports count/min/max for numeric values and flags columns that contain non-numeric cells.
+- Simulation data can be range-checked with `simulation check-ranges --range column:min:max`, reporting out-of-range and non-numeric counts.
 - `README.md` documents the main CLI workflow and uses the bundled Python path because PATH `python` may be unavailable.
 - User-facing tutorial updates must be merged into `USER_GUIDE.md`; do not create extra tutorial files for feature additions unless the user explicitly asks.
 - Project status can be summarized with `project report`, which counts library entries, notes, figure bundles, simulation exports, and manuscript files.

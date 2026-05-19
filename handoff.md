@@ -21,6 +21,7 @@
 - Simulation CSV loading normalizes common ANSYS, Abaqus, and COMSOL export headers to stable names for validation and plotting.
 - `simulation inspect-data` prints normalized columns and sample rows before validation or plotting.
 - `simulation summarize-data` prints numeric count/min/max and flags columns containing non-numeric cells.
+- `simulation check-ranges` checks expected numeric ranges with repeated `--range column:min:max` arguments.
 - `README.md` documents the main workflow commands using the bundled Python executable.
 - `unittest discover -v` now discovers and runs the full test suite.
 - `project report` prints a compact status count for the active research workspace.
@@ -46,6 +47,7 @@
 - Workflow expansion on 2026-05-19: common ANSYS, Abaqus, and COMSOL CSV result headers now normalize to stable simulation columns, with focused tests and `USER_GUIDE.md` updates.
 - Workflow expansion on 2026-05-19: `simulation inspect-data` was added as a beginner-friendly preview step before validation and plotting.
 - Workflow expansion on 2026-05-19: `simulation summarize-data` was added to report numeric ranges before strict validation and plotting.
+- Workflow expansion on 2026-05-19: `simulation check-ranges` was added to flag out-of-range simulation results before plotting.
 - Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
 - GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 - README language switch on 2026-05-19: `README.md` now links to `README.zh-CN.md`, and the Chinese README links back to the English entry point while keeping `USER_GUIDE.md` as the detailed beginner tutorial.
