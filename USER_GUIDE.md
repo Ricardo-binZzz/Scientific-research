@@ -1,0 +1,491 @@
+# 全科研工作流新手使用教程
+
+本文档面向第一次使用本工作流的人。目标是让你知道：每个文件夹放什么、每一步运行什么命令、什么时候必须人工确认，以及结果应该去哪里找。
+
+请用支持 UTF-8 的编辑器查看和编辑本文档。如果在 Windows PowerShell 里看到乱码，优先确认读取编码是不是 UTF-8。
+
+以后新增面向用户的功能时，教程统一更新到本文件，不再另建分散的教程文件。
+
+## 1. 这套工具做什么
+
+这套工作流不是直接替你完成整篇论文，而是把科研过程拆成可追踪的步骤：
+
+1. 检索论文并记录检索过程。
+2. 下载 PDF 后人工判断是否值得入库。
+3. 给论文做摘要卡片，保留可引用的结论、页码和局限。
+4. 生成论文提纲、综述段和写作素材。
+5. 接收 ANSYS、Abaqus、COMSOL 等软件导出的 CSV/JSON 数据。
+6. 检查仿真数据字段、数值和单位。
+7. 用 Python 生成论文图，包括折线图、柱状图、误差棒图、热力图和等值线图。
+8. 检查论文草稿里的引用、图号、章节和本地文献库覆盖情况。
+
+人工确认点很重要：论文是否可靠、仿真设置是否合理、图是否能进论文，都需要你确认。
+
+## 2. 两个目录不要混淆
+
+当前目录是工具本体：
+
+```text
+C:\Users\22676\Documents\科研
+```
+
+以后每个真实课题都建议单独建一个项目目录，例如：
+
+```text
+C:\Users\22676\Documents\fixture-study
+```
+
+工具本体负责提供命令；课题目录负责存放论文、笔记、仿真数据和生成的图。
+
+## 3. 打开 PowerShell 并设置 Python
+
+先进入工具目录：
+
+```powershell
+cd C:\Users\22676\Documents\科研
+```
+
+设置本环境可用的 Python 路径：
+
+```powershell
+$PY='C:\Users\22676\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+```
+
+后面所有命令都默认你已经设置了 `$PY`。
+
+## 4. 10 分钟快速试跑
+
+第一次使用时，先用仓库自带的 `examples` 快速确认工具能跑起来。
+
+检查示例仿真数据：
+
+```powershell
+& $PY -m workflow.cli simulation validate-data C:\Users\22676\Documents\科研\examples\simulation-result.csv `
+  --required-column time `
+  --required-column stress `
+  --numeric-column time `
+  --numeric-column stress
+```
+
+生成一张示例图：
+
+```powershell
+& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\科研\examples\simulation-result.csv C:\Users\22676\Documents\科研\examples\output `
+  --stem quick-check `
+  --title "Quick check" `
+  --figure-type trend `
+  --x-column time `
+  --y-column stress `
+  --x-label "Time (s)" `
+  --y-label "Stress (MPa)"
+```
+
+检查示例稿件：
+
+```powershell
+& $PY -m workflow.cli manuscript check C:\Users\22676\Documents\科研\examples\chapter.md `
+  --required-section Introduction `
+  --expected-figure "Figure 1"
+```
+
+这三步能跑通，再开始创建自己的课题目录。
+
+## 5. 创建一个新课题
+
+示例：创建一个夹具优化课题。
+
+```powershell
+& $PY -m workflow.cli init C:\Users\22676\Documents --slug fixture-study --name "夹具优化研究"
+```
+
+生成的目录大致如下：
+
+```text
+fixture-study
+├── literature    # PDF、文献索引 library-index.json
+├── notes         # 检索记录、论文摘要、提纲、综述段
+├── manuscript    # 论文草稿
+├── simulation    # 仿真软件导出的数据
+├── figures       # 生成的论文图
+├── templates     # 可复用模板
+└── project-check.json  # 一键体检配置
+```
+
+`project-check.json` 记录默认体检规则，例如稿件必须包含哪些章节、预期有哪些图号、仿真数据必须有哪些列、哪些列必须是数字、单位元数据文件在哪里。新手可以先不改它，等课题结构稳定后再调整。
+
+## 6. 记录一次论文检索
+
+在 Google Scholar、Web of Science、Scopus、知网等平台检索后，用命令把检索条件记录下来。
+
+```powershell
+& $PY -m workflow.cli note search-log C:\Users\22676\Documents\fixture-study\notes `
+  --question "自适应夹具优化研究" `
+  --keyword "adaptive fixture" `
+  --keyword "clamping force optimization" `
+  --query "adaptive fixture clamping force optimization" `
+  --source "Google Scholar" `
+  --date "2026-05-18" `
+  --filters "2020-2026" `
+  --result-count 12 `
+  --notes "优先关注机械结构、夹紧力、有限元验证"
+```
+
+运行后会在 `notes` 目录生成一份检索记录。
+
+## 7. 下载 PDF 后先人工确认
+
+把下载的 PDF 放到：
+
+```text
+C:\Users\22676\Documents\fixture-study\literature
+```
+
+入库前先检查：
+
+- 这篇论文是否和课题相关。
+- 是否有明确方法、数据、图表或结论。
+- 结论是否能被你的论文复用。
+- 是否有明显局限或不适用条件。
+
+不建议把所有下载的 PDF 都入库。只把确认有价值的论文加入文献库。
+
+## 8. 给论文做摘要卡片
+
+```powershell
+& $PY -m workflow.cli note paper-summary C:\Users\22676\Documents\fixture-study\notes `
+  --title "Adaptive clamping fixture design" `
+  --author "Zhang" `
+  --author "Li" `
+  --source "Journal of Manufacturing Systems" `
+  --year 2024 `
+  --doi "10.1000/example" `
+  --problem "传统夹具对复杂零件适应性差" `
+  --method "建立自适应夹紧机构并用有限元验证" `
+  --data "夹紧力、变形量、应力分布" `
+  --key-figures "Fig. 3 结构示意图；Fig. 6 应力云图" `
+  --main-result "夹紧变形降低约20%" `
+  --limitation "实验样本较少" `
+  --reuse-value "可借鉴其夹紧力评价指标" `
+  --source-pages "pp. 4-8"
+```
+
+摘要卡片要写清楚“结论来自哪几页”，后面写论文时才方便回查。
+
+## 9. 把确认过的论文加入文献库
+
+单篇手动加入：
+
+```powershell
+& $PY -m workflow.cli library add C:\Users\22676\Documents\fixture-study\literature `
+  --title "Adaptive clamping fixture design" `
+  --author "Zhang" `
+  --author "Li" `
+  --year 2024 `
+  --source "Journal of Manufacturing Systems" `
+  --doi "10.1000/example" `
+  --pdf-name "adaptive-clamping-fixture-design.pdf" `
+  --note-path "notes/paper-summary-adaptive-clamping-fixture-design.md"
+```
+
+如果你从 Scopus、Web of Science、Crossref 或其他平台导出了论文元数据 CSV，可以批量导入：
+
+```powershell
+& $PY -m workflow.cli library import-csv C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\papers.csv
+```
+
+CSV 常见列名会自动识别，包括 `Title`、`Article Title`、`Authors`、`Author full names`、`Year`、`Publication Year`、`Source title`、`Publication Name`、`Journal`、`DOI`、`PDF`、`File`、`Notes`、`Note`。Scopus 导出的作者全名列、Web of Science 导出的期刊名列也会尽量自动匹配。导入时按 DOI 优先、标题其次去重。
+
+平台导出的 CSV 通常没有本地 PDF 文件名，所以导入后 `PDF` 字段可能为空。你可以后续手动整理 `literature` 文件夹里的 PDF 文件名，或用 `library check-pdfs` 检查哪些条目还没有对应 PDF。
+
+查看文献库：
+
+```powershell
+& $PY -m workflow.cli library list C:\Users\22676\Documents\fixture-study\literature
+```
+
+检查 PDF 是否缺失：
+
+```powershell
+& $PY -m workflow.cli library check-pdfs C:\Users\22676\Documents\fixture-study\literature
+```
+
+导出 BibTeX，后续可导入 Zotero：
+
+```powershell
+& $PY -m workflow.cli library export-bibtex C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\export.bib
+```
+
+也可以把基本 BibTeX 条目导回本地文献库：
+
+```powershell
+& $PY -m workflow.cli library import-bibtex C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\export.bib
+```
+
+## 10. 生成论文提纲
+
+```powershell
+& $PY -m workflow.cli note outline C:\Users\22676\Documents\fixture-study\notes `
+  --topic "自适应夹具优化研究" `
+  --problem-statement "复杂零件加工中夹具适应性和夹紧稳定性不足" `
+  --section "Introduction:研究背景|现有问题|本文贡献" `
+  --section "Method:结构设计|仿真模型|评价指标" `
+  --section "Results:夹紧力结果|应力结果|对比分析" `
+  --conclusion "提出一种可验证的夹具优化流程"
+```
+
+提纲适合先生成，再人工改成自己的章节结构。
+
+## 11. 生成综述段素材
+
+```powershell
+& $PY -m workflow.cli note literature-review C:\Users\22676\Documents\fixture-study\notes `
+  --paper "Zhang et al. 2024" `
+  --claim "自适应夹具可以降低复杂零件装夹变形" `
+  --evidence "作者通过有限元比较了传统夹具和自适应夹具的应力分布" `
+  --connection "本文可沿用其夹紧力评价指标，并进一步加入制造约束" `
+  --limit "该研究实验样本较少，泛化能力仍需验证"
+```
+
+综述段里的每个关键结论都要能回链到论文、页码或摘要卡片。
+
+## 12. 接入仿真数据
+
+从 ANSYS、Abaqus、COMSOL 等软件导出 CSV 或 JSON，放到：
+
+```text
+C:\Users\22676\Documents\fixture-study\simulation
+```
+
+CSV 读取时会自动识别一部分常见仿真软件表头，并转换成稳定列名：
+
+- 时间：`Time [s]`、`Step Time`、`t (s)` → `time`
+- 应力：`Equivalent Stress [MPa]`、`S: Mises`、`solid.mises (MPa)` → `stress`
+- 位移或变形：`Total Deformation [mm]`、`U: Magnitude`、`solid.disp (mm)` → `displacement`
+- 反力或载荷：`RF: Magnitude`、`Reaction Force` → `force`
+- 温度：`T (K)`、`Temperature` → `temperature`
+
+因此，很多从 ANSYS、Abaqus、COMSOL 直接导出的 CSV，可以先用 `time`、`stress`、`displacement`、`force`、`temperature` 这些标准列名检查和画图。如果某个软件导出的表头暂时没有被识别，就按 CSV 里的原始列名传给命令。
+
+假设导出的文件是：
+
+```text
+C:\Users\22676\Documents\fixture-study\simulation\result.csv
+```
+
+并且里面有 `time` 和 `stress` 两列，先检查数据：
+
+```powershell
+& $PY -m workflow.cli simulation validate-data C:\Users\22676\Documents\fixture-study\simulation\result.csv `
+  --required-column time `
+  --required-column stress `
+  --numeric-column time `
+  --numeric-column stress
+```
+
+如果有单位元数据文件，例如：
+
+```json
+{"columns":{"time":"s","stress":"MPa"}}
+```
+
+可以一起检查：
+
+```powershell
+& $PY -m workflow.cli simulation validate-data C:\Users\22676\Documents\fixture-study\simulation\result.csv `
+  --required-column time `
+  --required-column stress `
+  --numeric-column time `
+  --numeric-column stress `
+  --metadata C:\Users\22676\Documents\fixture-study\templates\simulation-metadata.json
+```
+
+报告里的常见提示：
+
+- `Missing columns`：缺少必要列。
+- `Non-numeric columns`：本该是数字的列里有文本或空值。
+- `Missing unit metadata`：数值列没有单位记录。
+- `Empty unit metadata`：单位字段存在但为空。
+- `Extra unit metadata`：元数据里写了数据表不存在的列。
+
+## 13. 生成论文图
+
+### 折线图
+
+适合时间响应、载荷-变形曲线等连续数据：
+
+```powershell
+& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\fixture-study\simulation\result.csv C:\Users\22676\Documents\fixture-study\figures `
+  --stem stress-response `
+  --title "Stress response" `
+  --figure-type trend `
+  --x-column time `
+  --y-column stress `
+  --x-label "Time (s)" `
+  --y-label "Stress (MPa)"
+```
+
+### 柱状图
+
+适合不同方案、工况或样本的对比。把 `--figure-type trend` 改成：
+
+```powershell
+--figure-type bar
+```
+
+### 误差棒图
+
+如果仿真或实验数据里有均值列和误差列，例如 `stress` 与 `stress_sd`：
+
+```powershell
+& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\fixture-study\simulation\result.csv C:\Users\22676\Documents\fixture-study\figures `
+  --stem stress-error `
+  --title "Stress response" `
+  --figure-type errorbar `
+  --x-column time `
+  --y-column stress `
+  --y-error-column stress_sd `
+  --x-label "Time (s)" `
+  --y-label "Stress (MPa)"
+```
+
+每个 `--y-column` 需要对应一个 `--y-error-column`。
+
+### 热力图和等值线图
+
+如果数据是 `x, y, value` 三列，可以生成二维图：
+
+```powershell
+& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\fixture-study\simulation\grid.csv C:\Users\22676\Documents\fixture-study\figures `
+  --stem temperature-field `
+  --title "Temperature field" `
+  --figure-type heatmap `
+  --x-column x `
+  --y-column y `
+  --value-column value `
+  --x-label X `
+  --y-label Y
+```
+
+把 `--figure-type heatmap` 改成 `--figure-type contour` 可以生成等值线图。等值线图要求数据形成完整矩形网格。
+
+输出文件在 `figures` 目录：
+
+```text
+figures\stress-response.svg
+figures\stress-response.json
+```
+
+`.svg` 是图，可以放进论文；`.json` 是图形参数和数据来源记录，方便以后复现。
+
+## 14. 检查论文草稿
+
+把草稿放到：
+
+```text
+C:\Users\22676\Documents\fixture-study\manuscript
+```
+
+检查 Markdown、纯文本或基础 `.docx`：
+
+```powershell
+& $PY -m workflow.cli manuscript check C:\Users\22676\Documents\fixture-study\manuscript\chapter.md `
+  --required-section Introduction `
+  --required-section Method `
+  --expected-figure "Figure 1" `
+  --library-root C:\Users\22676\Documents\fixture-study\literature
+```
+
+它会检查：
+
+- 文中识别到哪些引用。
+- 文中识别到哪些图号。
+- 指定章节是否存在。
+- 文中引用是否能在本地文献库找到。
+- 文献库中是否有未被引用的条目。
+- 英文图号是否重复，例如重复出现 `Figure 1`。
+- 英文图号是否跳号，例如有 `Figure 1`、`Figure 3` 但缺少 `Figure 2`。
+
+## 15. 查看项目状态和一键体检
+
+```powershell
+& $PY -m workflow.cli project report C:\Users\22676\Documents\fixture-study
+```
+
+它会统计文献、笔记、图、仿真导出和论文草稿数量。
+
+如果想一次性检查整个课题，运行：
+
+```powershell
+& $PY -m workflow.cli project check C:\Users\22676\Documents\fixture-study
+```
+
+`project check` 会汇总检查：
+
+- 文献库条目数量。
+- 文献库登记的 PDF 是否缺失。
+- 仿真 CSV/JSON 是否可读、必要列是否存在、数值列是否真是数字、单位元数据是否完整。
+- 稿件是否缺章节、缺图号、缺引用、引用是否能在本地文献库找到、图号是否重复或跳号。
+- 当前项目的笔记、图、仿真导出、稿件数量。
+
+## 16. 生成写作素材包
+
+```powershell
+& $PY -m workflow.cli project writing-pack C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\writing-pack.md
+```
+
+`writing-pack.md` 会汇总当前课题中可用于写作的文献、笔记、图和仿真结果。
+
+## 17. 推荐的日常使用顺序
+
+每个课题建议按这个顺序推进：
+
+```text
+检索论文
+→ 记录 search-log
+→ 下载 PDF
+→ 人工确认是否入库
+→ 写 paper-summary
+→ library add 或 library import-csv
+→ 写 outline / literature-review
+→ 做仿真并导出 CSV/JSON
+→ simulation validate-data
+→ figure from-data
+→ manuscript check
+→ project check
+→ project report
+→ writing-pack
+```
+
+## 18. 常见问题
+
+### PowerShell 提示找不到 python
+
+使用本文档提供的 `$PY` 路径，不要直接输入 `python`。
+
+### 命令太长怎么办
+
+PowerShell 里反引号 `` ` `` 表示换行。复制本文档的多行命令时，不要删除行尾反引号。
+
+### 文档打开后中文乱码怎么办
+
+请用 UTF-8 查看本文档。例如在 PowerShell 中使用：
+
+```powershell
+Get-Content C:\Users\22676\Documents\科研\USER_GUIDE.md -Encoding UTF8
+```
+
+### 生成的图在哪里
+
+在课题目录的 `figures` 文件夹里。
+
+### PDF 检查显示 missing
+
+说明 `library-index.json` 里登记的 `pdf_name` 和实际 PDF 文件名不一致，或者 PDF 没放进 `literature` 文件夹。
+
+### 能不能直接控制仿真软件
+
+当前第一版还不直接控制 ANSYS、Abaqus、COMSOL。推荐先在仿真软件里人工建模、求解、导出 CSV/JSON，再由本工作流负责检查数据和绘图。
+
+### Word 排版能不能自动检查
+
+当前只能读取 `.docx` 文本并做基础检查，还不能检查 Word 样式、页眉页脚、题注和参考文献域。

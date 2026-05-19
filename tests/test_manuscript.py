@@ -1,0 +1,220 @@
+import tempfile
+import unittest
+import zipfile
+from contextlib import redirect_stdout
+from io import StringIO
+from pathlib import Path
+
+from workflow.cli import main
+from workflow.manuscript import ManuscriptIssue, inspect_manuscript, render_manuscript_report
+from workflow.library import LibraryEntry, LibraryIndex
+
+
+class ManuscriptTests(unittest.TestCase):
+    def test_inspect_manuscript_extracts_citations_and_flags_missing_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Method\n\n"
+                "The fixture reduces deviation [@zhang2024].\n\n"
+                "Figure 1 shows the stress response.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction", "Method"], expected_figures=["Figure 1"])
+
+        self.assertEqual(report.citations, ["zhang2024"])
+        self.assertEqual(report.figures, ["Figure 1"])
+        self.assertIn("Introduction", report.missing_sections)
+        self.assertEqual(report.missing_figures, [])
+
+    def test_inspect_manuscript_handles_utf8_bom_heading(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "\ufeff# Introduction\n\n"
+                "Prior work [@zhang2024] motivates this design.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        self.assertEqual(report.missing_sections, [])
+
+    def test_inspect_manuscript_extracts_chinese_figure_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text("# Introduction\n\n图 1 shows the fixture.\n", encoding="utf-8")
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=["图 1"])
+
+        self.assertIn("图 1", report.figures)
+        self.assertEqual(report.missing_figures, [])
+
+    def test_inspect_manuscript_flags_duplicate_figure_markers(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "Figure 1 shows the fixture.\n\n"
+                "Figure 1 compares stress.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        self.assertTrue(any("Duplicate figure marker: Figure 1" in issue.message for issue in report.issues))
+
+    def test_inspect_manuscript_flags_missing_figure_sequence_numbers(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "Figure 1 shows the fixture.\n\n"
+                "Figure 3 compares stress.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        self.assertTrue(any("Missing figure number in sequence: Figure 2" in issue.message for issue in report.issues))
+
+    def test_render_manuscript_report_lists_issues(self) -> None:
+        issue = ManuscriptIssue(level="warning", message="Missing section: Introduction")
+        text = render_manuscript_report(
+            citations=["zhang2024"],
+            figures=["Figure 1"],
+            issues=[issue],
+        )
+
+        self.assertIn("# Manuscript Check Report", text)
+        self.assertIn("zhang2024", text)
+        self.assertIn("Figure 1", text)
+        self.assertIn("Missing section: Introduction", text)
+
+    def test_cli_manuscript_check_prints_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "Prior work [@zhang2024] motivates this design.\n\n"
+                "Figure 2 compares the result.\n",
+                encoding="utf-8",
+            )
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(
+                    [
+                        "manuscript",
+                        "check",
+                        str(path),
+                        "--required-section",
+                        "Introduction",
+                        "--required-section",
+                        "Method",
+                        "--expected-figure",
+                        "Figure 2",
+                    ]
+                )
+
+        self.assertEqual(exit_code, 0)
+        report = output.getvalue()
+        self.assertIn("zhang2024", report)
+        self.assertIn("Missing section: Method", report)
+
+    def test_inspect_manuscript_reads_docx_text(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_minimal_docx(
+                path,
+                [
+                    "Introduction",
+                    "Prior work [@zhang2024] motivates this design.",
+                    "Figure 3 shows the fixture.",
+                ],
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=["Figure 3"])
+
+        self.assertEqual(report.citations, ["zhang2024"])
+        self.assertEqual(report.missing_sections, [])
+        self.assertEqual(report.missing_figures, [])
+
+    def test_inspect_manuscript_flags_citations_missing_from_library(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "Prior work [@zhang2024adaptive] and [@missing2025paper] motivates this design.\n",
+                encoding="utf-8",
+            )
+            library = LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Adaptive clamping fixture",
+                        authors=["Zhang", "Li"],
+                        year=2024,
+                        source="Journal of Manufacturing Systems",
+                        doi="10.1000/example",
+                        pdf_name="paper.pdf",
+                        note_path="notes/summary.md",
+                    )
+                ]
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[], library_index=library)
+
+        self.assertIn("missing2025paper", report.missing_citations)
+        self.assertNotIn("zhang2024adaptive", report.missing_citations)
+
+    def test_inspect_manuscript_flags_library_entries_not_cited(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text("# Introduction\n\nPrior work [@zhang2024adaptive] motivates this design.\n", encoding="utf-8")
+            library = LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Adaptive clamping fixture",
+                        authors=["Zhang"],
+                        year=2024,
+                        source="Journal",
+                        doi="10.1000/example",
+                        pdf_name="paper.pdf",
+                        note_path="notes/summary.md",
+                    ),
+                    LibraryEntry(
+                        title="Unused fatigue model",
+                        authors=["Wang"],
+                        year=2022,
+                        source="Journal",
+                        doi="10.1000/unused",
+                        pdf_name="unused.pdf",
+                        note_path="notes/unused.md",
+                    ),
+                ]
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[], library_index=library)
+
+        self.assertIn("wang2022unused", report.uncited_library_keys)
+
+
+def _write_minimal_docx(path: Path, paragraphs: list[str]) -> None:
+    body = "".join(
+        f"<w:p><w:r><w:t>{text}</w:t></w:r></w:p>"
+        for text in paragraphs
+    )
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        f"<w:body>{body}</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+
+
+if __name__ == "__main__":
+    unittest.main()
