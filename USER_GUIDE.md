@@ -458,6 +458,8 @@ C:\Users\22676\Documents\fixture-study\manuscript
 
 章节检查支持常见中英文别名。例如配置里要求 `Introduction`，正文标题写 `引言` 或 `绪论` 也会通过；要求 `Method`，标题写 `方法` 或 `研究方法` 也会通过；要求 `Results`，标题写 `结果` 或 `结果与讨论` 也会通过。
 
+引用检查支持单个引用 `[@zhang2024]`，也支持一组引用 `[@zhang2024; @li2023fixture]`。
+
 ## 15. 查看项目状态和一键体检
 
 ```powershell

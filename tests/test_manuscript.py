@@ -28,6 +28,19 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("Introduction", report.missing_sections)
         self.assertEqual(report.missing_figures, [])
 
+    def test_inspect_manuscript_extracts_multiple_citations_from_one_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "Prior work supports this design [@zhang2024; @li2023fixture].\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        self.assertEqual(report.citations, ["zhang2024", "li2023fixture"])
+
     def test_inspect_manuscript_handles_utf8_bom_heading(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"

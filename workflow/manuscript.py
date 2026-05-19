@@ -115,10 +115,11 @@ def render_report_from_inspection(report: ManuscriptReport) -> str:
 
 def _extract_citations(text: str) -> list[str]:
     citations: list[str] = []
-    for match in re.finditer(r"\[@([A-Za-z0-9_:\-.]+)\]", text):
-        citation = match.group(1)
-        if citation not in citations:
-            citations.append(citation)
+    for block in re.finditer(r"\[([^\]]*@[^]]+)\]", text):
+        for match in re.finditer(r"@([A-Za-z0-9_:\-.]+)", block.group(1)):
+            citation = match.group(1)
+            if citation not in citations:
+                citations.append(citation)
     return citations
 
 

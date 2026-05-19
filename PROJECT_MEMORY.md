@@ -41,6 +41,7 @@
 - `project writing-pack` includes a library overview with entry count, year range, and missing PDF count before listing writing assets.
 - Manuscript figure marker extraction supports both English `Figure N` and Chinese `图 N` forms.
 - Manuscript required-section checks support common Chinese aliases for English section names, such as `Introduction` matching `引言` or `绪论`.
+- Manuscript citation extraction supports grouped Markdown/Pandoc citations such as `[@key1; @key2]`.
 - New workspaces include a `simulation-metadata.json` template for column-unit metadata.
 - New workspaces include a root `project-check.json` template for default manuscript and simulation health-check settings.
 - `simulation validate-data` accepts `--metadata` and reports numeric columns missing unit metadata.
