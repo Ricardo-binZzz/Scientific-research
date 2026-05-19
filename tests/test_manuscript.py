@@ -51,6 +51,27 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("图 1", report.figures)
         self.assertEqual(report.missing_figures, [])
 
+    def test_inspect_manuscript_matches_common_chinese_section_aliases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# 绪论\n\n"
+                "研究背景。\n\n"
+                "# 研究方法\n\n"
+                "方法说明。\n\n"
+                "# 结果与讨论\n\n"
+                "结果说明。\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(
+                path,
+                required_sections=["Introduction", "Method", "Results"],
+                expected_figures=[],
+            )
+
+        self.assertEqual(report.missing_sections, [])
+
     def test_inspect_manuscript_flags_duplicate_figure_markers(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"

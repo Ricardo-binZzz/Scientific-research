@@ -9,6 +9,15 @@ from xml.etree import ElementTree
 from workflow.library import LibraryIndex, make_citekey
 
 
+SECTION_ALIASES = {
+    "introduction": ["Introduction", "引言", "绪论", "研究背景"],
+    "method": ["Method", "Methods", "方法", "研究方法", "材料与方法"],
+    "results": ["Results", "Result", "结果", "结果与讨论", "实验结果"],
+    "discussion": ["Discussion", "讨论", "结果与讨论"],
+    "conclusion": ["Conclusion", "Conclusions", "结论", "总结"],
+}
+
+
 @dataclass(frozen=True)
 class ManuscriptIssue:
     level: str
@@ -41,7 +50,7 @@ def inspect_manuscript(
     headings = _extract_headings(text)
     required = required_sections or []
     expected = expected_figures or []
-    missing_sections = [section for section in required if section not in headings]
+    missing_sections = [section for section in required if not _has_required_section(section, headings)]
     missing_figures = [figure for figure in expected if figure not in figures]
     library_keys = {make_citekey(entry) for entry in library_index.entries} if library_index else set()
     missing_citations = [citation for citation in citations if library_keys and citation not in library_keys]
@@ -167,6 +176,16 @@ def _extract_headings(text: str) -> list[str]:
         elif line.strip() and len(line.strip()) <= 80:
             headings.append(line.strip())
     return headings
+
+
+def _has_required_section(required: str, headings: list[str]) -> bool:
+    heading_keys = {_normalize_heading(heading) for heading in headings}
+    aliases = SECTION_ALIASES.get(_normalize_heading(required), [required])
+    return any(_normalize_heading(alias) in heading_keys for alias in aliases)
+
+
+def _normalize_heading(value: str) -> str:
+    return re.sub(r"\s+", " ", value.strip().lower())
 
 
 def _read_manuscript_text(path: Path) -> str:
