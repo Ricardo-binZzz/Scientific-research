@@ -288,6 +288,14 @@ Columns: time, stress, displacement
 
 说明表头已经被识别成标准列名，后续命令就可以直接使用这些列名。
 
+再查看数值列的大致范围：
+
+```powershell
+& $PY -m workflow.cli simulation summarize-data C:\Users\22676\Documents\fixture-study\simulation\result.csv
+```
+
+它会列出每个数值列的有效数量、最小值和最大值。若某列既有数字又有坏值，仍会显示数字部分的范围，并在 `Non-numeric columns` 中提醒你这列需要回到原始数据检查。
+
 如果里面有 `time` 和 `stress` 两列，再检查数据：
 
 ```powershell
@@ -465,6 +473,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 → 写 outline / literature-review
 → 做仿真并导出 CSV/JSON
 → simulation inspect-data
+→ simulation summarize-data
 → simulation validate-data
 → figure from-data
 → manuscript check

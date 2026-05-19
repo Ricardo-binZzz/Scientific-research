@@ -11,6 +11,8 @@ from workflow.simulation import (
     inspect_dataset,
     render_case_manifest,
     render_dataset_inspection,
+    render_dataset_summary,
+    summarize_dataset,
     load_unit_metadata,
     validate_dataset_columns,
 )
@@ -203,6 +205,47 @@ class SimulationBridgeTests(unittest.TestCase):
         self.assertIn("Columns: time, stress, displacement", text)
         self.assertIn("0 | 100 | 0.05", text)
         self.assertNotIn("120", text)
+
+    def test_summarize_dataset_reports_numeric_column_ranges(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            path = root / "result.csv"
+            path.write_text(
+                "time,stress,label\n"
+                "0,10,A\n"
+                "1,15,B\n"
+                "2,bad,C\n",
+                encoding="utf-8",
+            )
+            dataset = load_tabular_result(path)
+
+            summary = summarize_dataset(dataset)
+            text = render_dataset_summary(summary)
+
+        self.assertEqual(summary.row_count, 3)
+        self.assertEqual(summary.numeric_columns["time"].count, 3)
+        self.assertEqual(summary.numeric_columns["time"].minimum, 0.0)
+        self.assertEqual(summary.numeric_columns["time"].maximum, 2.0)
+        self.assertEqual(summary.numeric_columns["stress"].count, 2)
+        self.assertIn("time | 3 | 0 | 2", text)
+        self.assertIn("stress | 2 | 10 | 15", text)
+        self.assertIn("Non-numeric columns: stress, label", text)
+
+    def test_cli_simulation_summarize_data_prints_numeric_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            path = root / "result.csv"
+            path.write_text("Time [s],Equivalent Stress [MPa],label\n0,12.5,A\n1,18.0,B\n", encoding="utf-8")
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["simulation", "summarize-data", str(path)])
+
+        self.assertEqual(exit_code, 0)
+        text = output.getvalue()
+        self.assertIn("time | 2 | 0 | 1", text)
+        self.assertIn("stress | 2 | 12.5 | 18", text)
+        self.assertIn("Non-numeric columns: label", text)
 
     def test_load_unit_metadata_reads_column_units(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

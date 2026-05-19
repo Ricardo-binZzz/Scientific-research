@@ -87,6 +87,9 @@ def build_parser() -> argparse.ArgumentParser:
     inspect_parser.add_argument("data_path", help="csv or json data path")
     inspect_parser.add_argument("--rows", type=int, default=5, help="number of sample rows to print")
 
+    summarize_parser = sim_subparsers.add_parser("summarize-data", help="print numeric column ranges")
+    summarize_parser.add_argument("data_path", help="csv or json data path")
+
     validate_parser = sim_subparsers.add_parser("validate-data", help="validate exported tabular data")
     validate_parser.add_argument("data_path", help="csv or json data path")
     validate_parser.add_argument("--required-column", action="append", default=[], dest="required_columns")

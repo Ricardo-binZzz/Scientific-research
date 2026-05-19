@@ -38,7 +38,9 @@ from workflow.simulation import (
     inspect_dataset,
     render_case_manifest,
     render_dataset_inspection,
+    render_dataset_summary,
     render_dataset_validation_report,
+    summarize_dataset,
     load_unit_metadata,
     validate_dataset_columns,
 )
@@ -158,6 +160,10 @@ def _handle_simulation(args: Namespace) -> int:
     if args.sim_command == "inspect-data":
         dataset = load_tabular_result(Path(args.data_path))
         print(render_dataset_inspection(inspect_dataset(dataset, sample_size=args.rows)))
+        return 0
+    if args.sim_command == "summarize-data":
+        dataset = load_tabular_result(Path(args.data_path))
+        print(render_dataset_summary(summarize_dataset(dataset)))
         return 0
     if args.sim_command == "validate-data":
         dataset = load_tabular_result(Path(args.data_path))

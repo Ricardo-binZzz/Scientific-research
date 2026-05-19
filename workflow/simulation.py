@@ -48,6 +48,21 @@ class DatasetInspection:
     sample_rows: list[dict[str, object]]
 
 
+@dataclass(frozen=True)
+class NumericColumnSummary:
+    count: int
+    minimum: float
+    maximum: float
+
+
+@dataclass(frozen=True)
+class DatasetSummary:
+    source_name: str
+    row_count: int
+    numeric_columns: dict[str, NumericColumnSummary]
+    non_numeric_columns: list[str]
+
+
 def build_case_manifest(case: SimulationCase) -> str:
     return render_case_manifest(case)
 
@@ -134,6 +149,48 @@ def render_dataset_inspection(inspection: DatasetInspection) -> str:
     return "\n".join(lines)
 
 
+def summarize_dataset(dataset: SimulationDataset) -> DatasetSummary:
+    numeric_columns: dict[str, NumericColumnSummary] = {}
+    non_numeric_columns: list[str] = []
+    for column in dataset.columns:
+        values = [_try_float(row.get(column)) for row in dataset.rows]
+        numbers = [value for value in values if value is not None]
+        if numbers:
+            numeric_columns[column] = NumericColumnSummary(
+                count=len(numbers),
+                minimum=min(numbers),
+                maximum=max(numbers),
+            )
+        if len(numbers) < len(dataset.rows):
+            non_numeric_columns.append(column)
+    return DatasetSummary(
+        source_name=dataset.source.name,
+        row_count=len(dataset.rows),
+        numeric_columns=numeric_columns,
+        non_numeric_columns=non_numeric_columns,
+    )
+
+
+def render_dataset_summary(summary: DatasetSummary) -> str:
+    lines = ["# Dataset Summary", ""]
+    lines.append(f"- Source: {summary.source_name}")
+    lines.append(f"- Rows: {summary.row_count}")
+    lines.append(
+        f"- Non-numeric columns: {', '.join(summary.non_numeric_columns) if summary.non_numeric_columns else 'None'}"
+    )
+    lines.append("")
+    lines.append("## Numeric Columns")
+    if not summary.numeric_columns:
+        lines.append("- None")
+        lines.append("")
+        return "\n".join(lines)
+    lines.append("Column | Count | Min | Max")
+    for column, item in summary.numeric_columns.items():
+        lines.append(f"{column} | {item.count} | {_format_number(item.minimum)} | {_format_number(item.maximum)}")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def render_dataset_validation_report(report: DatasetValidationReport) -> str:
     lines = ["# Dataset Validation Report", ""]
     lines.append(f"- OK: {report.ok}")
@@ -153,8 +210,15 @@ def load_unit_metadata(path: Path) -> dict[str, str]:
 
 
 def _is_number(value: object) -> bool:
+    return _try_float(value) is not None
+
+
+def _try_float(value: object) -> float | None:
     try:
-        float(value)  # type: ignore[arg-type]
+        return float(value)  # type: ignore[arg-type]
     except (TypeError, ValueError):
-        return False
-    return True
+        return None
+
+
+def _format_number(value: float) -> str:
+    return f"{value:.6g}"
