@@ -43,6 +43,7 @@
 - Manuscript citation extraction supports grouped Markdown/Pandoc citations such as `[@key1; @key2]`.
 - `library check-pdfs` reports present and missing PDFs for indexed literature entries.
 - `library stats` reports entry count, year range, missing PDF count, source distribution, and author distribution.
+- `library search` finds matching literature entries by title, author, source, or DOI.
 - Global function check on 2026-05-18: `unittest discover -v` ran 54 tests with OK; CLI help, simulation validation, manuscript check, figure generation, and project report entry points were exercised successfully.
 - Workflow expansion on 2026-05-19: CSV metadata import, error-bar plotting, manuscript figure-number quality checks, and stricter simulation unit metadata checks were implemented with focused tests.
 - `USER_GUIDE.md` was added as the beginner-facing Chinese tutorial, and project instructions now require updating it when user-facing functionality changes.
@@ -56,6 +57,7 @@
 - Workflow expansion on 2026-05-19: `simulation check-ranges` was added to flag out-of-range simulation results before plotting.
 - Workflow expansion on 2026-05-19: `project check` now applies configured simulation range rules from `project-check.json`.
 - Workflow expansion on 2026-05-19: `library stats` was added and expanded for quick source and author distribution checks before writing.
+- Workflow expansion on 2026-05-19: `library search` was added for quick keyword lookup across title, authors, source, and DOI.
 - Workflow expansion on 2026-05-19: `project writing-pack` now includes the same key library overview fields.
 - Workflow expansion on 2026-05-19: manuscript required-section checks now recognize common Chinese section aliases.
 - Workflow expansion on 2026-05-19: manuscript checks now report skipped Chinese figure numbers.

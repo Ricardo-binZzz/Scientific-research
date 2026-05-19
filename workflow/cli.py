@@ -134,6 +134,10 @@ def build_parser() -> argparse.ArgumentParser:
     stats_parser = library_subparsers.add_parser("stats", help="print literature library statistics")
     stats_parser.add_argument("root_dir", help="library root directory")
 
+    search_library_parser = library_subparsers.add_parser("search", help="search literature entries")
+    search_library_parser.add_argument("root_dir", help="library root directory")
+    search_library_parser.add_argument("query", help="keyword to search in title, author, source, or DOI")
+
     figure_parser = subparsers.add_parser("figure", help="generate figure assets")
     figure_subparsers = figure_parser.add_subparsers(dest="figure_command", required=True)
 

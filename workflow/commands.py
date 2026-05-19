@@ -17,6 +17,8 @@ from workflow.library import (
     render_index,
     render_library_stats,
     render_pdf_inventory_report,
+    render_search_results,
+    search_library,
 )
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.notes import (
@@ -231,6 +233,9 @@ def _handle_library(args: Namespace) -> int:
     if args.library_command == "stats":
         index = load_index(root)
         print(render_library_stats(inspect_library_stats(root, index)))
+        return 0
+    if args.library_command == "search":
+        print(render_search_results(search_library(load_index(root), args.query)))
         return 0
     raise ValueError(f"Unsupported library command: {args.library_command}")
 

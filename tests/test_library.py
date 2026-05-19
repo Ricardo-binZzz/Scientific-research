@@ -18,6 +18,8 @@ from workflow.library import (
     make_citekey,
     render_index,
     render_library_stats,
+    render_search_results,
+    search_library,
 )
 
 
@@ -450,6 +452,77 @@ class LibraryTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertIn("Total entries: 1", output.getvalue())
+
+    def test_search_library_matches_title_author_source_and_doi(self) -> None:
+        index = LibraryIndex(
+            entries=[
+                LibraryEntry(
+                    title="Adaptive clamping fixture",
+                    authors=["Zhang", "Li"],
+                    year=2024,
+                    source="Journal of Manufacturing Systems",
+                    doi="10.1000/fixture",
+                    pdf_name="fixture.pdf",
+                    note_path="notes/fixture.md",
+                ),
+                LibraryEntry(
+                    title="Heat treatment simulation",
+                    authors=["Wang"],
+                    year=2023,
+                    source="Materials Letters",
+                    doi="10.1000/heat",
+                    pdf_name="heat.pdf",
+                    note_path="notes/heat.md",
+                ),
+            ]
+        )
+
+        title_matches = search_library(index, "clamping")
+        author_matches = search_library(index, "wang")
+        source_matches = search_library(index, "manufacturing")
+        doi_matches = search_library(index, "10.1000/heat")
+
+        self.assertEqual([entry.title for entry in title_matches], ["Adaptive clamping fixture"])
+        self.assertEqual([entry.title for entry in author_matches], ["Heat treatment simulation"])
+        self.assertEqual([entry.title for entry in source_matches], ["Adaptive clamping fixture"])
+        self.assertEqual([entry.title for entry in doi_matches], ["Heat treatment simulation"])
+
+    def test_cli_library_search_prints_matching_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Adaptive clamping fixture",
+                        authors=["Zhang", "Li"],
+                        year=2024,
+                        source="Journal of Manufacturing Systems",
+                        doi="10.1000/fixture",
+                        pdf_name="fixture.pdf",
+                        note_path="notes/fixture.md",
+                    ),
+                    LibraryEntry(
+                        title="Heat treatment simulation",
+                        authors=["Wang"],
+                        year=2023,
+                        source="Materials Letters",
+                        doi="10.1000/heat",
+                        pdf_name="heat.pdf",
+                        note_path="notes/heat.md",
+                    ),
+                ]
+            ).save(root)
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["library", "search", tmpdir, "fixture"])
+
+        self.assertEqual(exit_code, 0)
+        text = output.getvalue()
+        self.assertIn("# Library Search Results", text)
+        self.assertIn("Adaptive clamping fixture", text)
+        self.assertNotIn("Heat treatment simulation", text)
+        self.assertIn("10.1000/fixture", text)
 
 
 if __name__ == "__main__":

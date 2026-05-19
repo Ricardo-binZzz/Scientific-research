@@ -167,6 +167,35 @@ def render_library_stats(stats: LibraryStats) -> str:
     return "\n".join(lines)
 
 
+def search_library(index: LibraryIndex, query: str) -> list[LibraryEntry]:
+    needle = query.strip().lower()
+    if not needle:
+        return []
+    return [entry for entry in index.entries if _entry_matches_query(entry, needle)]
+
+
+def render_search_results(entries: list[LibraryEntry]) -> str:
+    lines = ["# Library Search Results", ""]
+    if not entries:
+        lines.append("- No matching entries")
+        lines.append("")
+        return "\n".join(lines)
+    for entry in entries:
+        lines.extend(
+            [
+                f"- Title: {entry.title}",
+                f"  - Authors: {'; '.join(entry.authors)}",
+                f"  - Year: {entry.year}",
+                f"  - Source: {entry.source}",
+                f"  - DOI: {entry.doi}",
+                f"  - PDF: {entry.pdf_name}",
+                f"  - Note: {entry.note_path}",
+                "",
+            ]
+        )
+    return "\n".join(lines)
+
+
 def export_bibtex(index: LibraryIndex) -> str:
     entries: list[str] = []
     used_keys: set[str] = set()
@@ -254,6 +283,11 @@ def _same_entry(left: LibraryEntry, right: LibraryEntry) -> bool:
     if left.doi and right.doi:
         return left.doi == right.doi
     return _normalize_title(left.title) == _normalize_title(right.title)
+
+
+def _entry_matches_query(entry: LibraryEntry, needle: str) -> bool:
+    haystack = " ".join([entry.title, *entry.authors, entry.source, entry.doi]).lower()
+    return needle in haystack
 
 
 def _normalize_title(title: str) -> str:
