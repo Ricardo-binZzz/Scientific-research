@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="980" viewBox="0 0 1440 980" role="img" aria-labelledby="title desc">
+  <title id="title">科研工作流网页使用顺序示意图</title>
+  <desc id="desc">展示本地网页控制台三栏布局，并按推荐顺序说明从课题目录、文献、摘要卡、仿真、图表、稿件检查到写作看板的操作流程。</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f6f8; }
+      .surface { fill: #ffffff; stroke: #d8dee6; stroke-width: 1.2; }
+      .subtle { fill: #f9fafb; stroke: #d8dee6; stroke-width: 1; }
+      .dark { fill: #111827; }
+      .text { fill: #18212b; font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif; }
+      .muted { fill: #667382; font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif; }
+      .white { fill: #ffffff; font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif; }
+      .mono { fill: #cbd5e1; font-family: Consolas, "Microsoft YaHei", monospace; }
+      .title { font-size: 30px; font-weight: 700; }
+      .h2 { font-size: 20px; font-weight: 700; }
+      .h3 { font-size: 16px; font-weight: 700; }
+      .body { font-size: 14px; }
+      .small { font-size: 12px; }
+      .tiny { font-size: 11px; }
+      .primary { fill: #215968; }
+      .secondary { fill: #f8fafc; stroke: #d8dee6; stroke-width: 1; }
+      .accent { fill: #e9f3f5; stroke: #c9e3e8; stroke-width: 1; }
+      .line { stroke: #98a6b5; stroke-width: 1.4; fill: none; }
+      .arrow { stroke: #215968; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .step { fill: #ffffff; stroke: #cfd8e3; stroke-width: 1.1; }
+      .stepnum { fill: #215968; font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; font-weight: 700; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#215968"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1440" height="980"/>
+
+  <text class="text title" x="60" y="58">本地科研工作流网页：推荐使用顺序</text>
+  <text class="muted body" x="60" y="86">先确认课题目录，再按“文献 → 笔记 → 仿真 → 图表 → 稿件 → 写作材料”的顺序推进。右侧结果面板用于查看每一步输出。</text>
+
+  <!-- Browser frame -->
+  <rect class="surface" x="60" y="120" width="820" height="720" rx="10"/>
+  <rect class="subtle" x="60" y="120" width="820" height="58" rx="10"/>
+  <circle cx="88" cy="149" r="6" fill="#ef4444"/>
+  <circle cx="110" cy="149" r="6" fill="#f59e0b"/>
+  <circle cx="132" cy="149" r="6" fill="#22c55e"/>
+  <text class="text h2" x="160" y="155">科研工作流控制台</text>
+  <rect class="accent" x="748" y="134" width="94" height="28" rx="6"/>
+  <text class="text small" x="774" y="153">就绪</text>
+
+  <!-- App layout -->
+  <rect class="surface" x="82" y="198" width="180" height="610" rx="8"/>
+  <text class="text h3" x="102" y="230">课题目录</text>
+  <text class="muted small" x="102" y="252">所有操作围绕这里执行</text>
+  <rect class="subtle" x="102" y="270" width="140" height="34" rx="6"/>
+  <text class="muted tiny" x="112" y="291">C:\...\fixture-study</text>
+  <rect class="primary" x="102" y="322" width="140" height="32" rx="6"/>
+  <text class="white small" x="148" y="343">项目体检</text>
+  <rect class="secondary" x="102" y="364" width="140" height="32" rx="6"/>
+  <text class="text small" x="131" y="385">生成写作看板</text>
+  <rect class="secondary" x="102" y="406" width="140" height="32" rx="6"/>
+  <text class="text small" x="125" y="427">生成写作素材包</text>
+  <line class="line" x1="102" y1="464" x2="242" y2="464"/>
+  <text class="text h3" x="102" y="494">新建课题</text>
+  <rect class="subtle" x="102" y="516" width="140" height="30" rx="6"/>
+  <rect class="subtle" x="102" y="556" width="140" height="30" rx="6"/>
+  <rect class="primary" x="102" y="604" width="140" height="32" rx="6"/>
+  <text class="white small" x="148" y="625">创建课题</text>
+
+  <rect class="surface" x="286" y="198" width="320" height="610" rx="8"/>
+  <text class="text h3" x="310" y="230">中间：按阶段分组操作</text>
+  <text class="muted small" x="310" y="252">展开对应模块，填写少量参数后点击按钮</text>
+
+  <rect class="subtle" x="310" y="278" width="272" height="72" rx="7"/>
+  <text class="text h3" x="328" y="306">项目总览</text>
+  <text class="muted small" x="328" y="328">体检、状态、写作材料、追踪计划</text>
+  <rect class="subtle" x="310" y="366" width="272" height="72" rx="7"/>
+  <text class="text h3" x="328" y="394">文献库</text>
+  <text class="muted small" x="328" y="416">搜索、统计、文献地图、缺 PDF/笔记</text>
+  <rect class="subtle" x="310" y="454" width="272" height="72" rx="7"/>
+  <text class="text h3" x="328" y="482">摘要卡 / 检索记录</text>
+  <text class="muted small" x="328" y="504">记录论文证据和检索过程</text>
+  <rect class="subtle" x="310" y="542" width="272" height="72" rx="7"/>
+  <text class="text h3" x="328" y="570">仿真数据 / 生成图</text>
+  <text class="muted small" x="328" y="592">预览、校验、绘制 SVG 图</text>
+  <rect class="subtle" x="310" y="630" width="272" height="72" rx="7"/>
+  <text class="text h3" x="328" y="658">稿件检查</text>
+  <text class="muted small" x="328" y="680">检查章节、图号、引用和文献覆盖</text>
+
+  <rect class="dark" x="630" y="198" width="220" height="610" rx="8"/>
+  <text class="white h3" x="654" y="232">右侧：运行结果</text>
+  <text class="mono small" x="654" y="266"># Project Check Report</text>
+  <text class="mono small" x="654" y="296">- Missing PDFs: None</text>
+  <text class="mono small" x="654" y="326">- Figure bundles: 3</text>
+  <text class="mono small" x="654" y="356">- Manuscript files: 1</text>
+  <text class="mono small" x="654" y="410">每次点击按钮后，</text>
+  <text class="mono small" x="654" y="434">这里显示报告、表格</text>
+  <text class="mono small" x="654" y="458">或生成文件路径。</text>
+
+  <!-- Callouts -->
+  <path class="arrow" d="M 242 338 C 278 338, 280 315, 310 315"/>
+  <text class="muted small" x="154" y="770">1. 先填课题目录</text>
+  <path class="arrow" d="M 582 665 C 612 665, 610 300, 630 300"/>
+  <text class="muted small" x="520" y="770">2. 点按钮后看右侧结果</text>
+
+  <!-- Flow steps -->
+  <text class="text h2" x="930" y="130">推荐操作顺序</text>
+  <text class="muted body" x="930" y="158">按这个顺序使用，能减少漏文献、漏图、漏引用。</text>
+
+  <g transform="translate(930 190)">
+    <rect class="step" x="0" y="0" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="29" r="16"/>
+    <text class="stepnum" x="25" y="34">1</text>
+    <text class="text h3" x="58" y="25">创建或选择课题目录</text>
+    <text class="muted small" x="58" y="44">填写项目根目录，先跑“项目体检”。</text>
+
+    <rect class="step" x="0" y="74" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="103" r="16"/>
+    <text class="stepnum" x="25" y="108">2</text>
+    <text class="text h3" x="58" y="99">文献检索与入库</text>
+    <text class="muted small" x="58" y="118">生成 search-log，导入 CSV 或添加单篇文献。</text>
+
+    <rect class="step" x="0" y="148" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="177" r="16"/>
+    <text class="stepnum" x="25" y="182">3</text>
+    <text class="text h3" x="58" y="173">补摘要卡并生成文献对比表</text>
+    <text class="muted small" x="58" y="192">用 paper-summary 汇总证据，再看 literature-table。</text>
+
+    <rect class="step" x="0" y="222" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="251" r="16"/>
+    <text class="stepnum" x="25" y="256">4</text>
+    <text class="text h3" x="58" y="247">检查文献库质量</text>
+    <text class="muted small" x="58" y="266">运行统计、文献地图、缺 PDF、缺笔记检查。</text>
+
+    <rect class="step" x="0" y="296" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="325" r="16"/>
+    <text class="stepnum" x="25" y="330">5</text>
+    <text class="text h3" x="58" y="321">处理仿真数据并生成图</text>
+    <text class="muted small" x="58" y="340">预览、汇总、校验 CSV/JSON，再生成 SVG 图。</text>
+
+    <rect class="step" x="0" y="370" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="399" r="16"/>
+    <text class="stepnum" x="25" y="404">6</text>
+    <text class="text h3" x="58" y="395">检查稿件</text>
+    <text class="muted small" x="58" y="414">检查章节、图号、引用和本地文献库覆盖。</text>
+
+    <rect class="step" x="0" y="444" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="473" r="16"/>
+    <text class="stepnum" x="25" y="478">7</text>
+    <text class="text h3" x="58" y="469">生成写作看板和素材包</text>
+    <text class="muted small" x="58" y="488">写作前看缺口，再导出 writing-pack。</text>
+
+    <rect class="step" x="0" y="518" width="420" height="58" rx="8"/>
+    <circle class="accent" cx="29" cy="547" r="16"/>
+    <text class="stepnum" x="25" y="552">8</text>
+    <text class="text h3" x="58" y="543">生成追踪清单</text>
+    <text class="muted small" x="58" y="562">根据 literature-tracker.json 安排下次检索。</text>
+  </g>
+
+  <path class="arrow" d="M 1140 248 L 1140 263"/>
+  <path class="arrow" d="M 1140 322 L 1140 337"/>
+  <path class="arrow" d="M 1140 396 L 1140 411"/>
+  <path class="arrow" d="M 1140 470 L 1140 485"/>
+  <path class="arrow" d="M 1140 544 L 1140 559"/>
+  <path class="arrow" d="M 1140 618 L 1140 633"/>
+  <path class="arrow" d="M 1140 692 L 1140 707"/>
+
+  <rect class="accent" x="930" y="812" width="420" height="78" rx="8"/>
+  <text class="text h3" x="952" y="842">使用原则</text>
+  <text class="muted small" x="952" y="864">每一步先看右侧报告，再决定补 PDF、补摘要卡、补图、改稿件，避免边写边丢材料。</text>
+</svg>

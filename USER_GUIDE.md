@@ -59,6 +59,10 @@ http://127.0.0.1:8000
 C:\Users\22676\Documents\fixture-study
 ```
 
+网页界面和推荐使用顺序可以先看这张示意图：
+
+![科研工作流网页使用顺序示意图](workflow/web_assets/workflow-guide.svg)
+
 然后可以直接点击按钮运行：
 
 - 新建课题。
