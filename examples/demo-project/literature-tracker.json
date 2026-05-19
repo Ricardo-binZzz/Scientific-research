@@ -1,0 +1,19 @@
+{
+  "topics": [
+    {
+      "name": "Adaptive fixture optimization",
+      "keywords": [
+        "adaptive fixture",
+        "clamping force optimization",
+        "fixture stiffness"
+      ],
+      "sources": [
+        "Google Scholar",
+        "Web of Science",
+        "Scopus"
+      ],
+      "last_search": "2026-05-19",
+      "next_action": "Find recent experimental validation papers and add missing PDFs."
+    }
+  ]
+}

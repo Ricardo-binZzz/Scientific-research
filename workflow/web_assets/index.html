@@ -34,6 +34,18 @@
       </section>
 
       <section class="panel">
+        <div class="panel-title"><h2>推荐顺序</h2></div>
+        <nav class="step-nav" aria-label="推荐使用顺序">
+          <a href="#overview">1 项目总览</a>
+          <a href="#library">2 文献整理</a>
+          <a href="#notes">3 摘要与检索</a>
+          <a href="#simulation">4 仿真数据</a>
+          <a href="#figures">5 生成图</a>
+          <a href="#manuscript">6 稿件检查</a>
+        </nav>
+      </section>
+
+      <section class="panel">
         <div class="panel-title"><h2>新建课题</h2></div>
         <p class="description">生成标准目录、默认配置和追踪模板。</p>
         <div class="field-grid single">
@@ -46,7 +58,7 @@
     </aside>
 
     <section class="workspace">
-      <details class="action-group" open>
+      <details id="overview" class="action-group" open>
         <summary><div class="summary-copy"><h2>项目总览</h2><p>体检、状态报告、写作材料和追踪计划。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="button-row">
@@ -57,10 +69,24 @@
             <button class="secondary" data-action="literature_table">生成文献对比表</button>
             <button class="secondary" data-action="literature_tracker">生成追踪清单</button>
           </div>
+          <div class="save-box">
+            <div>
+              <strong>保存常用报告</strong>
+              <p>把写作包、看板和文献报告直接写入课题目录的固定位置。</p>
+            </div>
+            <select id="reportKind" aria-label="选择要保存的标准报告">
+              <option value="writing_pack">写作素材包 -> manuscript/writing-pack.md</option>
+              <option value="writing_dashboard">写作看板 -> manuscript/writing-dashboard.md</option>
+              <option value="literature_table">文献对比表 -> notes/literature-table.md</option>
+              <option value="literature_map">文献地图 -> notes/literature-map.md</option>
+              <option value="literature_tracker">追踪清单 -> notes/literature-tracker.md</option>
+            </select>
+            <button class="primary" data-action="save_standard_report">保存常用报告</button>
+          </div>
         </div>
       </details>
 
-      <details class="action-group" open>
+      <details id="library" class="action-group" open>
         <summary><div class="summary-copy"><h2>文献库</h2><p>检索、过滤、统计、地图、PDF 和笔记完整性。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
@@ -98,7 +124,7 @@
         </div>
       </details>
 
-      <details class="action-group">
+      <details id="notes" class="action-group">
         <summary><div class="summary-copy"><h2>论文摘要卡</h2><p>记录论文的问题、方法、数据、结论、局限和复用价值。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
@@ -141,7 +167,7 @@
         </div>
       </details>
 
-      <details class="action-group">
+      <details id="simulation" class="action-group">
         <summary><div class="summary-copy"><h2>仿真数据</h2><p>预览、汇总和校验 CSV/JSON 数据列。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
@@ -157,7 +183,7 @@
         </div>
       </details>
 
-      <details class="action-group">
+      <details id="figures" class="action-group">
         <summary><div class="summary-copy"><h2>生成图</h2><p>从 CSV/JSON 生成基础 SVG 图和可复现 JSON 参数。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
@@ -165,9 +191,20 @@
             <div class="field"><label for="figureOutDir">输出文件夹</label><input id="figureOutDir" placeholder="例如 C:\Users\22676\Documents\fixture-study\figures"></div>
             <div class="field"><label for="figureStem">文件名前缀</label><input id="figureStem" placeholder="stress-response"></div>
             <div class="field"><label for="figureTitle">图题</label><input id="figureTitle" placeholder="Stress response"></div>
-            <div class="field"><label for="figureType">图类型</label><input id="figureType" placeholder="trend 或 bar"></div>
+            <div class="field">
+              <label for="figureType">图类型</label>
+              <select id="figureType">
+                <option value="trend">趋势图</option>
+                <option value="bar">柱状图</option>
+                <option value="errorbar">误差棒图</option>
+                <option value="heatmap">热力图</option>
+                <option value="contour">等值线图</option>
+              </select>
+            </div>
             <div class="field"><label for="xColumn">X 列</label><input id="xColumn" placeholder="time"></div>
-            <div class="field"><label for="yColumns">Y 列，多个用逗号隔开</label><input id="yColumns" placeholder="stress"></div>
+            <div class="field"><label for="yColumns">Y 列，多个用逗号隔开</label><input id="yColumns" placeholder="stress；热力图/等值线图填 y 坐标列"></div>
+            <div class="field"><label for="yErrorColumns">误差列，多个用逗号隔开</label><input id="yErrorColumns" placeholder="stress_error，仅误差棒图需要"></div>
+            <div class="field"><label for="valueColumn">数值列</label><input id="valueColumn" placeholder="temperature，仅热力图/等值线图需要"></div>
             <div class="field"><label for="xLabel">X 轴标签</label><input id="xLabel" placeholder="Time (s)"></div>
             <div class="field"><label for="yLabel">Y 轴标签</label><input id="yLabel" placeholder="Stress (MPa)"></div>
           </div>
@@ -175,7 +212,7 @@
         </div>
       </details>
 
-      <details class="action-group">
+      <details id="manuscript" class="action-group">
         <summary><div class="summary-copy"><h2>稿件检查</h2><p>检查章节、图号、引用和本地文献库覆盖情况。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
@@ -191,12 +228,17 @@
     <aside id="resultPanel" class="result-panel">
       <div class="result-header">
         <div><h2>运行结果</h2><div id="resultMeta" class="result-meta">等待操作</div></div>
-        <button class="ghost" type="button" id="clearOutput">清空</button>
+        <div class="result-actions">
+          <button class="ghost" type="button" id="copyOutput">复制结果</button>
+          <button class="ghost" type="button" id="downloadOutput">下载 .md</button>
+          <button class="ghost" type="button" id="clearOutput">清空</button>
+        </div>
       </div>
       <pre id="output" class="empty-state">先填写项目根目录，然后点击左侧或中间区域的按钮。结果会显示在这里。</pre>
     </aside>
   </main>
 
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="/assets/app.js"></script>
 </body>
 </html>

@@ -181,7 +181,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -199,7 +200,8 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   border-color: var(--focus);
   box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.14);
 }
@@ -283,6 +285,52 @@ button:not(.secondary):not(.ghost):hover {
   width: 100%;
 }
 
+.step-nav {
+  display: grid;
+  gap: 6px;
+}
+
+.step-nav a {
+  border-radius: 6px;
+  color: #2c3a47;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 8px;
+  text-decoration: none;
+}
+
+.step-nav a:hover,
+.step-nav a:focus {
+  background: var(--primary-soft);
+  color: var(--primary);
+  outline: none;
+}
+
+.save-box {
+  align-items: end;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(180px, 1fr) minmax(260px, 1.1fr) auto;
+  padding: 10px;
+}
+
+.save-box strong {
+  color: #202b37;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.save-box p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
 .action-group {
   overflow: hidden;
 }
@@ -353,6 +401,13 @@ details[open] .chevron {
   padding: 12px 14px;
 }
 
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
 .result-header h2 {
   color: #fff;
 }
@@ -407,6 +462,30 @@ pre {
   display: none;
 }
 
+.toast {
+  background: #18212b;
+  border: 1px solid #2b3846;
+  border-radius: 6px;
+  bottom: 18px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.22);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  padding: 10px 12px;
+  pointer-events: none;
+  position: fixed;
+  right: 18px;
+  transform: translateY(8px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 20;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (max-width: 1180px) {
   .app-shell {
     grid-template-columns: 280px minmax(0, 1fr);
@@ -420,6 +499,10 @@ pre {
 
   .sidebar {
     top: 82px;
+  }
+
+  .save-box {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -460,6 +543,21 @@ pre {
 
   .result-panel {
     grid-template-rows: auto minmax(320px, 1fr);
+  }
+
+  .result-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .result-actions {
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .result-actions button {
+    flex: 1 1 110px;
   }
 
   .mobile-result-jump {

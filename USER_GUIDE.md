@@ -59,6 +59,12 @@ http://127.0.0.1:8000
 C:\Users\22676\Documents\fixture-study
 ```
 
+如果只是想先试用，不想马上新建自己的课题，也可以填写仓库自带示例课题：
+
+```text
+C:\Users\22676\Documents\科研\examples\demo-project
+```
+
 网页界面和推荐使用顺序可以先看这张示意图：
 
 ![科研工作流网页使用顺序示意图](workflow/web_assets/workflow-guide.svg)
@@ -86,6 +92,16 @@ C:\Users\22676\Documents\fixture-study
 - 生成写作看板。
 - 生成文献地图。
 - 生成新文献追踪清单。
+
+网页现在会记住上次填写的课题目录。右侧“运行结果”区域可以复制结果、下载当前结果为 `.md` 文件，也可以清空后继续操作。
+
+如果你想把常用报告直接保存到课题目录，在“项目总览”里使用“保存常用报告”。默认保存位置是：
+
+- 写作素材包：`manuscript/writing-pack.md`
+- 写作看板：`manuscript/writing-dashboard.md`
+- 文献对比表：`notes/literature-table.md`
+- 文献地图：`notes/literature-map.md`
+- 追踪清单：`notes/literature-tracker.md`
 
 网页服务只在本机运行，地址是 `127.0.0.1`。默认使用 `8000` 端口；如果端口被占用，工具会自动尝试 `8001` 到 `8009`，并打开实际可用的地址。如果浏览器打不开，先确认 `start_web.bat` 的窗口没有被关掉；窗口关闭后网页服务也会停止。
 
@@ -141,6 +157,14 @@ $PY='C:\Users\22676\.cache\codex-runtimes\codex-primary-runtime\dependencies\pyt
 ```
 
 这三步能跑通，再开始创建自己的课题目录。
+
+仓库里还有一个更完整的可试跑课题：
+
+```text
+C:\Users\22676\Documents\科研\examples\demo-project
+```
+
+它里面已经放了示例文献库、论文摘要卡、仿真 CSV、稿件草稿、`project-check.json` 和 `literature-tracker.json`。在网页里把“项目根目录”填成这个路径后，可以按顺序点击“项目体检”“文献库统计”“生成文献对比表”“预览数据”“生成 SVG 图”“检查稿件”“保存常用报告”，快速看完整流程。
 
 ## 5. 创建一个新课题
 
@@ -501,6 +525,8 @@ Columns: time, stress, displacement
 ```
 
 把 `--figure-type heatmap` 改成 `--figure-type contour` 可以生成等值线图。等值线图要求数据形成完整矩形网格。
+
+如果你用网页生成图，“图类型”可以直接选择趋势图、柱状图、误差棒图、热力图或等值线图。误差棒图需要填写“误差列”；热力图和等值线图需要把 `Y 列` 填成 y 坐标列，并填写“数值列”。
 
 输出文件在 `figures` 目录：
 

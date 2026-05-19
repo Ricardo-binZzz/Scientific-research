@@ -33,7 +33,12 @@ from workflow.literature_tracker import build_literature_tracker, render_literat
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.notes import PaperSummary, SearchLogEntry, create_note_file, render_paper_summary, render_search_log
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
-from workflow.python.figure_exporter import build_spec_from_dataset, export_figure_bundle
+from workflow.python.figure_exporter import (
+    build_contour_spec_from_dataset,
+    build_heatmap_spec_from_dataset,
+    build_spec_from_dataset,
+    export_figure_bundle,
+)
 from workflow.python.sim_result_loader import load_tabular_result
 from workflow.simulation import (
     inspect_dataset,
@@ -82,6 +87,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(render_writing_dashboard(build_writing_dashboard(project_root)))
         if action == "literature_tracker":
             return _text(render_literature_tracker(build_literature_tracker(project_root)))
+        if action == "save_standard_report":
+            return _save_standard_report(project_root, payload.get("report_kind", "").strip())
 
         literature_root = project_root / "literature"
         if action == "literature_map":
@@ -174,19 +181,48 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
         if action == "figure_from_data":
             out_dir = Path(payload.get("figure_out_dir", "").strip())
             stem = payload.get("figure_stem", "").strip()
-            spec = build_spec_from_dataset(
-                load_tabular_result(Path(payload.get("figure_data_path", "").strip())),
-                title=payload.get("figure_title", "").strip(),
-                figure_type=payload.get("figure_type", "").strip() or "trend",
-                x_column=payload.get("x_column", "").strip(),
-                y_columns=_split_csv_input(payload.get("y_columns", "")),
-                y_error_columns=[],
-                x_label=payload.get("x_label", "").strip(),
-                y_label=payload.get("y_label", "").strip(),
-                width_mm=180,
-                height_mm=120,
-                dpi=300,
-            )
+            dataset = load_tabular_result(Path(payload.get("figure_data_path", "").strip()))
+            figure_type = payload.get("figure_type", "").strip() or "trend"
+            if figure_type == "heatmap":
+                spec = build_heatmap_spec_from_dataset(
+                    dataset,
+                    title=payload.get("figure_title", "").strip(),
+                    x_column=payload.get("x_column", "").strip(),
+                    y_column=_first_value(payload.get("y_columns", "")),
+                    value_column=payload.get("value_column", "").strip(),
+                    x_label=payload.get("x_label", "").strip(),
+                    y_label=payload.get("y_label", "").strip(),
+                    width_mm=180,
+                    height_mm=120,
+                    dpi=300,
+                )
+            elif figure_type == "contour":
+                spec = build_contour_spec_from_dataset(
+                    dataset,
+                    title=payload.get("figure_title", "").strip(),
+                    x_column=payload.get("x_column", "").strip(),
+                    y_column=_first_value(payload.get("y_columns", "")),
+                    value_column=payload.get("value_column", "").strip(),
+                    x_label=payload.get("x_label", "").strip(),
+                    y_label=payload.get("y_label", "").strip(),
+                    width_mm=180,
+                    height_mm=120,
+                    dpi=300,
+                )
+            else:
+                spec = build_spec_from_dataset(
+                    dataset,
+                    title=payload.get("figure_title", "").strip(),
+                    figure_type=figure_type,
+                    x_column=payload.get("x_column", "").strip(),
+                    y_columns=_split_csv_input(payload.get("y_columns", "")),
+                    y_error_columns=_split_csv_input(payload.get("y_error_columns", "")),
+                    x_label=payload.get("x_label", "").strip(),
+                    y_label=payload.get("y_label", "").strip(),
+                    width_mm=180,
+                    height_mm=120,
+                    dpi=300,
+                )
             export_figure_bundle(spec, out_dir, stem=stem)
             return _text(f"已生成：{out_dir / f'{stem}.svg'}\n已生成：{out_dir / f'{stem}.json'}")
         if action == "manuscript_check":
@@ -248,6 +284,37 @@ def _add_library_entry(project_root: Path, payload: dict[str, str]) -> ContentRe
         ),
     )
     return _text(f"已添加。当前文献库共有 {len(updated.entries)} 条。")
+
+
+def _save_standard_report(project_root: Path, report_kind: str) -> ContentResponse:
+    reports = {
+        "writing_pack": (
+            project_root / "manuscript" / "writing-pack.md",
+            lambda: render_writing_pack(build_writing_pack(project_root)),
+        ),
+        "writing_dashboard": (
+            project_root / "manuscript" / "writing-dashboard.md",
+            lambda: render_writing_dashboard(build_writing_dashboard(project_root)),
+        ),
+        "literature_table": (
+            project_root / "notes" / "literature-table.md",
+            lambda: render_literature_table(build_literature_table(project_root / "notes")),
+        ),
+        "literature_map": (
+            project_root / "notes" / "literature-map.md",
+            lambda: render_literature_map(build_literature_map(project_root / "literature")),
+        ),
+        "literature_tracker": (
+            project_root / "notes" / "literature-tracker.md",
+            lambda: render_literature_tracker(build_literature_tracker(project_root)),
+        ),
+    }
+    if report_kind not in reports:
+        return 400, "text/plain; charset=utf-8", f"不支持的标准报告：{report_kind}"
+    out_path, build_content = reports[report_kind]
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(build_content(), encoding="utf-8")
+    return _text(f"已保存标准报告：{out_path}")
 
 
 def _make_handler(default_project_root: str):
@@ -320,6 +387,11 @@ def _text(body: str) -> ContentResponse:
 
 def _split_csv_input(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _first_value(value: str) -> str:
+    values = _split_csv_input(value)
+    return values[0] if values else ""
 
 
 if __name__ == "__main__":

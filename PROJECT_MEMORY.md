@@ -68,3 +68,7 @@
 - The repository remote is `https://github.com/Ricardo-binZzz/Scientific-research.git`; local branch `main` tracks `origin/main`.
 - GitHub landing documentation uses `README.md` as the English entry point and `README.zh-CN.md` as the Chinese entry point, linked from the top of each file.
 - Beginner usage guidance now exists in both `USER_GUIDE.md` (Chinese) and `USER_GUIDE.en.md` (English), with language links at the top of each guide.
+- The browser UI remembers the last project root in localStorage, provides result copy/download controls, toast feedback, in-page workflow navigation, and a standard report save action for writing pack, writing dashboard, literature table, literature map, and literature tracker.
+- Standard web-saved reports use fixed project paths: `manuscript/writing-pack.md`, `manuscript/writing-dashboard.md`, `notes/literature-table.md`, `notes/literature-map.md`, and `notes/literature-tracker.md`.
+- `examples/demo-project` is a runnable demo workspace with a small literature index, paper-summary notes, simulation CSV, manuscript draft, `project-check.json`, and `literature-tracker.json`.
+- The web figure form now exposes trend, bar, errorbar, heatmap, and contour figure types, including y-error and value-column inputs.

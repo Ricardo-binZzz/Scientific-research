@@ -97,9 +97,14 @@
 - Web UI refactor on 2026-05-19: the browser console UI moved from an inline Python HTML string to static `workflow/web_assets/index.html`, `styles.css`, and `app.js`; Python now serves those assets and keeps the existing `/action` API bridge.
 - Web UI polish on 2026-05-19: `workflow/web_assets/styles.css` was tuned toward a modern SaaS/professional workbench style with tighter density, restrained borders/shadows, clearer button hierarchy, and compact responsive controls.
 - User preference update on 2026-05-19: when adding several features, add backend/workflow functionality first and batch-sync the web UI at the end for efficiency.
+- Web UX expansion on 2026-05-19: the browser console now remembers the last project root, adds recommended section navigation, toast feedback, copy-result and download-result controls, and a standard report save action.
+- Web standard report saving on 2026-05-19: the browser can save writing pack, writing dashboard, literature table, literature map, and literature tracker to fixed project files under `manuscript` or `notes`.
+- Demo workspace on 2026-05-19: `examples/demo-project` was added with a runnable literature index, paper-summary notes, simulation CSV, manuscript draft, `project-check.json`, and `literature-tracker.json`.
+- Web figure controls on 2026-05-19: the browser figure form now exposes trend, bar, errorbar, heatmap, and contour choices with y-error and value-column inputs.
 
 ## Next Steps
 
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.
+- Consider adding a dedicated browser demo button that loads `examples/demo-project` into the project root field automatically.

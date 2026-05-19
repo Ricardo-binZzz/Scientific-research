@@ -1,0 +1,36 @@
+{
+  "manuscript": {
+    "path": "manuscript/chapter.md",
+    "required_sections": [
+      "Introduction",
+      "Method",
+      "Results"
+    ],
+    "expected_figures": [
+      "Figure 1"
+    ]
+  },
+  "simulation": {
+    "data_path": "simulation/fixture-stress.csv",
+    "required_columns": [
+      "time",
+      "stress",
+      "displacement"
+    ],
+    "numeric_columns": [
+      "time",
+      "stress",
+      "displacement"
+    ],
+    "ranges": {
+      "stress": [
+        0,
+        80
+      ],
+      "displacement": [
+        0,
+        0.1
+      ]
+    }
+  }
+}

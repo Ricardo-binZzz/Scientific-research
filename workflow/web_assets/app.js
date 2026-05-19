@@ -1,7 +1,10 @@
 const statusText = document.getElementById("statusText");
 const resultMeta = document.getElementById("resultMeta");
 const output = document.getElementById("output");
+const projectRoot = document.getElementById("projectRoot");
+const toast = document.getElementById("toast");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
+const storageKey = "researchWorkflow.projectRoot";
 
 function valueOf(id) {
   const element = document.getElementById(id);
@@ -14,6 +17,13 @@ function setBusy(button, busy) {
   });
   if (button) button.disabled = busy;
   statusText.textContent = busy ? "运行中" : "就绪";
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("visible");
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 2600);
 }
 
 async function runAction(action, button) {
@@ -65,11 +75,14 @@ async function runAction(action, button) {
     figure_type: valueOf("figureType"),
     x_column: valueOf("xColumn"),
     y_columns: valueOf("yColumns"),
+    y_error_columns: valueOf("yErrorColumns"),
+    value_column: valueOf("valueColumn"),
     x_label: valueOf("xLabel"),
     y_label: valueOf("yLabel"),
     manuscript_path: valueOf("manuscriptPath"),
     required_sections: valueOf("requiredSections"),
     expected_figures: valueOf("expectedFigures"),
+    report_kind: valueOf("reportKind"),
   };
 
   output.classList.remove("empty-state");
@@ -85,9 +98,12 @@ async function runAction(action, button) {
     });
     output.textContent = await response.text();
     statusText.textContent = response.ok ? "完成" : "需要处理";
+    showToast(response.ok ? "操作完成" : "操作返回问题，请查看结果");
+    document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
   } catch (error) {
     output.textContent = "请求失败：" + error;
     statusText.textContent = "请求失败";
+    showToast("请求失败");
   } finally {
     actionButtons.forEach((item) => {
       item.disabled = false;
@@ -106,8 +122,41 @@ document.getElementById("clearOutput").addEventListener("click", () => {
   statusText.textContent = "就绪";
 });
 
+document.getElementById("copyOutput").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(output.textContent);
+    showToast("结果已复制");
+  } catch (error) {
+    showToast("复制失败，请手动选择结果文本");
+  }
+});
+
+document.getElementById("downloadOutput").addEventListener("click", () => {
+  const blob = new Blob([output.textContent], { type: "text/markdown;charset=utf-8" });
+  const link = document.createElement("a");
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  link.href = URL.createObjectURL(blob);
+  link.download = `workflow-result-${timestamp}.md`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+  showToast("结果已下载");
+});
+
 document.querySelectorAll("[data-scroll-output]").forEach((button) => {
   button.addEventListener("click", () => {
     document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth" });
   });
 });
+
+const rememberedRoot = window.localStorage.getItem(storageKey);
+if (rememberedRoot && projectRoot && !projectRoot.value) {
+  projectRoot.value = rememberedRoot;
+}
+
+if (projectRoot) {
+  projectRoot.addEventListener("input", () => {
+    window.localStorage.setItem(storageKey, projectRoot.value);
+  });
+}

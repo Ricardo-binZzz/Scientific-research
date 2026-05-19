@@ -1,0 +1,27 @@
+{
+  "entries": [
+    {
+      "title": "Adaptive clamping fixture design",
+      "authors": [
+        "Zhang",
+        "Li"
+      ],
+      "year": 2024,
+      "source": "Journal of Manufacturing Systems",
+      "doi": "10.1000/demo-fixture",
+      "pdf_name": "adaptive-clamping-fixture-design.pdf",
+      "note_path": "notes/paper-summary-adaptive-clamping-fixture.md"
+    },
+    {
+      "title": "Finite element analysis of fixture stiffness",
+      "authors": [
+        "Wang"
+      ],
+      "year": 2022,
+      "source": "Manufacturing Letters",
+      "doi": "10.1000/demo-stiffness",
+      "pdf_name": "fixture-stiffness.pdf",
+      "note_path": "notes/paper-summary-fixture-stiffness.md"
+    }
+  ]
+}

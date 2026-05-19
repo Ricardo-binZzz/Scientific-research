@@ -22,6 +22,11 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("仿真数据", html)
         self.assertIn("稿件检查", html)
         self.assertIn("生成图", html)
+        self.assertIn("复制结果", html)
+        self.assertIn("下载 .md", html)
+        self.assertIn("保存常用报告", html)
+        self.assertIn("value=\"heatmap\"", html)
+        self.assertIn("id=\"valueColumn\"", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
 
@@ -62,6 +67,55 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("recent.pdf", body)
         self.assertIn("## Manuscript Drafts", body)
         self.assertIn("draft.md", body)
+
+    def test_handle_save_standard_report_writes_known_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            handle_web_action(
+                {
+                    "action": "library_add",
+                    "project_root": str(project),
+                    "title": "Recent adaptive fixture",
+                    "authors": "Zhang",
+                    "year": "2024",
+                    "source": "Journal",
+                    "doi": "10.1000/recent",
+                    "pdf_name": "recent.pdf",
+                    "note_path": "notes/recent.md",
+                }
+            )
+
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "save_standard_report",
+                    "project_root": str(project),
+                    "report_kind": "writing_pack",
+                }
+            )
+            out_path = project / "manuscript" / "writing-pack.md"
+            out_exists = out_path.exists()
+            out_text = out_path.read_text(encoding="utf-8")
+
+        self.assertEqual(status, 200)
+        self.assertIn("已保存标准报告", body)
+        self.assertIn("writing-pack.md", body)
+        self.assertTrue(out_exists)
+        self.assertIn("# Writing Pack", out_text)
+
+    def test_handle_save_standard_report_rejects_unknown_kind(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "save_standard_report",
+                    "project_root": str(project),
+                    "report_kind": "unknown",
+                }
+            )
+
+        self.assertEqual(status, 400)
+        self.assertIn("不支持的标准报告", body)
 
     def test_handle_literature_table_action_returns_comparison(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -346,6 +400,35 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("stress-response.svg", body)
         self.assertTrue(svg_exists)
         self.assertTrue(json_exists)
+
+    def test_handle_figure_from_data_action_writes_heatmap_bundle(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            data_path = project / "simulation" / "grid.csv"
+            data_path.write_text("x,y,temp\n0,0,10\n0,1,20\n1,0,30\n1,1,40\n", encoding="utf-8")
+            out_dir = project / "figures"
+
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "figure_from_data",
+                    "project_root": str(project),
+                    "figure_data_path": str(data_path),
+                    "figure_out_dir": str(out_dir),
+                    "figure_stem": "temperature-map",
+                    "figure_title": "Temperature map",
+                    "figure_type": "heatmap",
+                    "x_column": "x",
+                    "y_columns": "y",
+                    "value_column": "temp",
+                    "x_label": "X",
+                    "y_label": "Y",
+                }
+            )
+            svg_text = (out_dir / "temperature-map.svg").read_text(encoding="utf-8")
+
+        self.assertEqual(status, 200)
+        self.assertIn("temperature-map.svg", body)
+        self.assertIn("<rect", svg_text)
 
     def test_create_server_uses_next_port_when_requested_port_is_busy(self) -> None:
         probe = _create_server("127.0.0.1", 8000, _QuietHandler)
