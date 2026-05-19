@@ -7,7 +7,7 @@ from pathlib import Path
 from workflow.library import inspect_pdf_inventory, load_index
 from workflow.manuscript import inspect_manuscript
 from workflow.python.sim_result_loader import load_tabular_result
-from workflow.simulation import collect_export_files, load_unit_metadata, validate_dataset_columns
+from workflow.simulation import check_dataset_ranges, collect_export_files, load_unit_metadata, validate_dataset_columns
 
 
 @dataclass(frozen=True)
@@ -141,6 +141,14 @@ def _inspect_simulation(root: Path, config: dict) -> list[str]:
             issues.append(f"{path.name}: empty unit metadata {', '.join(report.empty_unit_columns)}")
         if report.extra_unit_columns:
             issues.append(f"{path.name}: extra unit metadata {', '.join(report.extra_unit_columns)}")
+        range_report = check_dataset_ranges(dataset, _parse_range_config(config.get("ranges", {})))
+        for column, finding in range_report.findings.items():
+            if finding.out_of_range_count:
+                issues.append(f"{path.name}: {column} out of range {finding.out_of_range_count}")
+            if finding.non_numeric_count:
+                issues.append(f"{path.name}: {column} range check non-numeric {finding.non_numeric_count}")
+        if range_report.missing_columns:
+            issues.append(f"{path.name}: range check missing columns {', '.join(range_report.missing_columns)}")
     return issues
 
 
@@ -174,3 +182,11 @@ def _count_figure_bundles(root: Path) -> int:
         return 0
     stems = {path.stem for path in root.iterdir() if path.is_file() and path.suffix.lower() == ".svg"}
     return sum(1 for stem in stems if (root / f"{stem}.json").exists())
+
+
+def _parse_range_config(payload: dict) -> dict[str, tuple[float, float]]:
+    ranges: dict[str, tuple[float, float]] = {}
+    for column, limits in payload.items():
+        if isinstance(limits, (list, tuple)) and len(limits) == 2:
+            ranges[column] = (float(limits[0]), float(limits[1]))
+    return ranges

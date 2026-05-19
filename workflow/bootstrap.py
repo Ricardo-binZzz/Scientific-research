@@ -78,6 +78,9 @@ def _write_project_check_config(path: Path) -> None:
             "required_columns": ["time", "stress"],
             "numeric_columns": ["time", "stress"],
             "metadata": "templates/simulation-metadata.json",
+            "ranges": {
+                "stress": [0, 1000],
+            },
         },
     }
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

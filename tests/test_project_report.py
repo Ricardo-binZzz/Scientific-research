@@ -111,6 +111,30 @@ class ProjectReportTests(unittest.TestCase):
         self.assertTrue(any("stress" in issue for issue in check.simulation_issues))
         self.assertTrue(any("No citation markers found" in issue for issue in check.manuscript_issues))
 
+    def test_build_project_check_reports_simulation_range_issues(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.assertEqual(main(["init", tmpdir, "--slug", "demo", "--name", "Demo"]), 0)
+            project = root / "demo"
+            (project / "simulation" / "result.csv").write_text("time,stress\n0,50\n1,120\n", encoding="utf-8")
+            (project / "project-check.json").write_text(
+                '{\n'
+                '  "simulation": {\n'
+                '    "required_columns": ["time", "stress"],\n'
+                '    "numeric_columns": ["time", "stress"],\n'
+                '    "ranges": {"stress": [0, 100]}\n'
+                '  },\n'
+                '  "manuscript": {}\n'
+                '}\n',
+                encoding="utf-8",
+            )
+
+            check = build_project_check(project)
+            text = render_project_check(check)
+
+        self.assertTrue(any("stress out of range 1" in issue for issue in check.simulation_issues))
+        self.assertIn("result.csv: stress out of range 1", text)
+
     def test_render_project_check_lists_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
