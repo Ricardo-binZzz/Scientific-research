@@ -22,6 +22,7 @@ from workflow.library import (
 )
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
+from workflow.python.figure_exporter import build_spec_from_dataset, export_figure_bundle
 from workflow.python.sim_result_loader import load_tabular_result
 from workflow.simulation import (
     inspect_dataset,
@@ -166,6 +167,27 @@ def render_home_page(default_project_root: str = "") -> str:
         <button data-action="simulation_validate" class="secondary">校验数据</button>
       </div>
 
+      <h2 style="margin-top:20px">生成图</h2>
+      <label for="figureDataPath">数据文件路径</label>
+      <input id="figureDataPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\simulation\\result.csv">
+      <label for="figureOutDir">输出文件夹</label>
+      <input id="figureOutDir" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\figures">
+      <label for="figureStem">文件名前缀</label>
+      <input id="figureStem" placeholder="stress-response">
+      <label for="figureTitle">图题</label>
+      <input id="figureTitle" placeholder="Stress response">
+      <label for="figureType">图类型</label>
+      <input id="figureType" placeholder="trend 或 bar">
+      <label for="xColumn">X 列</label>
+      <input id="xColumn" placeholder="time">
+      <label for="yColumns">Y 列，多个用逗号隔开</label>
+      <input id="yColumns" placeholder="stress">
+      <label for="xLabel">X 轴标签</label>
+      <input id="xLabel" placeholder="Time (s)">
+      <label for="yLabel">Y 轴标签</label>
+      <input id="yLabel" placeholder="Stress (MPa)">
+      <button data-action="figure_from_data">生成 SVG 图</button>
+
       <h2 style="margin-top:20px">稿件检查</h2>
       <label for="manuscriptPath">稿件路径</label>
       <input id="manuscriptPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\manuscript\\chapter.md">
@@ -196,6 +218,15 @@ def render_home_page(default_project_root: str = "") -> str:
         data_path: document.getElementById("dataPath").value,
         required_columns: document.getElementById("requiredColumns").value,
         numeric_columns: document.getElementById("numericColumns").value,
+        figure_data_path: document.getElementById("figureDataPath").value,
+        figure_out_dir: document.getElementById("figureOutDir").value,
+        figure_stem: document.getElementById("figureStem").value,
+        figure_title: document.getElementById("figureTitle").value,
+        figure_type: document.getElementById("figureType").value,
+        x_column: document.getElementById("xColumn").value,
+        y_columns: document.getElementById("yColumns").value,
+        x_label: document.getElementById("xLabel").value,
+        y_label: document.getElementById("yLabel").value,
         manuscript_path: document.getElementById("manuscriptPath").value,
         required_sections: document.getElementById("requiredSections").value,
         expected_figures: document.getElementById("expectedFigures").value
@@ -265,6 +296,24 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     )
                 )
             )
+        if action == "figure_from_data":
+            out_dir = Path(payload.get("figure_out_dir", "").strip())
+            stem = payload.get("figure_stem", "").strip()
+            spec = build_spec_from_dataset(
+                load_tabular_result(Path(payload.get("figure_data_path", "").strip())),
+                title=payload.get("figure_title", "").strip(),
+                figure_type=payload.get("figure_type", "").strip() or "trend",
+                x_column=payload.get("x_column", "").strip(),
+                y_columns=_split_csv_input(payload.get("y_columns", "")),
+                y_error_columns=[],
+                x_label=payload.get("x_label", "").strip(),
+                y_label=payload.get("y_label", "").strip(),
+                width_mm=180,
+                height_mm=120,
+                dpi=300,
+            )
+            export_figure_bundle(spec, out_dir, stem=stem)
+            return _text(f"已生成：{out_dir / f'{stem}.svg'}\n已生成：{out_dir / f'{stem}.json'}")
         if action == "manuscript_check":
             return _text(
                 render_report_from_inspection(

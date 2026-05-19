@@ -71,6 +71,7 @@ C:\Users\22676\Documents\fixture-study
 - 预览仿真 CSV/JSON 数据。
 - 汇总仿真数值范围。
 - 校验仿真数据列和数值列。
+- 从 CSV/JSON 生成基础 SVG 图。
 - 检查论文稿件章节、图号和引用。
 - 生成写作素材包。
 
