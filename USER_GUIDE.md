@@ -483,7 +483,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 & $PY -m workflow.cli project writing-pack C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\writing-pack.md
 ```
 
-`writing-pack.md` 会汇总当前课题中可用于写作的文献、笔记、图和仿真结果。
+`writing-pack.md` 会汇总当前课题中可用于写作的文献、笔记、图和仿真结果。开头还会附带文献库概览，包括文献总数、年份范围和缺失 PDF 数量，方便写作前先判断资料是否够用。
 
 ## 17. 推荐的日常使用顺序
 

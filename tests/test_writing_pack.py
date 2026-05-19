@@ -43,6 +43,9 @@ class WritingPackTests(unittest.TestCase):
             pack = build_writing_pack(root)
 
         self.assertEqual(pack.library_titles, ["Adaptive clamping fixture"])
+        self.assertEqual(pack.library_total_entries, 1)
+        self.assertEqual(pack.library_year_range, "2024-2024")
+        self.assertEqual(pack.library_missing_pdf_count, 1)
         self.assertEqual(pack.note_files, ["summary.md"])
         self.assertEqual(pack.figure_bundles, ["stress"])
         self.assertEqual(pack.simulation_exports, ["result.csv"])
@@ -55,6 +58,8 @@ class WritingPackTests(unittest.TestCase):
             text = render_writing_pack(pack)
 
         self.assertIn("# Writing Pack", text)
+        self.assertIn("## Library Overview", text)
+        self.assertIn("Total entries", text)
         self.assertIn("## Literature", text)
         self.assertIn("## Figures", text)
 

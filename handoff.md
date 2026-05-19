@@ -29,6 +29,7 @@
 - `project check` can also apply `simulation.ranges` from `project-check.json` to report out-of-range simulation values.
 - `examples/` contains a minimal CSV and manuscript draft for quick command trials.
 - `project writing-pack` can print or write a Markdown pack for manuscript drafting.
+- `project writing-pack` includes a library overview with entry count, year range, and missing PDF count.
 - CLI command execution is split into `workflow/commands.py`; `workflow/cli.py` now focuses on argument parsing.
 - Manuscript checks recognize English and Chinese figure-number markers.
 - Workspace templates include `simulation-metadata.json` for column-unit metadata.
@@ -52,6 +53,7 @@
 - Workflow expansion on 2026-05-19: `simulation check-ranges` was added to flag out-of-range simulation results before plotting.
 - Workflow expansion on 2026-05-19: `project check` now applies configured simulation range rules from `project-check.json`.
 - Workflow expansion on 2026-05-19: `library stats` was added for a quick literature library overview before writing.
+- Workflow expansion on 2026-05-19: `project writing-pack` now includes the same key library overview fields.
 - Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
 - GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 - README language switch on 2026-05-19: `README.md` now links to `README.zh-CN.md`, and the Chinese README links back to the English entry point while keeping `USER_GUIDE.md` as the detailed beginner tutorial.
