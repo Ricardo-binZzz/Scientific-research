@@ -1,5 +1,7 @@
 # Research Workflow
 
+Language: English | [中文](README.zh-CN.md)
+
 This repository contains a semi-automated research workflow for mechanical and manufacturing research. It focuses on literature intake, structured notes, manuscript checks, simulation data validation, and figure generation.
 
 For a beginner-friendly Chinese walkthrough, read `USER_GUIDE.md`.
