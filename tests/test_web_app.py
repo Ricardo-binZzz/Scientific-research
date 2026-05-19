@@ -100,6 +100,30 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("已生成摘要卡", body)
         self.assertEqual(len(note_files), 1)
 
+    def test_handle_search_log_action_writes_note(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "note_search_log",
+                    "project_root": str(project),
+                    "search_question": "Fixture optimization",
+                    "search_keywords": "fixture; clamping",
+                    "search_query": "fixture clamping optimization",
+                    "search_source": "Google Scholar",
+                    "search_date": "2026-05-19",
+                    "search_filters": "2020-2026",
+                    "search_result_count": "12",
+                    "search_notes": "Focus on FEM papers",
+                }
+            )
+            note_files = list((project / "notes").glob("*fixture-optimization.md"))
+
+        self.assertEqual(status, 200)
+        self.assertIn("已生成检索记录", body)
+        self.assertEqual(len(note_files), 1)
+
     def test_handle_library_search_action_returns_matches(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

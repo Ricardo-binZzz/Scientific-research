@@ -23,7 +23,7 @@
 - `simulation summarize-data` prints numeric count/min/max and flags columns containing non-numeric cells.
 - `simulation check-ranges` checks expected numeric ranges with repeated `--range column:min:max` arguments.
 - `README.md` documents the main workflow commands using the bundled Python executable.
-- `start_web.bat` starts a local browser UI backed by `workflow.web_app` on `127.0.0.1:8000` for project creation, common project, literature including CSV import and paper summary notes, simulation inspection, figure generation, and manuscript check actions.
+- `start_web.bat` starts a local browser UI backed by `workflow.web_app` on `127.0.0.1:8000` for project creation, common project, literature including CSV import plus paper summary and search-log notes, simulation inspection, figure generation, and manuscript check actions.
 - The web server now opens the browser after binding the actual port and automatically tries later ports through `8009` if the requested port is busy.
 - `unittest discover -v` now discovers and runs the full test suite.
 - `project report` prints a compact status count for the active research workspace.
@@ -80,6 +80,8 @@
 - Web UI expansion on 2026-05-19: project creation was added to the browser console using the existing workspace bootstrap.
 - Web UI expansion on 2026-05-19: CSV literature metadata import was added to the browser console.
 - Web UI expansion on 2026-05-19: paper summary note generation was added to the browser console.
+- Web UI expansion on 2026-05-19: search-log note generation was added to the browser console.
+- User preference update on 2026-05-19: when adding several features, add backend/workflow functionality first and batch-sync the web UI at the end for efficiency.
 
 ## Next Steps
 

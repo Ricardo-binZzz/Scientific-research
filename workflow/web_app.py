@@ -26,7 +26,7 @@ from workflow.library import (
     search_library,
 )
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
-from workflow.notes import PaperSummary, create_note_file, render_paper_summary
+from workflow.notes import PaperSummary, SearchLogEntry, create_note_file, render_paper_summary, render_search_log
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
 from workflow.python.figure_exporter import build_spec_from_dataset, export_figure_bundle
 from workflow.python.sim_result_loader import load_tabular_result
@@ -201,6 +201,25 @@ def render_home_page(default_project_root: str = "") -> str:
       <input id="summarySourcePages" placeholder="pp. 1-5">
       <button data-action="note_paper_summary">生成摘要卡</button>
 
+      <h2 style="margin-top:20px">文献检索记录</h2>
+      <label for="searchQuestion">检索问题</label>
+      <input id="searchQuestion">
+      <label for="searchKeywords">关键词，多个用分号隔开</label>
+      <input id="searchKeywords">
+      <label for="searchQuery">检索式</label>
+      <textarea id="searchQuery"></textarea>
+      <label for="searchSource">检索平台</label>
+      <input id="searchSource" placeholder="Google Scholar / Web of Science / Scopus">
+      <label for="searchDate">日期</label>
+      <input id="searchDate" placeholder="2026-05-19">
+      <label for="searchFilters">筛选条件</label>
+      <input id="searchFilters" placeholder="2020-2026">
+      <label for="searchResultCount">结果数量</label>
+      <input id="searchResultCount" placeholder="12">
+      <label for="searchNotes">备注</label>
+      <textarea id="searchNotes"></textarea>
+      <button data-action="note_search_log">生成检索记录</button>
+
       <h2 style="margin-top:20px">仿真数据</h2>
       <label for="dataPath">CSV/JSON 数据文件路径</label>
       <input id="dataPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\simulation\\result.csv">
@@ -279,6 +298,14 @@ def render_home_page(default_project_root: str = "") -> str:
         summary_limitation: document.getElementById("summaryLimitation").value,
         summary_reuse_value: document.getElementById("summaryReuseValue").value,
         summary_source_pages: document.getElementById("summarySourcePages").value,
+        search_question: document.getElementById("searchQuestion").value,
+        search_keywords: document.getElementById("searchKeywords").value,
+        search_query: document.getElementById("searchQuery").value,
+        search_source: document.getElementById("searchSource").value,
+        search_date: document.getElementById("searchDate").value,
+        search_filters: document.getElementById("searchFilters").value,
+        search_result_count: document.getElementById("searchResultCount").value,
+        search_notes: document.getElementById("searchNotes").value,
         data_path: document.getElementById("dataPath").value,
         required_columns: document.getElementById("requiredColumns").value,
         numeric_columns: document.getElementById("numericColumns").value,
@@ -381,6 +408,25 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                 ),
             )
             return _text(f"已生成摘要卡：{path}")
+        if action == "note_search_log":
+            path = create_note_file(
+                project_root / "notes",
+                note_type="search-log",
+                title=payload.get("search_question", "").strip(),
+                content=render_search_log(
+                    SearchLogEntry(
+                        question=payload.get("search_question", "").strip(),
+                        keywords=[item.strip() for item in payload.get("search_keywords", "").split(";") if item.strip()],
+                        query=payload.get("search_query", "").strip(),
+                        source=payload.get("search_source", "").strip(),
+                        date=payload.get("search_date", "").strip(),
+                        filters=payload.get("search_filters", "").strip(),
+                        result_count=int(payload.get("search_result_count", "0").strip() or 0),
+                        notes=payload.get("search_notes", "").strip(),
+                    )
+                ),
+            )
+            return _text(f"已生成检索记录：{path}")
         if action == "simulation_inspect":
             dataset = load_tabular_result(Path(payload.get("data_path", "").strip()))
             return _text(render_dataset_inspection(inspect_dataset(dataset)))
