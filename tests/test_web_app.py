@@ -12,6 +12,7 @@ class WebAppTests(unittest.TestCase):
         html = render_home_page(default_project_root=r"C:\Research\demo")
 
         self.assertIn("科研工作流控制台", html)
+        self.assertIn("新建课题", html)
         self.assertIn("项目体检", html)
         self.assertIn("文献库统计", html)
         self.assertIn("仿真数据", html)
@@ -28,6 +29,24 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(content_type, "text/plain; charset=utf-8")
         self.assertIn("# Project Check Report", body)
+
+    def test_handle_init_project_action_creates_workspace(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "init_project",
+                    "base_dir": tmpdir,
+                    "project_slug": "demo",
+                    "project_name": "Demo",
+                }
+            )
+
+            project = Path(tmpdir) / "demo"
+            exists = project.exists()
+
+        self.assertEqual(status, 200)
+        self.assertIn("已创建课题", body)
+        self.assertTrue(exists)
 
     def test_handle_library_search_action_returns_matches(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -9,6 +9,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs
 
+from workflow.bootstrap import bootstrap_workspace
 from workflow.library import (
     LibraryEntry,
     add_entry,
@@ -120,6 +121,15 @@ def render_home_page(default_project_root: str = "") -> str:
   </header>
   <main>
     <section>
+      <h2>新建课题</h2>
+      <label for="baseDir">保存到哪个文件夹</label>
+      <input id="baseDir" placeholder="例如 C:\\Users\\22676\\Documents">
+      <label for="projectSlug">课题文件夹名</label>
+      <input id="projectSlug" placeholder="fixture-study">
+      <label for="projectName">课题显示名称</label>
+      <input id="projectName" placeholder="夹具优化研究">
+      <button data-action="init_project">创建课题</button>
+
       <h2>课题目录</h2>
       <label for="projectRoot">项目根目录</label>
       <input id="projectRoot" value="{escaped_root}" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study">
@@ -208,6 +218,9 @@ def render_home_page(default_project_root: str = "") -> str:
     async function runAction(action) {{
       const payload = {{
         action,
+        base_dir: document.getElementById("baseDir").value,
+        project_slug: document.getElementById("projectSlug").value,
+        project_name: document.getElementById("projectName").value,
         project_root: document.getElementById("projectRoot").value,
         query: document.getElementById("libraryQuery").value,
         title: document.getElementById("title").value,
@@ -257,10 +270,17 @@ def render_home_page(default_project_root: str = "") -> str:
 def handle_web_action(payload: dict[str, str]) -> ContentResponse:
     action = payload.get("action", "")
     project_root = Path(payload.get("project_root", "").strip())
-    if action != "library_add" and not str(project_root):
+    if action not in {"init_project", "library_add"} and not str(project_root):
         return 400, "text/plain; charset=utf-8", "请先填写项目根目录。"
 
     try:
+        if action == "init_project":
+            created = bootstrap_workspace(
+                Path(payload.get("base_dir", "").strip()),
+                project_slug=payload.get("project_slug", "").strip(),
+                project_name=payload.get("project_name", "").strip(),
+            )
+            return _text(f"已创建课题：{created}")
         if action == "project_check":
             return _text(render_project_check(build_project_check(project_root)))
         if action == "project_report":
