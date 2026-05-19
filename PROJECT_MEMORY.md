@@ -36,6 +36,7 @@
 - User-facing tutorial updates must be merged into `USER_GUIDE.md`; do not create extra tutorial files for feature additions unless the user explicitly asks.
 - Project status can be summarized with `project report`, which counts library entries, notes, figure bundles, simulation exports, and manuscript files.
 - Project health can be checked with `project check`, which uses `project-check.json` to inspect literature PDFs, simulation exports, manuscript issues, and a summary count.
+- `project check` also reports missing literature note paths, using the same note path resolution as `library check-notes`.
 - `project check` uses optional `simulation.ranges` entries in `project-check.json` to report out-of-range simulation values.
 - A manuscript writing pack can be generated with `project writing-pack`, summarizing literature titles, note files, figure bundles, and simulation exports.
 - `project writing-pack` includes a library overview with entry count, year range, and missing PDF count before listing writing assets.

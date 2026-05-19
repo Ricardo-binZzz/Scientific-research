@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from workflow.library import inspect_pdf_inventory, load_index
+from workflow.library import inspect_note_inventory, inspect_pdf_inventory, load_index
 from workflow.manuscript import inspect_manuscript
 from workflow.python.sim_result_loader import load_tabular_result
 from workflow.simulation import check_dataset_ranges, collect_export_files, load_unit_metadata, validate_dataset_columns
@@ -26,6 +26,7 @@ class ProjectCheck:
     summary: ProjectReport
     library_entries: int
     missing_pdf_names: list[str]
+    missing_note_paths: list[str]
     simulation_issues: list[str]
     manuscript_issues: list[str]
 
@@ -51,6 +52,7 @@ def build_project_check(root: Path) -> ProjectCheck:
     literature = root / "literature"
     library_index = load_index(literature)
     pdf_report = inspect_pdf_inventory(literature, library_index)
+    note_report = inspect_note_inventory(literature, library_index)
     simulation_issues = _inspect_simulation(root, config.get("simulation", {}))
     manuscript_issues = _inspect_manuscripts(root, config.get("manuscript", {}), library_index)
     return ProjectCheck(
@@ -58,6 +60,7 @@ def build_project_check(root: Path) -> ProjectCheck:
         summary=build_project_report(root),
         library_entries=len(library_index.entries),
         missing_pdf_names=pdf_report.missing_pdf_names,
+        missing_note_paths=note_report.missing_note_paths,
         simulation_issues=simulation_issues,
         manuscript_issues=manuscript_issues,
     )
@@ -84,6 +87,7 @@ def render_project_check(check: ProjectCheck) -> str:
     lines.append("## Literature")
     lines.append(f"- Library entries: {check.library_entries}")
     lines.append(f"- Missing PDFs: {', '.join(check.missing_pdf_names) if check.missing_pdf_names else 'None'}")
+    lines.append(f"- Missing notes: {', '.join(check.missing_note_paths) if check.missing_note_paths else 'None'}")
     lines.append("")
     lines.append("## Simulation")
     lines.extend([f"- {issue}" for issue in check.simulation_issues] or ["- None"])

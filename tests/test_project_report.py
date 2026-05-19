@@ -106,8 +106,11 @@ class ProjectReportTests(unittest.TestCase):
             )
 
             check = build_project_check(project)
+            text = render_project_check(check)
 
         self.assertIn("missing.pdf", check.missing_pdf_names)
+        self.assertIn("notes/summary.md", check.missing_note_paths)
+        self.assertIn("Missing notes: notes/summary.md", text)
         self.assertTrue(any("stress" in issue for issue in check.simulation_issues))
         self.assertTrue(any("No citation markers found" in issue for issue in check.manuscript_issues))
 

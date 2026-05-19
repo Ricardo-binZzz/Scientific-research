@@ -51,6 +51,7 @@
 - User preference recorded on 2026-05-19: future user-facing tutorial updates must go into `USER_GUIDE.md`; do not create separate tutorial files for new features unless explicitly requested.
 - `USER_GUIDE.md` was reorganized on 2026-05-19 for beginner readability: new features were merged into the relevant workflow steps, a 10-minute quick-start was added, UTF-8 viewing guidance was added, and the old appended changelog-style section was removed.
 - Workflow expansion on 2026-05-19: `project check` was added as a one-command health report, and new workspaces now get a default `project-check.json`.
+- Workflow expansion on 2026-05-19: `project check` now reports missing literature note paths in the Literature section.
 - Workflow expansion on 2026-05-19: Scopus and Web of Science CSV metadata imports were covered with focused tests and documented in `USER_GUIDE.md`.
 - Workflow expansion on 2026-05-19: common ANSYS, Abaqus, and COMSOL CSV result headers now normalize to stable simulation columns, with focused tests and `USER_GUIDE.md` updates.
 - Workflow expansion on 2026-05-19: `simulation inspect-data` was added as a beginner-friendly preview step before validation and plotting.
