@@ -71,6 +71,35 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(search_status, 200)
         self.assertIn("Fixture stiffness", search_body)
 
+    def test_handle_paper_summary_action_writes_note(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+
+            status, _content_type, body = handle_web_action(
+                {
+                    "action": "note_paper_summary",
+                    "project_root": str(project),
+                    "summary_title": "Adaptive clamping fixture",
+                    "summary_authors": "Zhang; Li",
+                    "summary_source": "Journal A",
+                    "summary_year": "2024",
+                    "summary_doi": "10.1000/a",
+                    "summary_problem": "Fixture deformation",
+                    "summary_method": "Finite element analysis",
+                    "summary_data": "Stress and displacement",
+                    "summary_key_figures": "Fig. 3",
+                    "summary_main_result": "Lower deformation",
+                    "summary_limitation": "Small sample",
+                    "summary_reuse_value": "Metric reference",
+                    "summary_source_pages": "pp. 1-5",
+                }
+            )
+            note_files = list((project / "notes").glob("*adaptive-clamping-fixture.md"))
+
+        self.assertEqual(status, 200)
+        self.assertIn("已生成摘要卡", body)
+        self.assertEqual(len(note_files), 1)
+
     def test_handle_library_search_action_returns_matches(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

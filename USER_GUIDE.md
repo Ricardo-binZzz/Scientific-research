@@ -70,6 +70,7 @@ C:\Users\22676\Documents\fixture-study
 - 检查缺 PDF。
 - 检查缺笔记。
 - 添加文献。
+- 生成论文摘要卡。
 - 预览仿真 CSV/JSON 数据。
 - 汇总仿真数值范围。
 - 校验仿真数据列和数值列。

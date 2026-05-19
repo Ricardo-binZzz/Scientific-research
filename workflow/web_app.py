@@ -26,6 +26,7 @@ from workflow.library import (
     search_library,
 )
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
+from workflow.notes import PaperSummary, create_note_file, render_paper_summary
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
 from workflow.python.figure_exporter import build_spec_from_dataset, export_figure_bundle
 from workflow.python.sim_result_loader import load_tabular_result
@@ -171,6 +172,35 @@ def render_home_page(default_project_root: str = "") -> str:
       <input id="notePath" placeholder="notes/summary.md">
       <button data-action="library_add">添加到文献库</button>
 
+      <h2 style="margin-top:20px">论文摘要卡</h2>
+      <label for="summaryTitle">论文题名</label>
+      <input id="summaryTitle">
+      <label for="summaryAuthors">作者，多个作者用分号隔开</label>
+      <input id="summaryAuthors">
+      <label for="summarySource">来源</label>
+      <input id="summarySource">
+      <label for="summaryYear">年份</label>
+      <input id="summaryYear">
+      <label for="summaryDoi">DOI</label>
+      <input id="summaryDoi">
+      <label for="summaryProblem">研究问题</label>
+      <textarea id="summaryProblem"></textarea>
+      <label for="summaryMethod">方法</label>
+      <textarea id="summaryMethod"></textarea>
+      <label for="summaryData">数据</label>
+      <textarea id="summaryData"></textarea>
+      <label for="summaryKeyFigures">关键图表</label>
+      <textarea id="summaryKeyFigures"></textarea>
+      <label for="summaryMainResult">主要结论</label>
+      <textarea id="summaryMainResult"></textarea>
+      <label for="summaryLimitation">局限性</label>
+      <textarea id="summaryLimitation"></textarea>
+      <label for="summaryReuseValue">可复用价值</label>
+      <textarea id="summaryReuseValue"></textarea>
+      <label for="summarySourcePages">来源页码</label>
+      <input id="summarySourcePages" placeholder="pp. 1-5">
+      <button data-action="note_paper_summary">生成摘要卡</button>
+
       <h2 style="margin-top:20px">仿真数据</h2>
       <label for="dataPath">CSV/JSON 数据文件路径</label>
       <input id="dataPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\simulation\\result.csv">
@@ -236,6 +266,19 @@ def render_home_page(default_project_root: str = "") -> str:
         doi: document.getElementById("doi").value,
         pdf_name: document.getElementById("pdfName").value,
         note_path: document.getElementById("notePath").value,
+        summary_title: document.getElementById("summaryTitle").value,
+        summary_authors: document.getElementById("summaryAuthors").value,
+        summary_source: document.getElementById("summarySource").value,
+        summary_year: document.getElementById("summaryYear").value,
+        summary_doi: document.getElementById("summaryDoi").value,
+        summary_problem: document.getElementById("summaryProblem").value,
+        summary_method: document.getElementById("summaryMethod").value,
+        summary_data: document.getElementById("summaryData").value,
+        summary_key_figures: document.getElementById("summaryKeyFigures").value,
+        summary_main_result: document.getElementById("summaryMainResult").value,
+        summary_limitation: document.getElementById("summaryLimitation").value,
+        summary_reuse_value: document.getElementById("summaryReuseValue").value,
+        summary_source_pages: document.getElementById("summarySourcePages").value,
         data_path: document.getElementById("dataPath").value,
         required_columns: document.getElementById("requiredColumns").value,
         numeric_columns: document.getElementById("numericColumns").value,
@@ -314,6 +357,30 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(render_note_inventory_report(inspect_note_inventory(literature_root, load_index(literature_root))))
         if action == "library_add":
             return _add_library_entry(project_root, payload)
+        if action == "note_paper_summary":
+            path = create_note_file(
+                project_root / "notes",
+                note_type="paper-summary",
+                title=payload.get("summary_title", "").strip(),
+                content=render_paper_summary(
+                    PaperSummary(
+                        title=payload.get("summary_title", "").strip(),
+                        authors=[item.strip() for item in payload.get("summary_authors", "").split(";") if item.strip()],
+                        source=payload.get("summary_source", "").strip(),
+                        year=int(payload.get("summary_year", "0").strip() or 0),
+                        doi=payload.get("summary_doi", "").strip(),
+                        problem=payload.get("summary_problem", "").strip(),
+                        method=payload.get("summary_method", "").strip(),
+                        data=payload.get("summary_data", "").strip(),
+                        key_figures=payload.get("summary_key_figures", "").strip(),
+                        main_result=payload.get("summary_main_result", "").strip(),
+                        limitation=payload.get("summary_limitation", "").strip(),
+                        reuse_value=payload.get("summary_reuse_value", "").strip(),
+                        source_pages=payload.get("summary_source_pages", "").strip(),
+                    )
+                ),
+            )
+            return _text(f"已生成摘要卡：{path}")
         if action == "simulation_inspect":
             dataset = load_tabular_result(Path(payload.get("data_path", "").strip()))
             return _text(render_dataset_inspection(inspect_dataset(dataset)))
