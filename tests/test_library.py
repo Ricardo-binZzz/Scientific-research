@@ -419,9 +419,13 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual(stats.year_max, 2024)
         self.assertEqual(stats.missing_pdf_count, 2)
         self.assertEqual(stats.source_counts["Journal A"], 2)
+        self.assertEqual(stats.author_counts["Zhang"], 1)
+        self.assertEqual(stats.author_counts["Li"], 1)
         self.assertIn("Year range: 2022-2024", text)
         self.assertIn("Missing PDFs: 2", text)
         self.assertIn("Journal A: 2", text)
+        self.assertIn("## Authors", text)
+        self.assertIn("Zhang: 1", text)
 
     def test_cli_library_stats_prints_summary(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
