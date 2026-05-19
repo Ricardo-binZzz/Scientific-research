@@ -563,7 +563,15 @@ C:\Users\22676\Documents\fixture-study\manuscript
 & $PY -m workflow.cli project writing-pack C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\writing-pack.md
 ```
 
-`writing-pack.md` 会汇总当前课题中可用于写作的文献、笔记、图和仿真结果。开头还会附带文献库概览，包括文献总数、年份范围和缺失 PDF 数量，方便写作前先判断资料是否够用。
+`writing-pack.md` 会汇总当前课题中可用于写作的文献、笔记、图、仿真结果和论文草稿。开头还会附带文献库概览，包括文献总数、年份范围和缺失 PDF 数量，方便写作前先判断资料是否够用。
+
+素材包还会单独列出：
+
+- `Recent Literature (since 2020)`：2020 年及之后的近期文献，适合写研究现状时优先查看。
+- `Library Gaps`：缺失的 PDF 和缺失的摘要卡或阅读笔记，适合写作前补材料。
+- `Manuscript Drafts`：当前 `manuscript` 文件夹里的 `.md`、`.txt`、`.docx` 草稿。
+
+如果你用本地网页界面，点击“生成写作素材包”也会看到这些内容。
 
 ## 17. 推荐的日常使用顺序
 

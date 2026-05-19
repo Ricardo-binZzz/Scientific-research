@@ -15,6 +15,7 @@ class WritingPackTests(unittest.TestCase):
             (root / "figures" / "stress.svg").write_text("<svg></svg>", encoding="utf-8")
             (root / "figures" / "stress.json").write_text("{}", encoding="utf-8")
             (root / "simulation" / "result.csv").write_text("time,stress\n0,1\n", encoding="utf-8")
+            (root / "manuscript" / "draft.md").write_text("# Introduction\n", encoding="utf-8")
             self.assertEqual(
                 main(
                     [
@@ -49,11 +50,91 @@ class WritingPackTests(unittest.TestCase):
         self.assertEqual(pack.note_files, ["summary.md"])
         self.assertEqual(pack.figure_bundles, ["stress"])
         self.assertEqual(pack.simulation_exports, ["result.csv"])
+        self.assertEqual(pack.manuscript_files, ["draft.md"])
+
+    def test_writing_pack_tracks_recent_literature(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self.assertEqual(main(["init", tmpdir, "--slug", "demo", "--name", "Demo"]), 0)
+            root = Path(tmpdir) / "demo"
+            for title, year in [("Classic fixture review", "2015"), ("Recent adaptive fixture", "2024")]:
+                self.assertEqual(
+                    main(
+                        [
+                            "library",
+                            "add",
+                            str(root / "literature"),
+                            "--title",
+                            title,
+                            "--author",
+                            "Zhang",
+                            "--year",
+                            year,
+                            "--source",
+                            "Journal",
+                            "--doi",
+                            f"10.1000/{year}",
+                            "--pdf-name",
+                            f"{year}.pdf",
+                            "--note-path",
+                            f"notes/{year}.md",
+                        ]
+                    ),
+                    0,
+                )
+
+            pack = build_writing_pack(root)
+            text = render_writing_pack(pack)
+
+        self.assertEqual(pack.recent_library_titles, ["Recent adaptive fixture"])
+        self.assertIn("## Recent Literature", text)
+        recent_section = text.split("## Recent Literature", 1)[1].split("## Literature", 1)[0]
+        self.assertIn("Recent adaptive fixture", recent_section)
+        self.assertNotIn("Classic fixture review", recent_section)
+
+    def test_writing_pack_lists_missing_library_assets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self.assertEqual(main(["init", tmpdir, "--slug", "demo", "--name", "Demo"]), 0)
+            root = Path(tmpdir) / "demo"
+            self.assertEqual(
+                main(
+                    [
+                        "library",
+                        "add",
+                        str(root / "literature"),
+                        "--title",
+                        "Missing assets paper",
+                        "--author",
+                        "Li",
+                        "--year",
+                        "2023",
+                        "--source",
+                        "Journal",
+                        "--doi",
+                        "10.1000/missing",
+                        "--pdf-name",
+                        "missing.pdf",
+                        "--note-path",
+                        "notes/missing.md",
+                    ]
+                ),
+                0,
+            )
+
+            pack = build_writing_pack(root)
+            text = render_writing_pack(pack)
+
+        self.assertEqual(pack.missing_pdf_names, ["missing.pdf"])
+        self.assertEqual(pack.missing_note_paths, ["notes/missing.md"])
+        self.assertIn("## Library Gaps", text)
+        self.assertIn("- Missing PDFs: missing.pdf", text)
+        self.assertIn("- Missing notes: notes/missing.md", text)
 
     def test_render_writing_pack_contains_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             self.assertEqual(main(["init", tmpdir, "--slug", "demo", "--name", "Demo"]), 0)
-            pack = build_writing_pack(Path(tmpdir) / "demo")
+            root = Path(tmpdir) / "demo"
+            (root / "manuscript" / "draft.md").write_text("# Introduction\n", encoding="utf-8")
+            pack = build_writing_pack(root)
 
             text = render_writing_pack(pack)
 
@@ -62,6 +143,8 @@ class WritingPackTests(unittest.TestCase):
         self.assertIn("Total entries", text)
         self.assertIn("## Literature", text)
         self.assertIn("## Figures", text)
+        self.assertIn("## Manuscript Drafts", text)
+        self.assertIn("draft.md", text)
 
     def test_cli_project_writing_pack_writes_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

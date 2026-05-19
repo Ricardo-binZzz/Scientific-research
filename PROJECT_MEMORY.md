@@ -43,6 +43,7 @@
 - `project check` uses optional `simulation.ranges` entries in `project-check.json` to report out-of-range simulation values.
 - A manuscript writing pack can be generated with `project writing-pack`, summarizing literature titles, note files, figure bundles, and simulation exports.
 - `project writing-pack` includes a library overview with entry count, year range, and missing PDF count before listing writing assets.
+- `project writing-pack` also highlights recent literature from 2020 onward, missing PDFs, missing note paths, and manuscript draft files.
 - Manuscript figure marker extraction supports both English `Figure N` and Chinese `图 N` forms.
 - Manuscript required-section checks support common Chinese aliases for English section names, such as `Introduction` matching `引言` or `绪论`.
 - Manuscript citation extraction supports grouped Markdown/Pandoc citations such as `[@key1; @key2]`.

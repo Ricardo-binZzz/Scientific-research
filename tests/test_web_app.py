@@ -30,6 +30,34 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(content_type, "text/plain; charset=utf-8")
         self.assertIn("# Project Check Report", body)
 
+    def test_handle_writing_pack_action_returns_enriched_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            (project / "manuscript" / "draft.md").write_text("# Introduction\n", encoding="utf-8")
+            handle_web_action(
+                {
+                    "action": "library_add",
+                    "project_root": str(project),
+                    "title": "Recent adaptive fixture",
+                    "authors": "Zhang",
+                    "year": "2024",
+                    "source": "Journal",
+                    "doi": "10.1000/recent",
+                    "pdf_name": "recent.pdf",
+                    "note_path": "notes/recent.md",
+                }
+            )
+
+            status, _content_type, body = handle_web_action({"action": "writing_pack", "project_root": str(project)})
+
+        self.assertEqual(status, 200)
+        self.assertIn("## Recent Literature", body)
+        self.assertIn("Recent adaptive fixture", body)
+        self.assertIn("## Library Gaps", body)
+        self.assertIn("recent.pdf", body)
+        self.assertIn("## Manuscript Drafts", body)
+        self.assertIn("draft.md", body)
+
     def test_handle_init_project_action_creates_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             status, _content_type, body = handle_web_action(

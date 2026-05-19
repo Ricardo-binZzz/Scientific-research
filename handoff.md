@@ -32,6 +32,7 @@
 - `examples/` contains a minimal CSV and manuscript draft for quick command trials.
 - `project writing-pack` can print or write a Markdown pack for manuscript drafting.
 - `project writing-pack` includes a library overview with entry count, year range, and missing PDF count.
+- `project writing-pack` now includes recent literature from 2020 onward, missing PDF/note lists, and manuscript draft files; the web writing-pack action returns the same enriched output.
 - CLI command execution is split into `workflow/commands.py`; `workflow/cli.py` now focuses on argument parsing.
 - Manuscript checks recognize English and Chinese figure-number markers.
 - Workspace templates include `simulation-metadata.json` for column-unit metadata.
@@ -69,6 +70,7 @@
 - Workflow expansion on 2026-05-19: `library check-notes` was added to find literature entries whose summary cards or reading notes are missing.
 - Workflow expansion on 2026-05-19: `library stats` now includes missing note count alongside missing PDF count.
 - Workflow expansion on 2026-05-19: `project writing-pack` now includes the same key library overview fields.
+- Workflow expansion on 2026-05-19: `project writing-pack` was expanded with recent literature, library gaps, and manuscript draft sections, with web-action regression coverage.
 - Workflow expansion on 2026-05-19: manuscript required-section checks now recognize common Chinese section aliases.
 - Workflow expansion on 2026-05-19: manuscript checks now report skipped Chinese figure numbers.
 - Workflow expansion on 2026-05-19: manuscript citation extraction now supports grouped Markdown/Pandoc citations.
