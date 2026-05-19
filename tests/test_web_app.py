@@ -12,6 +12,10 @@ class WebAppTests(unittest.TestCase):
         html = render_home_page(default_project_root=r"C:\Research\demo")
 
         self.assertIn("科研工作流控制台", html)
+        self.assertIn('class="app-shell"', html)
+        self.assertIn('class="sidebar"', html)
+        self.assertIn('class="workspace"', html)
+        self.assertIn('class="result-panel"', html)
         self.assertIn("新建课题", html)
         self.assertIn("项目体检", html)
         self.assertIn("文献库统计", html)
@@ -19,6 +23,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("稿件检查", html)
         self.assertIn("生成图", html)
         self.assertIn(r"C:\Research\demo", html)
+        self.assertNotIn("return f\"\"\"<!doctype html>", html)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -51,314 +51,9 @@ ContentResponse = tuple[int, str, str]
 
 
 def render_home_page(default_project_root: str = "") -> str:
-    escaped_root = html.escape(default_project_root, quote=True)
-    return f"""<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>科研工作流控制台</title>
-  <style>
-    :root {{
-      color-scheme: light;
-      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
-      background: #f4f5f7;
-      color: #1f2933;
-    }}
-    body {{ margin: 0; }}
-    header {{
-      background: #1f4f5f;
-      color: white;
-      padding: 22px 28px;
-    }}
-    main {{
-      display: grid;
-      grid-template-columns: minmax(280px, 380px) minmax(360px, 1fr);
-      gap: 18px;
-      padding: 18px;
-    }}
-    section {{
-      background: white;
-      border: 1px solid #d9dee5;
-      border-radius: 8px;
-      padding: 16px;
-    }}
-    h1 {{ margin: 0; font-size: 26px; }}
-    h2 {{ margin: 0 0 12px; font-size: 18px; }}
-    label {{ display: block; font-size: 13px; font-weight: 600; margin-top: 10px; }}
-    input, textarea {{
-      box-sizing: border-box;
-      width: 100%;
-      margin-top: 5px;
-      padding: 9px 10px;
-      border: 1px solid #c8d0d9;
-      border-radius: 6px;
-      font: inherit;
-    }}
-    textarea {{ min-height: 68px; resize: vertical; }}
-    button {{
-      border: 0;
-      border-radius: 6px;
-      background: #236477;
-      color: white;
-      cursor: pointer;
-      font: inherit;
-      font-weight: 600;
-      margin: 8px 6px 0 0;
-      padding: 9px 12px;
-    }}
-    button.secondary {{ background: #52616d; }}
-    pre {{
-      background: #111827;
-      border-radius: 8px;
-      color: #e5e7eb;
-      min-height: 420px;
-      overflow: auto;
-      padding: 14px;
-      white-space: pre-wrap;
-    }}
-    .hint {{ color: #5d6875; font-size: 13px; line-height: 1.6; }}
-    @media (max-width: 860px) {{
-      main {{ grid-template-columns: 1fr; }}
-    }}
-  </style>
-</head>
-<body>
-  <header>
-    <h1>科研工作流控制台</h1>
-    <div class="hint" style="color:#dce8ec">填写课题目录后，点击按钮运行常用检查。结果会显示在右侧。</div>
-  </header>
-  <main>
-    <section>
-      <h2>新建课题</h2>
-      <label for="baseDir">保存到哪个文件夹</label>
-      <input id="baseDir" placeholder="例如 C:\\Users\\22676\\Documents">
-      <label for="projectSlug">课题文件夹名</label>
-      <input id="projectSlug" placeholder="fixture-study">
-      <label for="projectName">课题显示名称</label>
-      <input id="projectName" placeholder="夹具优化研究">
-      <button data-action="init_project">创建课题</button>
-
-      <h2>课题目录</h2>
-      <label for="projectRoot">项目根目录</label>
-      <input id="projectRoot" value="{escaped_root}" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study">
-      <div>
-        <button data-action="project_check">项目体检</button>
-        <button data-action="project_report" class="secondary">项目状态</button>
-        <button data-action="writing_pack" class="secondary">生成写作素材包</button>
-        <button data-action="literature_table" class="secondary">生成文献对比表</button>
-        <button data-action="writing_dashboard" class="secondary">生成写作看板</button>
-        <button data-action="literature_tracker" class="secondary">生成追踪清单</button>
-      </div>
-
-      <h2 style="margin-top:20px">文献库</h2>
-      <label for="libraryQuery">搜索关键词</label>
-      <input id="libraryQuery" placeholder="题名、作者、期刊或 DOI">
-      <label for="sinceYear">只看某年之后</label>
-      <input id="sinceYear" placeholder="2020">
-      <label for="sourceQuery">来源关键词</label>
-      <input id="sourceQuery" placeholder="Manufacturing">
-      <div>
-        <button data-action="library_search">搜索文献</button>
-        <button data-action="library_recent" class="secondary">按年份过滤</button>
-        <button data-action="library_source" class="secondary">按来源过滤</button>
-        <button data-action="library_stats" class="secondary">文献库统计</button>
-        <button data-action="literature_map" class="secondary">生成文献地图</button>
-        <button data-action="library_check_pdfs" class="secondary">检查缺 PDF</button>
-        <button data-action="library_check_notes" class="secondary">检查缺笔记</button>
-      </div>
-      <label for="csvPath">CSV 元数据文件路径</label>
-      <input id="csvPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\papers.csv">
-      <button data-action="library_import_csv">导入 CSV 文献</button>
-
-      <h2 style="margin-top:20px">添加文献</h2>
-      <label for="title">题名</label>
-      <input id="title">
-      <label for="authors">作者，多个作者用分号隔开</label>
-      <input id="authors">
-      <label for="year">年份</label>
-      <input id="year">
-      <label for="source">来源期刊或会议</label>
-      <input id="source">
-      <label for="doi">DOI</label>
-      <input id="doi">
-      <label for="pdfName">PDF 文件名</label>
-      <input id="pdfName">
-      <label for="notePath">笔记路径</label>
-      <input id="notePath" placeholder="notes/summary.md">
-      <button data-action="library_add">添加到文献库</button>
-
-      <h2 style="margin-top:20px">论文摘要卡</h2>
-      <label for="summaryTitle">论文题名</label>
-      <input id="summaryTitle">
-      <label for="summaryAuthors">作者，多个作者用分号隔开</label>
-      <input id="summaryAuthors">
-      <label for="summarySource">来源</label>
-      <input id="summarySource">
-      <label for="summaryYear">年份</label>
-      <input id="summaryYear">
-      <label for="summaryDoi">DOI</label>
-      <input id="summaryDoi">
-      <label for="summaryProblem">研究问题</label>
-      <textarea id="summaryProblem"></textarea>
-      <label for="summaryMethod">方法</label>
-      <textarea id="summaryMethod"></textarea>
-      <label for="summaryData">数据</label>
-      <textarea id="summaryData"></textarea>
-      <label for="summaryKeyFigures">关键图表</label>
-      <textarea id="summaryKeyFigures"></textarea>
-      <label for="summaryMainResult">主要结论</label>
-      <textarea id="summaryMainResult"></textarea>
-      <label for="summaryLimitation">局限性</label>
-      <textarea id="summaryLimitation"></textarea>
-      <label for="summaryReuseValue">可复用价值</label>
-      <textarea id="summaryReuseValue"></textarea>
-      <label for="summarySourcePages">来源页码</label>
-      <input id="summarySourcePages" placeholder="pp. 1-5">
-      <button data-action="note_paper_summary">生成摘要卡</button>
-
-      <h2 style="margin-top:20px">文献检索记录</h2>
-      <label for="searchQuestion">检索问题</label>
-      <input id="searchQuestion">
-      <label for="searchKeywords">关键词，多个用分号隔开</label>
-      <input id="searchKeywords">
-      <label for="searchQuery">检索式</label>
-      <textarea id="searchQuery"></textarea>
-      <label for="searchSource">检索平台</label>
-      <input id="searchSource" placeholder="Google Scholar / Web of Science / Scopus">
-      <label for="searchDate">日期</label>
-      <input id="searchDate" placeholder="2026-05-19">
-      <label for="searchFilters">筛选条件</label>
-      <input id="searchFilters" placeholder="2020-2026">
-      <label for="searchResultCount">结果数量</label>
-      <input id="searchResultCount" placeholder="12">
-      <label for="searchNotes">备注</label>
-      <textarea id="searchNotes"></textarea>
-      <button data-action="note_search_log">生成检索记录</button>
-
-      <h2 style="margin-top:20px">仿真数据</h2>
-      <label for="dataPath">CSV/JSON 数据文件路径</label>
-      <input id="dataPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\simulation\\result.csv">
-      <label for="requiredColumns">必须存在的列，多个用逗号隔开</label>
-      <input id="requiredColumns" placeholder="time,stress">
-      <label for="numericColumns">必须是数字的列，多个用逗号隔开</label>
-      <input id="numericColumns" placeholder="time,stress">
-      <div>
-        <button data-action="simulation_inspect">预览数据</button>
-        <button data-action="simulation_summarize" class="secondary">汇总数值范围</button>
-        <button data-action="simulation_validate" class="secondary">校验数据</button>
-      </div>
-
-      <h2 style="margin-top:20px">生成图</h2>
-      <label for="figureDataPath">数据文件路径</label>
-      <input id="figureDataPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\simulation\\result.csv">
-      <label for="figureOutDir">输出文件夹</label>
-      <input id="figureOutDir" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\figures">
-      <label for="figureStem">文件名前缀</label>
-      <input id="figureStem" placeholder="stress-response">
-      <label for="figureTitle">图题</label>
-      <input id="figureTitle" placeholder="Stress response">
-      <label for="figureType">图类型</label>
-      <input id="figureType" placeholder="trend 或 bar">
-      <label for="xColumn">X 列</label>
-      <input id="xColumn" placeholder="time">
-      <label for="yColumns">Y 列，多个用逗号隔开</label>
-      <input id="yColumns" placeholder="stress">
-      <label for="xLabel">X 轴标签</label>
-      <input id="xLabel" placeholder="Time (s)">
-      <label for="yLabel">Y 轴标签</label>
-      <input id="yLabel" placeholder="Stress (MPa)">
-      <button data-action="figure_from_data">生成 SVG 图</button>
-
-      <h2 style="margin-top:20px">稿件检查</h2>
-      <label for="manuscriptPath">稿件路径</label>
-      <input id="manuscriptPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\manuscript\\chapter.md">
-      <label for="requiredSections">必需章节，多个用逗号隔开</label>
-      <input id="requiredSections" placeholder="Introduction,Method,Results">
-      <label for="expectedFigures">预期图号，多个用逗号隔开</label>
-      <input id="expectedFigures" placeholder="Figure 1,Figure 2">
-      <button data-action="manuscript_check">检查稿件</button>
-    </section>
-    <section>
-      <h2>运行结果</h2>
-      <pre id="output">网页已打开。先填写项目根目录，然后点击左侧按钮。</pre>
-    </section>
-  </main>
-  <script>
-    async function runAction(action) {{
-      const payload = {{
-        action,
-        base_dir: document.getElementById("baseDir").value,
-        project_slug: document.getElementById("projectSlug").value,
-        project_name: document.getElementById("projectName").value,
-        project_root: document.getElementById("projectRoot").value,
-        query: document.getElementById("libraryQuery").value,
-        since_year: document.getElementById("sinceYear").value,
-        source_query: document.getElementById("sourceQuery").value,
-        csv_path: document.getElementById("csvPath").value,
-        title: document.getElementById("title").value,
-        authors: document.getElementById("authors").value,
-        year: document.getElementById("year").value,
-        source: document.getElementById("source").value,
-        doi: document.getElementById("doi").value,
-        pdf_name: document.getElementById("pdfName").value,
-        note_path: document.getElementById("notePath").value,
-        summary_title: document.getElementById("summaryTitle").value,
-        summary_authors: document.getElementById("summaryAuthors").value,
-        summary_source: document.getElementById("summarySource").value,
-        summary_year: document.getElementById("summaryYear").value,
-        summary_doi: document.getElementById("summaryDoi").value,
-        summary_problem: document.getElementById("summaryProblem").value,
-        summary_method: document.getElementById("summaryMethod").value,
-        summary_data: document.getElementById("summaryData").value,
-        summary_key_figures: document.getElementById("summaryKeyFigures").value,
-        summary_main_result: document.getElementById("summaryMainResult").value,
-        summary_limitation: document.getElementById("summaryLimitation").value,
-        summary_reuse_value: document.getElementById("summaryReuseValue").value,
-        summary_source_pages: document.getElementById("summarySourcePages").value,
-        search_question: document.getElementById("searchQuestion").value,
-        search_keywords: document.getElementById("searchKeywords").value,
-        search_query: document.getElementById("searchQuery").value,
-        search_source: document.getElementById("searchSource").value,
-        search_date: document.getElementById("searchDate").value,
-        search_filters: document.getElementById("searchFilters").value,
-        search_result_count: document.getElementById("searchResultCount").value,
-        search_notes: document.getElementById("searchNotes").value,
-        data_path: document.getElementById("dataPath").value,
-        required_columns: document.getElementById("requiredColumns").value,
-        numeric_columns: document.getElementById("numericColumns").value,
-        figure_data_path: document.getElementById("figureDataPath").value,
-        figure_out_dir: document.getElementById("figureOutDir").value,
-        figure_stem: document.getElementById("figureStem").value,
-        figure_title: document.getElementById("figureTitle").value,
-        figure_type: document.getElementById("figureType").value,
-        x_column: document.getElementById("xColumn").value,
-        y_columns: document.getElementById("yColumns").value,
-        x_label: document.getElementById("xLabel").value,
-        y_label: document.getElementById("yLabel").value,
-        manuscript_path: document.getElementById("manuscriptPath").value,
-        required_sections: document.getElementById("requiredSections").value,
-        expected_figures: document.getElementById("expectedFigures").value
-      }};
-      const output = document.getElementById("output");
-      output.textContent = "运行中...";
-      try {{
-        const response = await fetch("/action", {{
-          method: "POST",
-          headers: {{ "Content-Type": "application/json" }},
-          body: JSON.stringify(payload)
-        }});
-        output.textContent = await response.text();
-      }} catch (error) {{
-        output.textContent = "请求失败：" + error;
-      }}
-    }}
-    document.querySelectorAll("button[data-action]").forEach((button) => {{
-      button.addEventListener("click", () => runAction(button.dataset.action));
-    }});
-  </script>
-</body>
-</html>"""
+    index_path = Path(__file__).with_name("web_assets") / "index.html"
+    content = index_path.read_text(encoding="utf-8")
+    return content.replace("__DEFAULT_PROJECT_ROOT__", html.escape(default_project_root, quote=True))
 
 
 def handle_web_action(payload: dict[str, str]) -> ContentResponse:
@@ -558,6 +253,9 @@ def _add_library_entry(project_root: Path, payload: dict[str, str]) -> ContentRe
 def _make_handler(default_project_root: str):
     class WorkflowRequestHandler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
+            if self.path.startswith("/assets/"):
+                self._send_asset(self.path.removeprefix("/assets/"))
+                return
             if self.path not in {"/", "/index.html"}:
                 self._send(404, "text/plain; charset=utf-8", "Not Found")
                 return
@@ -586,6 +284,14 @@ def _make_handler(default_project_root: str):
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             self.wfile.write(data)
+
+        def _send_asset(self, name: str) -> None:
+            if name not in {"styles.css", "app.js"}:
+                self._send(404, "text/plain; charset=utf-8", "Not Found")
+                return
+            path = Path(__file__).with_name("web_assets") / name
+            content_type = "text/css; charset=utf-8" if name.endswith(".css") else "application/javascript; charset=utf-8"
+            self._send(200, content_type, path.read_text(encoding="utf-8"))
 
     return WorkflowRequestHandler
 
