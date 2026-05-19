@@ -21,6 +21,15 @@ from workflow.library import (
     search_library,
 )
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
+from workflow.python.sim_result_loader import load_tabular_result
+from workflow.simulation import (
+    inspect_dataset,
+    render_dataset_inspection,
+    render_dataset_summary,
+    render_dataset_validation_report,
+    summarize_dataset,
+    validate_dataset_columns,
+)
 from workflow.writing_pack import build_writing_pack, render_writing_pack
 
 
@@ -142,6 +151,19 @@ def render_home_page(default_project_root: str = "") -> str:
       <label for="notePath">笔记路径</label>
       <input id="notePath" placeholder="notes/summary.md">
       <button data-action="library_add">添加到文献库</button>
+
+      <h2 style="margin-top:20px">仿真数据</h2>
+      <label for="dataPath">CSV/JSON 数据文件路径</label>
+      <input id="dataPath" placeholder="例如 C:\\Users\\22676\\Documents\\fixture-study\\simulation\\result.csv">
+      <label for="requiredColumns">必须存在的列，多个用逗号隔开</label>
+      <input id="requiredColumns" placeholder="time,stress">
+      <label for="numericColumns">必须是数字的列，多个用逗号隔开</label>
+      <input id="numericColumns" placeholder="time,stress">
+      <div>
+        <button data-action="simulation_inspect">预览数据</button>
+        <button data-action="simulation_summarize" class="secondary">汇总数值范围</button>
+        <button data-action="simulation_validate" class="secondary">校验数据</button>
+      </div>
     </section>
     <section>
       <h2>运行结果</h2>
@@ -160,7 +182,10 @@ def render_home_page(default_project_root: str = "") -> str:
         source: document.getElementById("source").value,
         doi: document.getElementById("doi").value,
         pdf_name: document.getElementById("pdfName").value,
-        note_path: document.getElementById("notePath").value
+        note_path: document.getElementById("notePath").value,
+        data_path: document.getElementById("dataPath").value,
+        required_columns: document.getElementById("requiredColumns").value,
+        numeric_columns: document.getElementById("numericColumns").value
       }};
       const output = document.getElementById("output");
       output.textContent = "运行中...";
@@ -210,6 +235,23 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(render_note_inventory_report(inspect_note_inventory(literature_root, load_index(literature_root))))
         if action == "library_add":
             return _add_library_entry(project_root, payload)
+        if action == "simulation_inspect":
+            dataset = load_tabular_result(Path(payload.get("data_path", "").strip()))
+            return _text(render_dataset_inspection(inspect_dataset(dataset)))
+        if action == "simulation_summarize":
+            dataset = load_tabular_result(Path(payload.get("data_path", "").strip()))
+            return _text(render_dataset_summary(summarize_dataset(dataset)))
+        if action == "simulation_validate":
+            dataset = load_tabular_result(Path(payload.get("data_path", "").strip()))
+            return _text(
+                render_dataset_validation_report(
+                    validate_dataset_columns(
+                        dataset,
+                        required_columns=_split_csv_input(payload.get("required_columns", "")),
+                        numeric_columns=_split_csv_input(payload.get("numeric_columns", "")),
+                    )
+                )
+            )
     except Exception as exc:
         return 500, "text/plain; charset=utf-8", f"运行失败：{exc}"
 
@@ -292,6 +334,10 @@ def _make_handler(default_project_root: str):
 
 def _text(body: str) -> ContentResponse:
     return 200, "text/plain; charset=utf-8", body
+
+
+def _split_csv_input(value: str) -> list[str]:
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 
 if __name__ == "__main__":
