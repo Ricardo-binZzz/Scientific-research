@@ -27,8 +27,11 @@
         </div>
         <div class="quick-actions">
           <button class="primary" data-action="project_check">项目体检</button>
+          <button class="secondary" data-action="workflow_status">流程状态</button>
           <button class="secondary" data-action="writing_dashboard">生成写作看板</button>
           <button class="secondary" data-action="writing_pack">生成写作素材包</button>
+          <button class="ghost" type="button" id="loadDemoProject">加载示例课题</button>
+          <button class="ghost" type="button" id="fillCommonPaths">填充常用路径</button>
           <button class="ghost mobile-result-jump" type="button" data-scroll-output="true">查看运行结果</button>
         </div>
       </section>
@@ -63,6 +66,7 @@
         <div class="group-body">
           <div class="button-row">
             <button class="primary" data-action="project_check">项目体检</button>
+            <button class="secondary" data-action="workflow_status">流程状态</button>
             <button class="secondary" data-action="project_report">项目状态</button>
             <button class="secondary" data-action="writing_dashboard">生成写作看板</button>
             <button class="secondary" data-action="writing_pack">生成写作素材包</button>
@@ -207,6 +211,8 @@
             <div class="field"><label for="valueColumn">数值列</label><input id="valueColumn" placeholder="temperature，仅热力图/等值线图需要"></div>
             <div class="field"><label for="xLabel">X 轴标签</label><input id="xLabel" placeholder="Time (s)"></div>
             <div class="field"><label for="yLabel">Y 轴标签</label><input id="yLabel" placeholder="Stress (MPa)"></div>
+            <div class="field"><label for="figureWidthMm">图宽 mm</label><input id="figureWidthMm" placeholder="180"></div>
+            <div class="field"><label for="figureHeightMm">图高 mm</label><input id="figureHeightMm" placeholder="120"></div>
           </div>
           <div class="button-row"><button class="primary" data-action="figure_from_data">生成 SVG 图</button></div>
         </div>

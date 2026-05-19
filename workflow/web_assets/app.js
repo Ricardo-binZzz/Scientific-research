@@ -5,6 +5,7 @@ const projectRoot = document.getElementById("projectRoot");
 const toast = document.getElementById("toast");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
+const demoProjectRoot = String.raw`C:\Users\22676\Documents\科研\examples\demo-project`;
 
 function valueOf(id) {
   const element = document.getElementById(id);
@@ -79,6 +80,8 @@ async function runAction(action, button) {
     value_column: valueOf("valueColumn"),
     x_label: valueOf("xLabel"),
     y_label: valueOf("yLabel"),
+    figure_width_mm: valueOf("figureWidthMm"),
+    figure_height_mm: valueOf("figureHeightMm"),
     manuscript_path: valueOf("manuscriptPath"),
     required_sections: valueOf("requiredSections"),
     expected_figures: valueOf("expectedFigures"),
@@ -160,3 +163,45 @@ if (projectRoot) {
     window.localStorage.setItem(storageKey, projectRoot.value);
   });
 }
+
+function setValue(id, value) {
+  const element = document.getElementById(id);
+  if (element && !element.value) element.value = value;
+}
+
+function joinPath(root, child) {
+  return root.replace(/[\\/]$/, "") + "\\" + child;
+}
+
+function fillCommonPaths() {
+  const root = valueOf("projectRoot");
+  if (!root) {
+    showToast("请先填写项目根目录");
+    return;
+  }
+  setValue("csvPath", joinPath(root, "papers.csv"));
+  setValue("dataPath", joinPath(root, "simulation\\fixture-stress.csv"));
+  setValue("figureDataPath", joinPath(root, "simulation\\fixture-stress.csv"));
+  setValue("figureOutDir", joinPath(root, "figures"));
+  setValue("figureStem", "stress-response");
+  setValue("figureTitle", "Stress response");
+  setValue("xColumn", "time");
+  setValue("yColumns", "stress");
+  setValue("xLabel", "Time (s)");
+  setValue("yLabel", "Stress (MPa)");
+  setValue("figureWidthMm", "180");
+  setValue("figureHeightMm", "120");
+  setValue("manuscriptPath", joinPath(root, "manuscript\\chapter.md"));
+  setValue("requiredSections", "Introduction,Method,Results");
+  setValue("expectedFigures", "Figure 1");
+  showToast("常用路径已填充");
+}
+
+document.getElementById("loadDemoProject").addEventListener("click", () => {
+  projectRoot.value = demoProjectRoot;
+  window.localStorage.setItem(storageKey, demoProjectRoot);
+  fillCommonPaths();
+  showToast("已加载示例课题");
+});
+
+document.getElementById("fillCommonPaths").addEventListener("click", fillCommonPaths);

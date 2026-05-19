@@ -127,6 +127,20 @@ class ManuscriptTests(unittest.TestCase):
 
         self.assertTrue(any("Missing figure number in sequence: 图 2" in issue.message for issue in report.issues))
 
+    def test_inspect_manuscript_flags_skipped_markdown_heading_levels(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "### Results\n\n"
+                "Prior work [@zhang2024fixture] supports the design.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        self.assertTrue(any("Skipped heading level: H1 to H3 at Results" in issue.message for issue in report.issues))
+
     def test_render_manuscript_report_lists_issues(self) -> None:
         issue = ManuscriptIssue(level="warning", message="Missing section: Introduction")
         text = render_manuscript_report(

@@ -101,10 +101,13 @@
 - Web standard report saving on 2026-05-19: the browser can save writing pack, writing dashboard, literature table, literature map, and literature tracker to fixed project files under `manuscript` or `notes`.
 - Demo workspace on 2026-05-19: `examples/demo-project` was added with a runnable literature index, paper-summary notes, simulation CSV, manuscript draft, `project-check.json`, and `literature-tracker.json`.
 - Web figure controls on 2026-05-19: the browser figure form now exposes trend, bar, errorbar, heatmap, and contour choices with y-error and value-column inputs.
+- Web workflow guidance on 2026-05-19: the browser now has quick actions to load `examples/demo-project`, fill common paths from the current project root, and render a workflow status report with next-step guidance.
+- Figure options on 2026-05-19: web figure generation accepts optional width/height values in millimeters.
+- Manuscript quality check on 2026-05-19: Markdown heading-level skips are now reported, such as jumping from H1 to H3.
 
 ## Next Steps
 
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.
-- Consider adding a dedicated browser demo button that loads `examples/demo-project` into the project root field automatically.
+- Consider adding file picker helpers later if the local browser environment permits a reliable path workflow.

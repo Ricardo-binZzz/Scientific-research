@@ -72,3 +72,6 @@
 - Standard web-saved reports use fixed project paths: `manuscript/writing-pack.md`, `manuscript/writing-dashboard.md`, `notes/literature-table.md`, `notes/literature-map.md`, and `notes/literature-tracker.md`.
 - `examples/demo-project` is a runnable demo workspace with a small literature index, paper-summary notes, simulation CSV, manuscript draft, `project-check.json`, and `literature-tracker.json`.
 - The web figure form now exposes trend, bar, errorbar, heatmap, and contour figure types, including y-error and value-column inputs.
+- The browser UI has quick actions for loading `examples/demo-project`, filling common project paths, and rendering a workflow status report with step readiness and a next recommended action.
+- Web figure generation accepts optional width/height fields in millimeters; defaults remain `180 x 120 mm`.
+- Manuscript checks now flag skipped Markdown heading levels, such as jumping from `#` directly to `###`.

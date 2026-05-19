@@ -72,6 +72,7 @@ def inspect_manuscript(
         ManuscriptIssue(level="info", message=f"Library entry not cited in manuscript: {citation}")
         for citation in uncited_library_keys
     )
+    issues.extend(_inspect_heading_quality(text))
     if not citations:
         issues.append(ManuscriptIssue(level="warning", message="No citation markers found"))
     return ManuscriptReport(
@@ -184,6 +185,26 @@ def _extract_headings(text: str) -> list[str]:
         elif line.strip() and len(line.strip()) <= 80:
             headings.append(line.strip())
     return headings
+
+
+def _inspect_heading_quality(text: str) -> list[ManuscriptIssue]:
+    issues: list[ManuscriptIssue] = []
+    previous_level = 0
+    for line in text.splitlines():
+        match = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if not match:
+            continue
+        level = len(match.group(1))
+        title = match.group(2).strip()
+        if previous_level and level > previous_level + 1:
+            issues.append(
+                ManuscriptIssue(
+                    level="warning",
+                    message=f"Skipped heading level: H{previous_level} to H{level} at {title}",
+                )
+            )
+        previous_level = level
+    return issues
 
 
 def _has_required_section(required: str, headings: list[str]) -> bool:

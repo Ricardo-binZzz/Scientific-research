@@ -27,6 +27,11 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("保存常用报告", html)
         self.assertIn("value=\"heatmap\"", html)
         self.assertIn("id=\"valueColumn\"", html)
+        self.assertIn("加载示例课题", html)
+        self.assertIn("填充常用路径", html)
+        self.assertIn("流程状态", html)
+        self.assertIn("id=\"figureWidthMm\"", html)
+        self.assertIn("id=\"figureHeightMm\"", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
 
@@ -39,6 +44,21 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(content_type, "text/plain; charset=utf-8")
         self.assertIn("# Project Check Report", body)
+
+    def test_handle_workflow_status_action_returns_next_steps(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            data_path = project / "simulation" / "result.csv"
+            data_path.write_text("time,stress\n0,10\n", encoding="utf-8")
+
+            status, content_type, body = handle_web_action({"action": "workflow_status", "project_root": str(project)})
+
+        self.assertEqual(status, 200)
+        self.assertEqual(content_type, "text/plain; charset=utf-8")
+        self.assertIn("# Workflow Status", body)
+        self.assertIn("Literature library", body)
+        self.assertIn("Simulation data", body)
+        self.assertIn("Next recommended action", body)
 
     def test_handle_writing_pack_action_returns_enriched_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -422,13 +442,18 @@ class WebAppTests(unittest.TestCase):
                     "value_column": "temp",
                     "x_label": "X",
                     "y_label": "Y",
+                    "figure_width_mm": "120",
+                    "figure_height_mm": "90",
                 }
             )
             svg_text = (out_dir / "temperature-map.svg").read_text(encoding="utf-8")
+            json_text = (out_dir / "temperature-map.json").read_text(encoding="utf-8")
 
         self.assertEqual(status, 200)
         self.assertIn("temperature-map.svg", body)
         self.assertIn("<rect", svg_text)
+        self.assertIn('"width_mm": 120', json_text)
+        self.assertIn('"height_mm": 90', json_text)
 
     def test_create_server_uses_next_port_when_requested_port_is_busy(self) -> None:
         probe = _create_server("127.0.0.1", 8000, _QuietHandler)

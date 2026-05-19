@@ -77,6 +77,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(f"已创建课题：{created}")
         if action == "project_check":
             return _text(render_project_check(build_project_check(project_root)))
+        if action == "workflow_status":
+            return _text(_render_workflow_status(project_root))
         if action == "project_report":
             return _text(render_project_report(build_project_report(project_root)))
         if action == "writing_pack":
@@ -192,8 +194,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     value_column=payload.get("value_column", "").strip(),
                     x_label=payload.get("x_label", "").strip(),
                     y_label=payload.get("y_label", "").strip(),
-                    width_mm=180,
-                    height_mm=120,
+                    width_mm=_int_or_default(payload.get("figure_width_mm", ""), 180),
+                    height_mm=_int_or_default(payload.get("figure_height_mm", ""), 120),
                     dpi=300,
                 )
             elif figure_type == "contour":
@@ -205,8 +207,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     value_column=payload.get("value_column", "").strip(),
                     x_label=payload.get("x_label", "").strip(),
                     y_label=payload.get("y_label", "").strip(),
-                    width_mm=180,
-                    height_mm=120,
+                    width_mm=_int_or_default(payload.get("figure_width_mm", ""), 180),
+                    height_mm=_int_or_default(payload.get("figure_height_mm", ""), 120),
                     dpi=300,
                 )
             else:
@@ -219,8 +221,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     y_error_columns=_split_csv_input(payload.get("y_error_columns", "")),
                     x_label=payload.get("x_label", "").strip(),
                     y_label=payload.get("y_label", "").strip(),
-                    width_mm=180,
-                    height_mm=120,
+                    width_mm=_int_or_default(payload.get("figure_width_mm", ""), 180),
+                    height_mm=_int_or_default(payload.get("figure_height_mm", ""), 120),
                     dpi=300,
                 )
             export_figure_bundle(spec, out_dir, stem=stem)
@@ -317,6 +319,35 @@ def _save_standard_report(project_root: Path, report_kind: str) -> ContentRespon
     return _text(f"已保存标准报告：{out_path}")
 
 
+def _render_workflow_status(project_root: Path) -> str:
+    report = build_project_report(project_root)
+    check = build_project_check(project_root)
+    steps = [
+        ("Project structure", project_root.exists(), "Create or select a project directory."),
+        ("Literature library", report.library_entries > 0, "Add or import literature entries."),
+        ("Paper summaries", report.note_files > 0, "Create paper-summary notes for useful papers."),
+        ("Simulation data", report.simulation_exports > 0, "Add exported CSV/JSON simulation data."),
+        ("Figures", report.figure_bundles > 0, "Generate SVG figures from validated data."),
+        ("Manuscript draft", report.manuscript_files > 0, "Add a manuscript draft for checking."),
+    ]
+    next_action = next((advice for _name, ready, advice in steps if not ready), "Run project check and fix reported gaps.")
+    lines = ["# Workflow Status", "", f"- Root: {project_root}", ""]
+    lines.append("## Steps")
+    for name, ready, advice in steps:
+        marker = "ready" if ready else "todo"
+        lines.append(f"- {name}: {marker} - {advice if not ready else 'OK'}")
+    lines.append("")
+    lines.append("## Current Gaps")
+    lines.append(f"- Missing PDFs: {len(check.missing_pdf_names)}")
+    lines.append(f"- Missing notes: {len(check.missing_note_paths)}")
+    lines.append(f"- Simulation issues: {len(check.simulation_issues)}")
+    lines.append(f"- Manuscript issues: {len(check.manuscript_issues)}")
+    lines.append("")
+    lines.append(f"## Next recommended action\n- {next_action}")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def _make_handler(default_project_root: str):
     class WorkflowRequestHandler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
@@ -392,6 +423,16 @@ def _split_csv_input(value: str) -> list[str]:
 def _first_value(value: str) -> str:
     values = _split_csv_input(value)
     return values[0] if values else ""
+
+
+def _int_or_default(value: str, default: int) -> int:
+    text = value.strip()
+    if not text:
+        return default
+    parsed = int(text)
+    if parsed <= 0:
+        raise ValueError("figure size must be greater than 0")
+    return parsed
 
 
 if __name__ == "__main__":
