@@ -47,6 +47,7 @@
 - Simulation metadata validation also reports empty unit values and unit entries for columns absent from the dataset.
 - Manuscript checks also report library citekeys that are not cited in the manuscript, useful for reference cleanup.
 - Manuscript checks report duplicate English figure markers and skipped English figure numbers.
+- Manuscript checks report skipped Chinese figure numbers such as missing `图 2` between `图 1` and `图 3`.
 - `library check-pdfs` reports which indexed PDF files are present or missing.
 - `library stats` reports literature entry count, year range, missing PDF count, and source distribution.
 - `USER_GUIDE.md` is the beginner-facing Chinese usage tutorial. Future user-facing features, command changes, workflow changes, or assumption changes should be reflected there.

@@ -156,6 +156,13 @@ def _inspect_figure_marker_quality(figures: list[str]) -> list[ManuscriptIssue]:
             for number in range(english_numbers[0], english_numbers[-1] + 1)
             if number not in english_numbers
         )
+    chinese_numbers = sorted({int(match.group(1)) for figure in figures if (match := re.match(r"图\s*(\d+)", figure))})
+    if chinese_numbers:
+        issues.extend(
+            ManuscriptIssue(level="warning", message=f"Missing figure number in sequence: 图 {number}")
+            for number in range(chinese_numbers[0], chinese_numbers[-1] + 1)
+            if number not in chinese_numbers
+        )
     return issues
 
 

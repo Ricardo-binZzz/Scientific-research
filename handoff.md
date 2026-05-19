@@ -39,6 +39,7 @@
 - Manuscript citation coverage reports both missing library citations and uncited library entries.
 - Manuscript checks report duplicate English figure markers and skipped English figure numbers.
 - Manuscript required-section checks support common Chinese aliases for English section names.
+- Manuscript checks report skipped Chinese figure numbers such as missing `图 2`.
 - `library check-pdfs` reports present and missing PDFs for indexed literature entries.
 - `library stats` reports entry count, year range, missing PDF count, and source distribution.
 - Global function check on 2026-05-18: `unittest discover -v` ran 54 tests with OK; CLI help, simulation validation, manuscript check, figure generation, and project report entry points were exercised successfully.
@@ -56,6 +57,7 @@
 - Workflow expansion on 2026-05-19: `library stats` was added for a quick literature library overview before writing.
 - Workflow expansion on 2026-05-19: `project writing-pack` now includes the same key library overview fields.
 - Workflow expansion on 2026-05-19: manuscript required-section checks now recognize common Chinese section aliases.
+- Workflow expansion on 2026-05-19: manuscript checks now report skipped Chinese figure numbers.
 - Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
 - GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 - README language switch on 2026-05-19: `README.md` now links to `README.zh-CN.md`, and the Chinese README links back to the English entry point while keeping `USER_GUIDE.md` as the detailed beginner tutorial.

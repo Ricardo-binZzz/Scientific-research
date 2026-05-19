@@ -100,6 +100,20 @@ class ManuscriptTests(unittest.TestCase):
 
         self.assertTrue(any("Missing figure number in sequence: Figure 2" in issue.message for issue in report.issues))
 
+    def test_inspect_manuscript_flags_missing_chinese_figure_sequence_numbers(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# 绪论\n\n"
+                "图 1 展示结构。\n\n"
+                "图 3 对比应力。\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        self.assertTrue(any("Missing figure number in sequence: 图 2" in issue.message for issue in report.issues))
+
     def test_render_manuscript_report_lists_issues(self) -> None:
         issue = ManuscriptIssue(level="warning", message="Missing section: Introduction")
         text = render_manuscript_report(
