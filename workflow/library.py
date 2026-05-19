@@ -52,6 +52,7 @@ class LibraryStats:
     year_min: int | None
     year_max: int | None
     missing_pdf_count: int
+    missing_note_count: int
     source_counts: dict[str, int]
     author_counts: dict[str, int]
 
@@ -166,11 +167,13 @@ def inspect_library_stats(root: Path, index: LibraryIndex) -> LibraryStats:
         for author in entry.authors:
             author_counts[author] = author_counts.get(author, 0) + 1
     pdf_report = inspect_pdf_inventory(root, index)
+    note_report = inspect_note_inventory(root, index)
     return LibraryStats(
         total_entries=len(index.entries),
         year_min=min(years) if years else None,
         year_max=max(years) if years else None,
         missing_pdf_count=len(pdf_report.missing_pdf_names),
+        missing_note_count=len(note_report.missing_note_paths),
         source_counts=dict(sorted(source_counts.items(), key=lambda item: (-item[1], item[0]))),
         author_counts=dict(sorted(author_counts.items(), key=lambda item: (-item[1], item[0]))),
     )
@@ -182,6 +185,7 @@ def render_library_stats(stats: LibraryStats) -> str:
     lines.append(f"- Total entries: {stats.total_entries}")
     lines.append(f"- Year range: {year_range}")
     lines.append(f"- Missing PDFs: {stats.missing_pdf_count}")
+    lines.append(f"- Missing notes: {stats.missing_note_count}")
     lines.append("")
     lines.append("## Sources")
     if not stats.source_counts:

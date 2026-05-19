@@ -454,6 +454,9 @@ class LibraryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / "present.pdf").write_bytes(b"%PDF-1.4")
+            notes_dir = Path(tmpdir) / "notes"
+            notes_dir.mkdir()
+            (notes_dir / "a.md").write_text("# A", encoding="utf-8")
             index = LibraryIndex(
                 entries=[
                     LibraryEntry(
@@ -493,11 +496,13 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual(stats.year_min, 2022)
         self.assertEqual(stats.year_max, 2024)
         self.assertEqual(stats.missing_pdf_count, 2)
+        self.assertEqual(stats.missing_note_count, 2)
         self.assertEqual(stats.source_counts["Journal A"], 2)
         self.assertEqual(stats.author_counts["Zhang"], 1)
         self.assertEqual(stats.author_counts["Li"], 1)
         self.assertIn("Year range: 2022-2024", text)
         self.assertIn("Missing PDFs: 2", text)
+        self.assertIn("Missing notes: 2", text)
         self.assertIn("Journal A: 2", text)
         self.assertIn("## Authors", text)
         self.assertIn("Zhang: 1", text)
@@ -525,6 +530,7 @@ class LibraryTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertIn("Total entries: 1", output.getvalue())
+        self.assertIn("Missing notes: 1", output.getvalue())
 
     def test_search_library_matches_title_author_source_and_doi(self) -> None:
         index = LibraryIndex(
