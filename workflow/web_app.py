@@ -27,6 +27,7 @@ from workflow.library import (
     render_search_results,
     search_library,
 )
+from workflow.literature_table import build_literature_table, render_literature_table
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.notes import PaperSummary, SearchLogEntry, create_note_file, render_paper_summary, render_search_log
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
@@ -142,6 +143,7 @@ def render_home_page(default_project_root: str = "") -> str:
         <button data-action="project_check">项目体检</button>
         <button data-action="project_report" class="secondary">项目状态</button>
         <button data-action="writing_pack" class="secondary">生成写作素材包</button>
+        <button data-action="literature_table" class="secondary">生成文献对比表</button>
       </div>
 
       <h2 style="margin-top:20px">文献库</h2>
@@ -373,6 +375,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(render_project_report(build_project_report(project_root)))
         if action == "writing_pack":
             return _text(render_writing_pack(build_writing_pack(project_root)))
+        if action == "literature_table":
+            return _text(render_literature_table(build_literature_table(project_root / "notes")))
 
         literature_root = project_root / "literature"
         if action == "library_stats":

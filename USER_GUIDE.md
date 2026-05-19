@@ -78,6 +78,7 @@ C:\Users\22676\Documents\fixture-study
 - 从 CSV/JSON 生成基础 SVG 图。
 - 检查论文稿件章节、图号和引用。
 - 生成写作素材包。
+- 生成文献对比表。
 
 网页服务只在本机运行，地址是 `127.0.0.1`。默认使用 `8000` 端口；如果端口被占用，工具会自动尝试 `8001` 到 `8009`，并打开实际可用的地址。如果浏览器打不开，先确认 `start_web.bat` 的窗口没有被关掉；窗口关闭后网页服务也会停止。
 
@@ -573,7 +574,19 @@ C:\Users\22676\Documents\fixture-study\manuscript
 
 如果你用本地网页界面，点击“生成写作素材包”也会看到这些内容。
 
-## 17. 推荐的日常使用顺序
+## 17. 生成文献对比表
+
+如果你已经为多篇论文生成了 `paper-summary` 摘要卡，可以把这些摘要卡汇总成一张对比表：
+
+```powershell
+& $PY -m workflow.cli project literature-table C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\literature-table.md
+```
+
+`literature-table.md` 会从 `notes` 文件夹里的 `# Paper Summary` 笔记中提取题名、作者、年份、来源、研究问题、方法、数据、主要结论、局限、可复用价值和来源页码。它适合在写综述前快速比较多篇论文的共同点和差异。
+
+如果你用本地网页界面，点击“生成文献对比表”可以直接在网页右侧看到同样的表格。
+
+## 18. 推荐的日常使用顺序
 
 每个课题建议按这个顺序推进：
 
@@ -583,6 +596,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 → 下载 PDF
 → 人工确认是否入库
 → 写 paper-summary
+→ literature-table
 → library add 或 library import-csv
 → library search / library stats / library check-pdfs / library check-notes
 → 写 outline / literature-review
@@ -598,7 +612,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 → writing-pack
 ```
 
-## 18. 常见问题
+## 19. 常见问题
 
 ### PowerShell 提示找不到 python
 

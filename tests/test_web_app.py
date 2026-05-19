@@ -58,6 +58,36 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("## Manuscript Drafts", body)
         self.assertIn("draft.md", body)
 
+    def test_handle_literature_table_action_returns_comparison(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            handle_web_action(
+                {
+                    "action": "note_paper_summary",
+                    "project_root": str(project),
+                    "summary_title": "Adaptive clamping fixture",
+                    "summary_authors": "Zhang",
+                    "summary_source": "Journal A",
+                    "summary_year": "2024",
+                    "summary_doi": "10.1000/a",
+                    "summary_problem": "Fixture deformation",
+                    "summary_method": "Finite element analysis",
+                    "summary_data": "Stress",
+                    "summary_key_figures": "Fig. 3",
+                    "summary_main_result": "Lower deformation",
+                    "summary_limitation": "Small sample",
+                    "summary_reuse_value": "Metric reference",
+                    "summary_source_pages": "pp. 1-5",
+                }
+            )
+
+            status, _content_type, body = handle_web_action({"action": "literature_table", "project_root": str(project)})
+
+        self.assertEqual(status, 200)
+        self.assertIn("# Literature Comparison Table", body)
+        self.assertIn("Adaptive clamping fixture", body)
+        self.assertIn("Finite element analysis", body)
+
     def test_handle_init_project_action_creates_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             status, _content_type, body = handle_web_action(

@@ -186,6 +186,9 @@ def build_parser() -> argparse.ArgumentParser:
     writing_pack_parser = project_subparsers.add_parser("writing-pack", help="print or write a manuscript writing pack")
     writing_pack_parser.add_argument("root_dir", help="project root directory")
     writing_pack_parser.add_argument("--out", help="optional output Markdown path")
+    literature_table_parser = project_subparsers.add_parser("literature-table", help="print or write a literature comparison table")
+    literature_table_parser.add_argument("root_dir", help="project root directory")
+    literature_table_parser.add_argument("--out", help="optional output Markdown path")
     return parser
 
 

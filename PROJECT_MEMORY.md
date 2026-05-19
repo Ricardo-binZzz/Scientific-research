@@ -33,7 +33,7 @@
 - Simulation data can be summarized with `simulation summarize-data`, which reports count/min/max for numeric values and flags columns that contain non-numeric cells.
 - Simulation data can be range-checked with `simulation check-ranges --range column:min:max`, reporting out-of-range and non-numeric counts.
 - `README.md` documents the main CLI workflow and uses the bundled Python path because PATH `python` may be unavailable.
-- A local browser UI is available through `start_web.bat`, which runs `workflow.web_app` on `127.0.0.1:8000` for project creation, common project actions, library work including CSV import, paper summary and search-log notes, simulation inspection, figure generation, and manuscript checks without typing Python commands.
+- A local browser UI is available through `start_web.bat`, which runs `workflow.web_app` on `127.0.0.1:8000` for project creation, common project actions, library work including CSV import, paper summary and search-log notes, literature comparison tables, simulation inspection, figure generation, and manuscript checks without typing Python commands.
 - As of 2026-05-19, for rapid multi-feature work the preferred sequence is to add backend/workflow features first, then batch-sync the web UI unless the user explicitly requests immediate web updates for each feature.
 - `workflow.web_app` automatically tries the next local port up to `8009` when the requested port is already listening, and `start_web.bat` lets Python open the actual URL after binding.
 - User-facing tutorial updates must be merged into `USER_GUIDE.md`; do not create extra tutorial files for feature additions unless the user explicitly asks.
@@ -44,6 +44,7 @@
 - A manuscript writing pack can be generated with `project writing-pack`, summarizing literature titles, note files, figure bundles, and simulation exports.
 - `project writing-pack` includes a library overview with entry count, year range, and missing PDF count before listing writing assets.
 - `project writing-pack` also highlights recent literature from 2020 onward, missing PDFs, missing note paths, and manuscript draft files.
+- `project literature-table` builds a Markdown comparison table from `# Paper Summary` notes, extracting title, authors, year, source, problem, method, data, main result, limitation, reuse value, and source pages.
 - Manuscript figure marker extraction supports both English `Figure N` and Chinese `图 N` forms.
 - Manuscript required-section checks support common Chinese aliases for English section names, such as `Introduction` matching `引言` or `绪论`.
 - Manuscript citation extraction supports grouped Markdown/Pandoc citations such as `[@key1; @key2]`.

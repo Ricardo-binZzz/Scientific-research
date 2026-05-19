@@ -24,6 +24,7 @@ from workflow.library import (
     render_search_results,
     search_library,
 )
+from workflow.literature_table import build_literature_table, render_literature_table
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.notes import (
     LiteratureReviewParagraph,
@@ -328,6 +329,13 @@ def _handle_project(args: Namespace) -> int:
         return 0
     if args.project_command == "writing-pack":
         content = render_writing_pack(build_writing_pack(Path(args.root_dir)))
+        if args.out:
+            Path(args.out).write_text(content, encoding="utf-8")
+        else:
+            print(content)
+        return 0
+    if args.project_command == "literature-table":
+        content = render_literature_table(build_literature_table(Path(args.root_dir) / "notes"))
         if args.out:
             Path(args.out).write_text(content, encoding="utf-8")
         else:
