@@ -40,6 +40,15 @@ class PdfInventoryReport:
     missing_pdf_names: list[str]
 
 
+@dataclass(frozen=True)
+class LibraryStats:
+    total_entries: int
+    year_min: int | None
+    year_max: int | None
+    missing_pdf_count: int
+    source_counts: dict[str, int]
+
+
 def load_index(root: Path) -> LibraryIndex:
     path = root / INDEX_FILENAME
     if not path.exists():
@@ -111,6 +120,38 @@ def render_pdf_inventory_report(report: PdfInventoryReport) -> str:
     lines.append("")
     lines.append("## Missing")
     lines.extend([f"- {name}" for name in report.missing_pdf_names] or ["- None"])
+    lines.append("")
+    return "\n".join(lines)
+
+
+def inspect_library_stats(root: Path, index: LibraryIndex) -> LibraryStats:
+    years = [entry.year for entry in index.entries if entry.year > 0]
+    source_counts: dict[str, int] = {}
+    for entry in index.entries:
+        source = entry.source or "Unknown"
+        source_counts[source] = source_counts.get(source, 0) + 1
+    pdf_report = inspect_pdf_inventory(root, index)
+    return LibraryStats(
+        total_entries=len(index.entries),
+        year_min=min(years) if years else None,
+        year_max=max(years) if years else None,
+        missing_pdf_count=len(pdf_report.missing_pdf_names),
+        source_counts=dict(sorted(source_counts.items(), key=lambda item: (-item[1], item[0]))),
+    )
+
+
+def render_library_stats(stats: LibraryStats) -> str:
+    year_range = f"{stats.year_min}-{stats.year_max}" if stats.year_min is not None and stats.year_max is not None else "None"
+    lines = ["# Library Stats", ""]
+    lines.append(f"- Total entries: {stats.total_entries}")
+    lines.append(f"- Year range: {year_range}")
+    lines.append(f"- Missing PDFs: {stats.missing_pdf_count}")
+    lines.append("")
+    lines.append("## Sources")
+    if not stats.source_counts:
+        lines.append("- None")
+    else:
+        lines.extend(f"- {source}: {count}" for source, count in stats.source_counts.items())
     lines.append("")
     return "\n".join(lines)
 

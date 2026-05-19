@@ -12,8 +12,10 @@ from workflow.library import (
     import_csv_metadata,
     import_bibtex,
     inspect_pdf_inventory,
+    inspect_library_stats,
     load_index,
     render_index,
+    render_library_stats,
     render_pdf_inventory_report,
 )
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
@@ -225,6 +227,10 @@ def _handle_library(args: Namespace) -> int:
         return 0
     if args.library_command == "check-pdfs":
         print(render_pdf_inventory_report(inspect_pdf_inventory(root, load_index(root))))
+        return 0
+    if args.library_command == "stats":
+        index = load_index(root)
+        print(render_library_stats(inspect_library_stats(root, index)))
         return 0
     raise ValueError(f"Unsupported library command: {args.library_command}")
 

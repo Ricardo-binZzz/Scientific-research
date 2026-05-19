@@ -13,9 +13,11 @@ from workflow.library import (
     import_csv_metadata,
     import_bibtex,
     inspect_pdf_inventory,
+    inspect_library_stats,
     load_index,
     make_citekey,
     render_index,
+    render_library_stats,
 )
 
 
@@ -372,6 +374,78 @@ class LibraryTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertIn("missing.pdf", output.getvalue())
+
+    def test_inspect_library_stats_counts_years_sources_and_missing_pdfs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "present.pdf").write_bytes(b"%PDF-1.4")
+            index = LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Paper A",
+                        authors=["Zhang"],
+                        year=2022,
+                        source="Journal A",
+                        doi="10.1000/a",
+                        pdf_name="present.pdf",
+                        note_path="notes/a.md",
+                    ),
+                    LibraryEntry(
+                        title="Paper B",
+                        authors=["Li"],
+                        year=2024,
+                        source="Journal A",
+                        doi="10.1000/b",
+                        pdf_name="missing.pdf",
+                        note_path="notes/b.md",
+                    ),
+                    LibraryEntry(
+                        title="Paper C",
+                        authors=["Wang"],
+                        year=2023,
+                        source="Journal B",
+                        doi="10.1000/c",
+                        pdf_name="",
+                        note_path="notes/c.md",
+                    ),
+                ]
+            )
+
+            stats = inspect_library_stats(root, index)
+            text = render_library_stats(stats)
+
+        self.assertEqual(stats.total_entries, 3)
+        self.assertEqual(stats.year_min, 2022)
+        self.assertEqual(stats.year_max, 2024)
+        self.assertEqual(stats.missing_pdf_count, 2)
+        self.assertEqual(stats.source_counts["Journal A"], 2)
+        self.assertIn("Year range: 2022-2024", text)
+        self.assertIn("Missing PDFs: 2", text)
+        self.assertIn("Journal A: 2", text)
+
+    def test_cli_library_stats_prints_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Paper A",
+                        authors=["Zhang"],
+                        year=2024,
+                        source="Journal A",
+                        doi="10.1000/a",
+                        pdf_name="paper.pdf",
+                        note_path="notes/a.md",
+                    )
+                ]
+            ).save(root)
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["library", "stats", tmpdir])
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Total entries: 1", output.getvalue())
 
 
 if __name__ == "__main__":

@@ -131,6 +131,9 @@ def build_parser() -> argparse.ArgumentParser:
     check_pdfs_parser = library_subparsers.add_parser("check-pdfs", help="check whether indexed PDFs exist")
     check_pdfs_parser.add_argument("root_dir", help="library root directory")
 
+    stats_parser = library_subparsers.add_parser("stats", help="print literature library statistics")
+    stats_parser.add_argument("root_dir", help="library root directory")
+
     figure_parser = subparsers.add_parser("figure", help="generate figure assets")
     figure_subparsers = figure_parser.add_subparsers(dest="figure_command", required=True)
 
