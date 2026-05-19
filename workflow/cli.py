@@ -148,6 +148,9 @@ def build_parser() -> argparse.ArgumentParser:
     source_library_parser = library_subparsers.add_parser("source", help="list literature entries matching a source keyword")
     source_library_parser.add_argument("root_dir", help="library root directory")
     source_library_parser.add_argument("query", help="source journal or conference keyword")
+    map_library_parser = library_subparsers.add_parser("map", help="print or write a literature map")
+    map_library_parser.add_argument("root_dir", help="library root directory")
+    map_library_parser.add_argument("--out", help="optional output Markdown path")
 
     figure_parser = subparsers.add_parser("figure", help="generate figure assets")
     figure_subparsers = figure_parser.add_subparsers(dest="figure_command", required=True)
@@ -189,6 +192,12 @@ def build_parser() -> argparse.ArgumentParser:
     literature_table_parser = project_subparsers.add_parser("literature-table", help="print or write a literature comparison table")
     literature_table_parser.add_argument("root_dir", help="project root directory")
     literature_table_parser.add_argument("--out", help="optional output Markdown path")
+    writing_dashboard_parser = project_subparsers.add_parser("writing-dashboard", help="print or write a writing readiness dashboard")
+    writing_dashboard_parser.add_argument("root_dir", help="project root directory")
+    writing_dashboard_parser.add_argument("--out", help="optional output Markdown path")
+    literature_tracker_parser = project_subparsers.add_parser("literature-tracker", help="print or write a literature tracking plan")
+    literature_tracker_parser.add_argument("root_dir", help="project root directory")
+    literature_tracker_parser.add_argument("--out", help="optional output Markdown path")
     return parser
 
 

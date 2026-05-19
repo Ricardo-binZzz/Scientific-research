@@ -24,7 +24,9 @@ from workflow.library import (
     render_search_results,
     search_library,
 )
+from workflow.literature_map import build_literature_map, render_literature_map
 from workflow.literature_table import build_literature_table, render_literature_table
+from workflow.literature_tracker import build_literature_tracker, render_literature_tracker
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.notes import (
     LiteratureReviewParagraph,
@@ -56,6 +58,7 @@ from workflow.simulation import (
     validate_dataset_columns,
 )
 from workflow.writing_pack import build_writing_pack, render_writing_pack
+from workflow.writing_dashboard import build_writing_dashboard, render_writing_dashboard
 
 
 def handle_args(args: Namespace) -> int:
@@ -251,6 +254,13 @@ def _handle_library(args: Namespace) -> int:
     if args.library_command == "source":
         print(render_search_results(filter_library_by_source(load_index(root), args.query)))
         return 0
+    if args.library_command == "map":
+        content = render_literature_map(build_literature_map(root))
+        if args.out:
+            Path(args.out).write_text(content, encoding="utf-8")
+        else:
+            print(content)
+        return 0
     raise ValueError(f"Unsupported library command: {args.library_command}")
 
 
@@ -336,6 +346,20 @@ def _handle_project(args: Namespace) -> int:
         return 0
     if args.project_command == "literature-table":
         content = render_literature_table(build_literature_table(Path(args.root_dir) / "notes"))
+        if args.out:
+            Path(args.out).write_text(content, encoding="utf-8")
+        else:
+            print(content)
+        return 0
+    if args.project_command == "writing-dashboard":
+        content = render_writing_dashboard(build_writing_dashboard(Path(args.root_dir)))
+        if args.out:
+            Path(args.out).write_text(content, encoding="utf-8")
+        else:
+            print(content)
+        return 0
+    if args.project_command == "literature-tracker":
+        content = render_literature_tracker(build_literature_tracker(Path(args.root_dir)))
         if args.out:
             Path(args.out).write_text(content, encoding="utf-8")
         else:

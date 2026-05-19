@@ -88,6 +88,38 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("Adaptive clamping fixture", body)
         self.assertIn("Finite element analysis", body)
 
+    def test_handle_new_planning_actions_return_reports(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            handle_web_action(
+                {
+                    "action": "library_add",
+                    "project_root": str(project),
+                    "title": "Adaptive clamping fixture",
+                    "authors": "Zhang",
+                    "year": "2024",
+                    "source": "Journal A",
+                    "doi": "10.1000/a",
+                    "pdf_name": "a.pdf",
+                    "note_path": "notes/a.md",
+                }
+            )
+
+            dashboard_status, _content_type, dashboard_body = handle_web_action(
+                {"action": "writing_dashboard", "project_root": str(project)}
+            )
+            map_status, _content_type, map_body = handle_web_action({"action": "literature_map", "project_root": str(project)})
+            tracker_status, _content_type, tracker_body = handle_web_action(
+                {"action": "literature_tracker", "project_root": str(project)}
+            )
+
+        self.assertEqual(dashboard_status, 200)
+        self.assertIn("# Writing Dashboard", dashboard_body)
+        self.assertEqual(map_status, 200)
+        self.assertIn("# Literature Map", map_body)
+        self.assertEqual(tracker_status, 200)
+        self.assertIn("# Literature Tracking Plan", tracker_body)
+
     def test_handle_init_project_action_creates_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             status, _content_type, body = handle_web_action(

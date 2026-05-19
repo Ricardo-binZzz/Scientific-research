@@ -79,6 +79,9 @@ C:\Users\22676\Documents\fixture-study
 - 检查论文稿件章节、图号和引用。
 - 生成写作素材包。
 - 生成文献对比表。
+- 生成写作看板。
+- 生成文献地图。
+- 生成新文献追踪清单。
 
 网页服务只在本机运行，地址是 `127.0.0.1`。默认使用 `8000` 端口；如果端口被占用，工具会自动尝试 `8001` 到 `8009`，并打开实际可用的地址。如果浏览器打不开，先确认 `start_web.bat` 的窗口没有被关掉；窗口关闭后网页服务也会停止。
 
@@ -153,10 +156,12 @@ fixture-study
 ├── simulation    # 仿真软件导出的数据
 ├── figures       # 生成的论文图
 ├── templates     # 可复用模板
-└── project-check.json  # 一键体检配置
+├── project-check.json  # 一键体检配置
+└── literature-tracker.json  # 新文献追踪主题
 ```
 
 `project-check.json` 记录默认体检规则，例如稿件必须包含哪些章节、预期有哪些图号、仿真数据必须有哪些列、哪些列必须是数字、单位元数据文件在哪里。新手可以先不改它，等课题结构稳定后再调整。
+`literature-tracker.json` 记录需要持续检索的研究主题、关键词、数据库来源和上次检索日期。新建课题时会先给出一个示例主题，你可以按自己的方向改成真实关键词。
 
 其中 `simulation.ranges` 可以写仿真结果的合理范围，例如：
 
@@ -586,7 +591,45 @@ C:\Users\22676\Documents\fixture-study\manuscript
 
 如果你用本地网页界面，点击“生成文献对比表”可以直接在网页右侧看到同样的表格。
 
-## 18. 推荐的日常使用顺序
+## 18. 生成写作看板
+
+写作看板会把“能直接用于写作的材料”和“还缺什么”放到一起：
+
+```powershell
+& $PY -m workflow.cli project writing-dashboard C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\writing-dashboard.md
+```
+
+它会按背景、方法、结果和草稿整理近期文献数量、摘要卡数量、仿真导出、图表包、稿件文件，以及缺失 PDF、缺失笔记等待补项。写论文前可以先看这份看板，再决定先补文献、补图，还是继续写正文。
+
+## 19. 生成文献地图
+
+文献地图是文本版的文献关系概览：
+
+```powershell
+& $PY -m workflow.cli library map C:\Users\22676\Documents\fixture-study\literature --out C:\Users\22676\Documents\fixture-study\literature-map.md
+```
+
+它会汇总年份分布、来源期刊或会议分布、作者分布，以及每个作者对应哪些论文。第一版先用文本报告，适合快速判断文献是否集中在某几年、某个来源或某几个作者。
+
+## 20. 生成新文献追踪清单
+
+先打开课题目录里的：
+
+```text
+C:\Users\22676\Documents\fixture-study\literature-tracker.json
+```
+
+把里面的 `topics` 改成你的真实研究方向、关键词、检索平台和上次检索日期。然后运行：
+
+```powershell
+& $PY -m workflow.cli project literature-tracker C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\literature-tracking-plan.md
+```
+
+它会把每个主题转换成下一次检索建议，包括检索式、关键词、来源平台和下一步动作。检索完后，建议继续生成 `search-log`，再把有价值的论文加入文献库。
+
+如果你用本地网页界面，可以直接点击“生成写作看板”“生成文献地图”“生成追踪清单”。
+
+## 21. 推荐的日常使用顺序
 
 每个课题建议按这个顺序推进：
 
@@ -599,6 +642,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 → literature-table
 → library add 或 library import-csv
 → library search / library stats / library check-pdfs / library check-notes
+→ library map
 → 写 outline / literature-review
 → 做仿真并导出 CSV/JSON
 → simulation inspect-data
@@ -610,9 +654,11 @@ C:\Users\22676\Documents\fixture-study\manuscript
 → project check
 → project report
 → writing-pack
+→ writing-dashboard
+→ literature-tracker
 ```
 
-## 19. 常见问题
+## 22. 常见问题
 
 ### PowerShell 提示找不到 python
 

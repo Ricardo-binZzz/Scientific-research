@@ -35,6 +35,7 @@ def bootstrap_workspace(base_dir: Path, *, project_slug: str, project_name: str)
     _write_templates(root / "templates")
     _write_library_index(root / "literature")
     _write_project_check_config(root / "project-check.json")
+    _write_literature_tracker(root / "literature-tracker.json")
     return root
 
 
@@ -82,5 +83,21 @@ def _write_project_check_config(path: Path) -> None:
                 "stress": [0, 1000],
             },
         },
+    }
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _write_literature_tracker(path: Path) -> None:
+    if path.exists():
+        return
+    payload = {
+        "topics": [
+            {
+                "name": "Adaptive fixtures",
+                "keywords": ["adaptive fixture", "clamping force optimization"],
+                "sources": ["Google Scholar", "Web of Science", "Scopus"],
+                "last_checked": "",
+            }
+        ]
     }
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

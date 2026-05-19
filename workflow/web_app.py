@@ -27,7 +27,9 @@ from workflow.library import (
     render_search_results,
     search_library,
 )
+from workflow.literature_map import build_literature_map, render_literature_map
 from workflow.literature_table import build_literature_table, render_literature_table
+from workflow.literature_tracker import build_literature_tracker, render_literature_tracker
 from workflow.manuscript import inspect_manuscript, render_report_from_inspection
 from workflow.notes import PaperSummary, SearchLogEntry, create_note_file, render_paper_summary, render_search_log
 from workflow.project_report import build_project_check, build_project_report, render_project_check, render_project_report
@@ -42,6 +44,7 @@ from workflow.simulation import (
     validate_dataset_columns,
 )
 from workflow.writing_pack import build_writing_pack, render_writing_pack
+from workflow.writing_dashboard import build_writing_dashboard, render_writing_dashboard
 
 
 ContentResponse = tuple[int, str, str]
@@ -144,6 +147,8 @@ def render_home_page(default_project_root: str = "") -> str:
         <button data-action="project_report" class="secondary">项目状态</button>
         <button data-action="writing_pack" class="secondary">生成写作素材包</button>
         <button data-action="literature_table" class="secondary">生成文献对比表</button>
+        <button data-action="writing_dashboard" class="secondary">生成写作看板</button>
+        <button data-action="literature_tracker" class="secondary">生成追踪清单</button>
       </div>
 
       <h2 style="margin-top:20px">文献库</h2>
@@ -158,6 +163,7 @@ def render_home_page(default_project_root: str = "") -> str:
         <button data-action="library_recent" class="secondary">按年份过滤</button>
         <button data-action="library_source" class="secondary">按来源过滤</button>
         <button data-action="library_stats" class="secondary">文献库统计</button>
+        <button data-action="literature_map" class="secondary">生成文献地图</button>
         <button data-action="library_check_pdfs" class="secondary">检查缺 PDF</button>
         <button data-action="library_check_notes" class="secondary">检查缺笔记</button>
       </div>
@@ -377,8 +383,14 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(render_writing_pack(build_writing_pack(project_root)))
         if action == "literature_table":
             return _text(render_literature_table(build_literature_table(project_root / "notes")))
+        if action == "writing_dashboard":
+            return _text(render_writing_dashboard(build_writing_dashboard(project_root)))
+        if action == "literature_tracker":
+            return _text(render_literature_tracker(build_literature_tracker(project_root)))
 
         literature_root = project_root / "literature"
+        if action == "literature_map":
+            return _text(render_literature_map(build_literature_map(literature_root)))
         if action == "library_stats":
             index = load_index(literature_root)
             return _text(render_library_stats(inspect_library_stats(literature_root, index)))
