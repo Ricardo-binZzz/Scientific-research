@@ -123,10 +123,11 @@
 - Web simulation-report visualization on 2026-05-20: `simulation_inspect`, `simulation_summarize`, and `simulation_validate` now render data overview cards above the raw Markdown report; `USER_GUIDE.md` was updated in the main tutorial.
 - Web figure-result visualization on 2026-05-20: `figure_from_data` now renders generated SVG/JSON paths and key figure settings above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 - Web saved-report visualization on 2026-05-20: `save_standard_report` now renders report type, saved path, and purpose above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
+- Web note-result visualization on 2026-05-20: `note_paper_summary` and `note_search_log` now render created note path, note type, and next-step guidance above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
-- Add visual summaries for note-generation actions so users can immediately see the created note path and next usage.
+- Add visual summaries for library add/import/search actions so users can triage literature operations without reading raw text first.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.

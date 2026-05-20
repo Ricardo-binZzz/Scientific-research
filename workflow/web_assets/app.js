@@ -250,6 +250,10 @@ function renderResultCompanion(action, ok, text) {
     renderSavedReportResult(text);
     return;
   }
+  if ((action === "note_paper_summary" || action === "note_search_log") && ok) {
+    renderNoteResult(action, text);
+    return;
+  }
   if (action === "workflow_status" && ok) {
     renderWorkflowStatus(text);
     return;
@@ -577,6 +581,45 @@ function savedReportPurpose(kind) {
   };
   const item = purposes[kind] || ["标准报告", "保存一份可复用的 Markdown 报告。"];
   return { title: item[0], description: item[1] };
+}
+
+function renderNoteResult(action, text) {
+  if (!insightPanel) return;
+  const purpose = noteResultPurpose(action);
+  const path = text.replace(/^已生成摘要卡：/, "").replace(/^已生成检索记录：/, "").trim();
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>笔记已生成</h3>
+        <p>新笔记已经写入课题 notes 文件夹，后续报告会自动读取。</p>
+      </div>
+    </div>
+    <div class="note-result-card">
+      <div>
+        <span>${escapeHtml(purpose.label)}</span>
+        <strong>${escapeHtml(purpose.title)}</strong>
+      </div>
+      <code>${escapeHtml(path || "未解析到笔记路径")}</code>
+      <p>${escapeHtml(purpose.next)}</p>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function noteResultPurpose(action) {
+  if (action === "note_search_log") {
+    return {
+      label: "检索记录",
+      title: valueOf("searchQuestion") || "Search log",
+      next: "下一步：下载候选 PDF，人工确认相关性，再把有价值的论文加入文献库。",
+    };
+  }
+  return {
+    label: "论文摘要卡",
+    title: valueOf("summaryTitle") || "Paper summary",
+    next: "下一步：把这篇论文加入文献库，并在 note-path 里填写这张摘要卡路径。",
+  };
 }
 
 function renderManuscriptCheck(text) {
