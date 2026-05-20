@@ -83,6 +83,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("parseCreatedProjectPath", js)
         self.assertIn("renderResultFallback", js)
         self.assertIn("resultFallbackAdvice", js)
+        self.assertIn("fallbackTargetForAction", js)
+        self.assertIn("data-target-section", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)

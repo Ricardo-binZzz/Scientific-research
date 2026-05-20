@@ -298,6 +298,7 @@ function hideInsightPanel() {
 function renderResultFallback(action, ok, text) {
   if (!insightPanel) return;
   const advice = resultFallbackAdvice(action, ok, text);
+  const target = fallbackTargetForAction(action);
   insightPanel.innerHTML = `
     <div class="insight-title">
       <div>
@@ -314,6 +315,7 @@ function renderResultFallback(action, ok, text) {
         <span>${ok ? "下一步" : "优先检查"}</span>
         <p>${escapeHtml(advice.nextStep)}</p>
       </div>
+      ${target ? `<button class="workflow-jump-button" type="button" data-target-section="${escapeHtml(target)}">去对应区域</button>` : ""}
       <p>完整原始结果仍在下方，可以复制或下载保存。</p>
     </div>
   `;
@@ -349,6 +351,15 @@ function resultFallbackAdvice(action, ok, text) {
     description: "操作没有完成。上方先给出最可能的处理方向，下方保留原始错误文本。",
     nextStep,
   };
+}
+
+function fallbackTargetForAction(action) {
+  if (action.startsWith("library_") || action === "literature_insights") return "library";
+  if (action.startsWith("note_")) return "notes";
+  if (action.startsWith("simulation_")) return "simulation";
+  if (action === "figure_from_data") return "figures";
+  if (action === "manuscript_check") return "manuscript";
+  return "overview";
 }
 
 function renderLiteratureInsights(text) {
