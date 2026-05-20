@@ -247,12 +247,17 @@ document.getElementById("clearOutput").addEventListener("click", () => {
   output.classList.add("empty-state");
   output.textContent = "结果已清空。选择一个操作继续。";
   hideInsightPanel();
-  successHistory.splice(0);
-  lastRunnableAction = null;
-  if (rerunLastAction) rerunLastAction.disabled = true;
+  clearResultState();
   resultMeta.textContent = "等待操作";
   statusText.textContent = "就绪";
 });
+
+function clearResultState() {
+  setResultLoading(false);
+  successHistory.splice(0);
+  lastRunnableAction = null;
+  if (rerunLastAction) rerunLastAction.disabled = true;
+}
 
 if (rerunLastAction) {
   rerunLastAction.addEventListener("click", () => {
