@@ -109,6 +109,7 @@
 - Manuscript references check on 2026-05-20: citation markers now trigger a warning when no `References`, `Bibliography`, or `参考文献` heading is present.
 
 - Figure polish on 2026-05-20: FigureSpec, CLI, SVG rendering, and the browser form now support legend/grid toggles, palette selection, title/axis/tick font sizes, line width, and tick count; `USER_GUIDE.md` was updated in the main tutorial rather than adding a separate guide.
+- Manuscript polish on 2026-05-20: manuscript checks now report empty Markdown headings, Markdown images without nearby figure captions, Markdown tables without nearby table captions, and references sections with fewer than 3 detected entries; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 

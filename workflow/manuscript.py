@@ -75,8 +75,11 @@ def inspect_manuscript(
         for citation in uncited_library_keys
     )
     issues.extend(_inspect_heading_quality(text))
+    issues.extend(_inspect_caption_quality(text))
     if citations and not _has_references_section(headings):
         issues.append(ManuscriptIssue(level="warning", message="Citation markers found but no References section"))
+    if _has_references_section(headings):
+        issues.extend(_inspect_references_quality(text))
     if not citations:
         issues.append(ManuscriptIssue(level="warning", message="No citation markers found"))
     return ManuscriptReport(
@@ -195,6 +198,10 @@ def _inspect_heading_quality(text: str) -> list[ManuscriptIssue]:
     issues: list[ManuscriptIssue] = []
     previous_level = 0
     for line in text.splitlines():
+        empty_match = re.match(r"^(#{1,6})\s*$", line)
+        if empty_match:
+            issues.append(ManuscriptIssue(level="warning", message=f"Empty heading: H{len(empty_match.group(1))}"))
+            continue
         match = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
         if not match:
             continue
@@ -209,6 +216,65 @@ def _inspect_heading_quality(text: str) -> list[ManuscriptIssue]:
             )
         previous_level = level
     return issues
+
+
+def _inspect_caption_quality(text: str) -> list[ManuscriptIssue]:
+    issues: list[ManuscriptIssue] = []
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        if re.search(r"!\[[^\]]*\]\([^)]+\)", line) and not _nearby_caption(lines, index, kind="figure"):
+            issues.append(ManuscriptIssue(level="warning", message=f"Figure image missing caption near line {index + 1}"))
+        if _is_markdown_table_start(lines, index) and not _nearby_caption(lines, index, kind="table"):
+            issues.append(ManuscriptIssue(level="warning", message=f"Table missing caption near line {index + 1}"))
+    return issues
+
+
+def _nearby_caption(lines: list[str], index: int, *, kind: str) -> bool:
+    start = max(0, index - 2)
+    end = min(len(lines), index + 3)
+    nearby = "\n".join(lines[start:end])
+    if kind == "figure":
+        return bool(re.search(r"\b(Figure|Fig\.)\s+\d+|图\s*\d+|鍥綷s*\d+", nearby, flags=re.IGNORECASE))
+    return bool(re.search(r"\b(Table|Tab\.)\s+\d+|表\s*\d+", nearby, flags=re.IGNORECASE))
+
+
+def _is_markdown_table_start(lines: list[str], index: int) -> bool:
+    if index + 1 >= len(lines):
+        return False
+    header = lines[index].strip()
+    separator = lines[index + 1].strip()
+    if not (header.startswith("|") and header.endswith("|")):
+        return False
+    return bool(re.match(r"^\|[\s:\-|]+\|$", separator))
+
+
+def _inspect_references_quality(text: str) -> list[ManuscriptIssue]:
+    entries = _reference_entries(text)
+    if entries and len(entries) < 3:
+        return [ManuscriptIssue(level="warning", message=f"References section looks too short: {len(entries)} entries")]
+    return []
+
+
+def _reference_entries(text: str) -> list[str]:
+    lines = text.splitlines()
+    entries: list[str] = []
+    in_references = False
+    for line in lines:
+        stripped = line.strip()
+        heading_match = re.match(r"^#{1,6}\s+(.+?)\s*$", stripped)
+        plain_heading = stripped if stripped and len(stripped) <= 80 else ""
+        if heading_match or plain_heading:
+            heading = heading_match.group(1).strip() if heading_match else plain_heading
+            if _normalize_heading(heading) in REFERENCE_HEADINGS:
+                in_references = True
+                continue
+            if in_references and heading_match:
+                break
+        if not in_references or not stripped:
+            continue
+        if stripped.startswith(("-", "*")) or re.match(r"^\[\d+\]|\d+\.", stripped):
+            entries.append(stripped)
+    return entries
 
 
 def _has_required_section(required: str, headings: list[str]) -> bool:

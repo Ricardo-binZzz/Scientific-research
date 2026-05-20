@@ -89,7 +89,9 @@ class EndToEndWorkflowTests(unittest.TestCase):
                 "Text [@zhang2024adaptive].\n\n"
                 "Figure 1 shows the result.\n\n"
                 "# References\n\n"
-                "- Zhang, 2024.\n",
+                "- Zhang, 2024.\n"
+                "- Li, 2023.\n"
+                "- Wang, 2022.\n",
                 encoding="utf-8",
             )
             output = StringIO()

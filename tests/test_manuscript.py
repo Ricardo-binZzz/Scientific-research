@@ -154,6 +154,73 @@ class ManuscriptTests(unittest.TestCase):
 
         self.assertTrue(any("Citation markers found but no References section" in issue.message for issue in report.issues))
 
+    def test_inspect_manuscript_flags_empty_markdown_headings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text("# Introduction\n\n##   \n\nText.\n", encoding="utf-8")
+
+            report = inspect_manuscript(path)
+
+        self.assertTrue(any("Empty heading: H2" in issue.message for issue in report.issues))
+
+    def test_inspect_manuscript_flags_markdown_images_without_captions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Results\n\n"
+                "![](stress.svg)\n\n"
+                "The stress result is shown above.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path)
+
+        self.assertTrue(any("Figure image missing caption near line" in issue.message for issue in report.issues))
+
+    def test_inspect_manuscript_accepts_markdown_image_with_nearby_caption(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Results\n\n"
+                "Figure 1. Stress response.\n\n"
+                "![Stress response](stress.svg)\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path)
+
+        self.assertFalse(any("Figure image missing caption near line" in issue.message for issue in report.issues))
+
+    def test_inspect_manuscript_flags_markdown_tables_without_captions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Results\n\n"
+                "| Case | Stress |\n"
+                "| --- | --- |\n"
+                "| A | 12 |\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path)
+
+        self.assertTrue(any("Table missing caption near line" in issue.message for issue in report.issues))
+
+    def test_inspect_manuscript_flags_short_references_section(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.md"
+            path.write_text(
+                "# Introduction\n\n"
+                "Prior work [@zhang2024fixture] supports the design.\n\n"
+                "# References\n\n"
+                "- Zhang, 2024.\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_manuscript(path)
+
+        self.assertTrue(any("References section looks too short" in issue.message for issue in report.issues))
+
     def test_inspect_manuscript_accepts_chinese_references_section(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"
