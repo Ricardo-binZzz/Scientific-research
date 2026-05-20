@@ -8,6 +8,7 @@ const resultPanel = document.getElementById("resultPanel");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
 const demoProjectRoot = String.raw`C:\Users\22676\Documents\科研\examples\demo-project`;
+const successHistory = [];
 
 function valueOf(id) {
   const element = document.getElementById(id);
@@ -242,6 +243,7 @@ document.getElementById("clearOutput").addEventListener("click", () => {
   output.classList.add("empty-state");
   output.textContent = "结果已清空。选择一个操作继续。";
   hideInsightPanel();
+  successHistory.splice(0);
   resultMeta.textContent = "等待操作";
   statusText.textContent = "就绪";
 });
@@ -382,18 +384,22 @@ function renderResultCompanion(action, ok, text) {
 
 function updateLastSuccess(action, label) {
   if (!resultMeta) return;
-  resultMeta.innerHTML = lastSuccessSummary(action, label);
+  const time = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+  successHistory.unshift({ action, label: label || action, time });
+  successHistory.splice(3);
+  resultMeta.innerHTML = lastSuccessSummary(successHistory);
 }
 
-function lastSuccessSummary(action, label) {
-  const time = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
-  const displayLabel = label || action;
+function lastSuccessSummary(history) {
+  const latest = history[0];
+  const previous = history.slice(1);
   return `
     <span class="last-success">
       <span>最近成功</span>
-      <strong>${escapeHtml(displayLabel)}</strong>
-      <em>${escapeHtml(time)}</em>
+      <strong>${escapeHtml(latest.label)}</strong>
+      <em>${escapeHtml(latest.time)}</em>
     </span>
+    ${previous.length ? `<span class="success-history">${previous.map((item) => `<span>${escapeHtml(item.label)} ${escapeHtml(item.time)}</span>`).join("")}</span>` : ""}
   `;
 }
 

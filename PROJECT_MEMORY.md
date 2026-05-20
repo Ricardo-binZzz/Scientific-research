@@ -107,3 +107,4 @@
 - The web UI labels preflight-covered fields with a compact "required" badge so users can see key required inputs before running actions.
 - The browser result header now shows the most recent successful action name and time after any successful web action.
 - The browser result panel now gets a `result-loading` state while an action is running, giving a clearer visual cue before the response arrives.
+- The browser result header keeps an in-memory history of the three latest successful actions, shown as compact tags under the newest success.

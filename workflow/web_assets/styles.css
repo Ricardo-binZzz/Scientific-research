@@ -1297,6 +1297,23 @@ details[open] .chevron {
   font-style: normal;
 }
 
+.success-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.success-history span {
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  color: #bdc9d8;
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 2px 7px;
+}
+
 .panel-title h2,
 .result-header h2,
 .summary-copy h2 {

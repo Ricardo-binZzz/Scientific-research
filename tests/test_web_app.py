@@ -97,6 +97,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("fieldLabelForId", js)
         self.assertIn("lastSuccessSummary", js)
         self.assertIn("updateLastSuccess", js)
+        self.assertIn("successHistory", js)
         self.assertIn("setResultLoading", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
@@ -121,6 +122,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("required-field", html)
         self.assertIn("required-field", css)
         self.assertIn("last-success", css)
+        self.assertIn("success-history", css)
         self.assertIn("result-loading", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
