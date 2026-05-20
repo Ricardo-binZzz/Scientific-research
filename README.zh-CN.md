@@ -14,7 +14,7 @@
 
 ![工作流示意图](workflow/web_assets/workflow-guide.svg)
 
-![网页工作台预览](docs/screenshots/web-workbench-preview.svg)
+![网页工作台真实截图](docs/screenshots/web-workbench-home.png)
 
 ## 3 分钟试用 Demo
 
@@ -49,15 +49,15 @@
 
 | 模块 | 能做什么 |
 | --- | --- |
-| 文献库 | 添加论文，导入 CSV/BibTeX 元数据，按标题、作者、来源、DOI、摘要、关键词搜索，检查缺失 PDF 和笔记 |
+| 文献库 | 添加论文，导入 CSV/BibTeX 元数据，检索 Crossref 开放元数据，下载直链/开放 PDF，搜索本地条目，检查缺失 PDF 和笔记 |
 | 阅读笔记 | 生成论文总结卡片和检索记录，方便后续综述和写作 |
 | 写作准备 | 生成写作资料包、文献对比表、写作仪表盘、文献地图和后续检索计划 |
-| 仿真数据 | 预览标准化列名，统计数值范围，校验必需列和单位元数据，检查超范围数值 |
+| 仿真数据 | 启动已安装求解器命令并记录日志，预览标准化列名，统计数值范围，校验必需列和单位元数据，检查超范围数值 |
 | 图表生成 | 从 CSV/JSON 生成 SVG/JSON 图表包，支持趋势图、柱状图、误差线图、热力图和等值线图 |
-| 论文检查 | 检查 Markdown、纯文本和 DOCX 草稿中的引用、标题层级、图号、图注、表注和参考文献问题 |
+| 论文检查 | 检查 Markdown、纯文本和 DOCX 草稿中的引用、标题层级、图号、图注、表注、DOCX 样式/页面设置和 Word 参考文献域问题 |
 | 本地网页 | 不会敲 Python 命令也可以在浏览器里完成常用流程 |
 
-![项目体检预览](docs/screenshots/project-check-preview.svg)
+![项目体检真实截图](docs/screenshots/project-check.png)
 
 ## 适合谁？
 
@@ -76,6 +76,16 @@
 - 论文草稿引用、章节、图号、图注、表注和参考文献检查报告。
 
 ## 快速开始
+
+### 方式 A0：Windows 一键安装
+
+在 Windows 上可以直接双击 `install_windows.bat`，或运行：
+
+```powershell
+.\install_windows.bat
+```
+
+它会创建本地 `.venv`，验证网页模块能启动，并在项目文件夹和桌面生成 `Research Workflow Web.bat` 启动器。之后双击这个启动器即可打开网页工作台。
 
 ### 方式 A：本地网页界面
 
@@ -142,11 +152,17 @@ $PY='C:\path\to\python.exe'
 
 ## 截图
 
-预览图和截图采集说明放在 [docs/screenshots](docs/screenshots)。当前 SVG 预览图是安全、通用的展示素材；后续可以再补真实浏览器截图。
+真实浏览器截图放在 [docs/screenshots](docs/screenshots)，来自 `examples/demo-project`：
+
+- [网页工作台首页](docs/screenshots/web-workbench-home.png)
+- [流程状态卡片](docs/screenshots/workflow-status.png)
+- [项目体检卡片](docs/screenshots/project-check.png)
+
+安装 Playwright 的 Chromium 浏览器后，可以用 `node tools/capture_web_screenshots.js` 重新采集。
 
 ## 项目成熟度
 
-这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块和网页 action 的 152 个 unittest。
+这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块和网页 action 的 161 个 unittest。
 
 ## 项目结构
 

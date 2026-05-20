@@ -59,10 +59,8 @@ ContentResponse = tuple[int, str, str]
 def render_home_page(default_project_root: str = "") -> str:
     index_path = Path(__file__).with_name("web_assets") / "index.html"
     content = index_path.read_text(encoding="utf-8")
-    demo_project_root = Path(__file__).resolve().parent.parent / "examples" / "demo-project"
     return (
         content.replace("__DEFAULT_PROJECT_ROOT__", html.escape(default_project_root, quote=True))
-        .replace("__DEMO_PROJECT_ROOT__", html.escape(str(demo_project_root), quote=True))
     )
 
 
@@ -502,7 +500,11 @@ def _make_handler(default_project_root: str):
                 return
             path = Path(__file__).with_name("web_assets") / name
             content_type = "text/css; charset=utf-8" if name.endswith(".css") else "application/javascript; charset=utf-8"
-            self._send(200, content_type, path.read_text(encoding="utf-8"))
+            text = path.read_text(encoding="utf-8")
+            if name == "app.js":
+                demo_project_root = Path(__file__).resolve().parent.parent / "examples" / "demo-project"
+                text = text.replace("__DEMO_PROJECT_ROOT_JSON__", json.dumps(str(demo_project_root)))
+            self._send(200, content_type, text)
 
     return WorkflowRequestHandler
 

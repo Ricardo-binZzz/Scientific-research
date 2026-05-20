@@ -63,6 +63,8 @@ http://127.0.0.1:8000
 
 启动脚本会依次查找 `.venv\Scripts\python.exe`、Windows 的 `py` 启动器和 `python` 命令。若提示找不到 Python，请先安装 Python 3.10+，或在工具目录里创建 `.venv`。
 
+如果想减少手动配置，可以先双击工具目录里的 `install_windows.bat`。它会创建本地 `.venv`，检查网页模块，并生成 `Research Workflow Web.bat` 启动器；之后日常使用时双击这个启动器即可。
+
 网页里先填写你的课题目录，例如：
 
 ```text
@@ -87,7 +89,7 @@ C:\Users\YourName\Documents\科研\examples\demo-project
 4. 按任务向导跳到对应功能区，逐步处理文献、笔记、仿真、图表和稿件。
 5. 每完成一轮，点击“项目体检”检查还有哪些缺口。
 
-网页会记住项目根目录，能复制/下载结果，也会在运行中禁用按钮，避免重复提交。结果卡片、必填字段、错误提示、重跑按钮和常用报告保存位置，都以 `WEB_GUIDE.md` 为准。
+网页会记住项目根目录和最近成功操作，能复制/下载结果，也会在运行中禁用按钮，避免重复提交。结果卡片、必填字段、错误提示、重跑按钮和常用报告保存位置，都以 `WEB_GUIDE.md` 为准。
 
 ## 4. 如果要用命令行，先设置 Python
 
@@ -220,6 +222,26 @@ C:\Users\YourName\Documents\fixture-study\literature
 - 是否有明显局限或不适用条件。
 
 不建议把所有下载的 PDF 都入库。只把确认有价值的论文加入文献库。
+
+如果想先自动找一批候选文献，可以用 Crossref 开放元数据检索：
+
+```powershell
+& $PY -m workflow.cli library discover C:\Users\YourName\Documents\fixture-study\literature --query "adaptive fixture manufacturing" --limit 5
+```
+
+确认结果合适后，可以把候选条目合并进本地文献库：
+
+```powershell
+& $PY -m workflow.cli library discover C:\Users\YourName\Documents\fixture-study\literature --query "adaptive fixture manufacturing" --limit 5 --merge
+```
+
+如果你已经有可以合法访问的 PDF 直链，可以下载到文献目录：
+
+```powershell
+& $PY -m workflow.cli library download-pdf C:\Users\YourName\Documents\fixture-study\literature https://example.org/paper.pdf --filename paper.pdf
+```
+
+这个功能只使用开放元数据和你提供的直接 PDF 链接，不会绕过出版社权限、学校账号登录或付费墙。下载后建议再运行 `library check-pdfs`，确认文献库里的文件名和本地 PDF 对得上。
 
 ## 9. 给论文做摘要卡片
 
@@ -420,6 +442,14 @@ Columns: time, stress, displacement
 它会列出每个数值列的有效数量、最小值和最大值。若某列既有数字又有坏值，仍会显示数字部分的范围，并在 `Non-numeric columns` 中提醒你这列需要回到原始数据检查。
 
 如果你用网页操作，“预览数据”“汇总数值范围”和“校验数据”会在右侧先显示仿真数据概览卡片。建议顺序是：先预览确认列名，再汇总看数值范围，最后校验必需列和数值列。概览卡片只帮助快速判断，完整 Markdown 报告仍在下方。
+
+如果你的仿真软件已经提供命令行入口，也可以让工具启动外部求解器命令并保存日志。例如：
+
+```powershell
+& $PY -m workflow.cli simulation run-command --log C:\Users\YourName\Documents\fixture-study\simulation\solver.log C:\Users\YourName\Documents\fixture-study\simulation -- ansys2024 -b -i solve.inp
+```
+
+这只是调用你本机已经安装好的求解器命令，不会替你操作商业软件 GUI。求解完成后，仍然建议导出 CSV/JSON，再继续运行 `inspect-data`、`summarize-data`、`validate-data` 和 `check-ranges`。
 
 如果你已经知道某些结果的合理范围，可以先做范围检查：
 
@@ -762,8 +792,8 @@ Get-Content C:\Users\YourName\Documents\科研\USER_GUIDE.md -Encoding UTF8
 
 ### 能不能直接控制仿真软件
 
-当前第一版还不直接控制 ANSYS、Abaqus、COMSOL。推荐先在仿真软件里人工建模、求解、导出 CSV/JSON，再由本工作流负责检查数据和绘图。
+现在可以用 `simulation run-command` 调用你本机已经安装好的求解器命令行入口并保存日志；它不控制商业软件 GUI，也不替你配置许可证或模型。推荐流程仍然是：在仿真软件里确认模型和求解设置，必要时用命令行批处理运行，导出 CSV/JSON 后由本工作流检查数据和绘图。
 
 ### Word 排版能不能自动检查
 
-当前只能读取 `.docx` 文本并做基础检查，还不能检查 Word 样式、页眉页脚和参考文献域。Markdown 草稿已经可以检查空标题、图题、表题和参考文献条目数量。
+现在 `.docx` 除了读取正文文本，还会检查一部分 Word 包结构问题，例如缺少 `styles.xml`、页面边距设置缺失、正文使用了未定义段落样式、没有检测到 Word 引用/参考文献域、参考文献章节存在但没有 bibliography 域。它仍然不能替代 Word 模板审阅或 Zotero 字段人工核对；最终排版仍需在 Word 里确认。

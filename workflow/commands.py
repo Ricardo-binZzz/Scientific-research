@@ -24,6 +24,7 @@ from workflow.library import (
     render_search_results,
     search_library,
 )
+from workflow.literature_discovery import discover_crossref, download_pdf_from_url, render_discovery_results
 from workflow.literature_map import build_literature_map, render_literature_map
 from workflow.literature_table import build_literature_table, render_literature_table
 from workflow.literature_tracker import build_literature_tracker, render_literature_tracker
@@ -53,6 +54,8 @@ from workflow.simulation import (
     render_dataset_summary,
     render_range_check_report,
     render_dataset_validation_report,
+    render_external_simulation_run,
+    run_external_simulation_command,
     summarize_dataset,
     load_unit_metadata,
     validate_dataset_columns,
@@ -194,6 +197,13 @@ def _handle_simulation(args: Namespace) -> int:
         )
         print(render_dataset_validation_report(report))
         return 0
+    if args.sim_command == "run-command":
+        command = list(args.external_command)
+        if command and command[0] == "--":
+            command = command[1:]
+        run = run_external_simulation_command(command, Path(args.root_dir), Path(args.log))
+        print(render_external_simulation_run(run))
+        return run.exit_code
     raise ValueError(f"Unsupported simulation command: {args.sim_command}")
 
 
@@ -265,6 +275,18 @@ def _handle_library(args: Namespace) -> int:
             Path(args.out).write_text(content, encoding="utf-8")
         else:
             print(content)
+        return 0
+    if args.library_command == "discover":
+        discovered = discover_crossref(args.query, limit=args.limit)
+        if args.merge:
+            combined = LibraryIndex(entries=[])
+            for entry in load_index(root).entries + discovered.entries:
+                combined = add_entry(root, combined, entry)
+        print(render_discovery_results(discovered))
+        return 0
+    if args.library_command == "download-pdf":
+        target = download_pdf_from_url(args.url, root, filename=args.filename)
+        print(f"Downloaded PDF: {target}")
         return 0
     raise ValueError(f"Unsupported library command: {args.library_command}")
 

@@ -82,6 +82,8 @@ def inspect_manuscript(
         issues.extend(_inspect_references_quality(text))
     if not citations:
         issues.append(ManuscriptIssue(level="warning", message="No citation markers found"))
+    if path.suffix.lower() == ".docx":
+        issues.extend(_inspect_docx_package_quality(path, headings))
     return ManuscriptReport(
         path=path,
         citations=citations,
@@ -310,3 +312,45 @@ def _read_docx_text(path: Path) -> str:
         if value:
             paragraphs.append(value)
     return "\n".join(paragraphs)
+
+
+def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[ManuscriptIssue]:
+    issues: list[ManuscriptIssue] = []
+    with zipfile.ZipFile(path) as package:
+        names = set(package.namelist())
+        document_xml = package.read("word/document.xml")
+        styles_xml = package.read("word/styles.xml") if "word/styles.xml" in names else b""
+    if not styles_xml:
+        issues.append(ManuscriptIssue(level="warning", message="DOCX styles.xml missing; cannot verify Word style definitions"))
+    else:
+        issues.extend(_inspect_docx_styles(document_xml, styles_xml))
+    root = ElementTree.fromstring(document_xml)
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    if root.find(".//w:sectPr/w:pgMar", namespace) is None:
+        issues.append(ManuscriptIssue(level="warning", message="DOCX page margin settings missing"))
+    field_text = " ".join(node.text or "" for node in root.findall(".//w:instrText", namespace))
+    has_field_char = root.find(".//w:fldChar", namespace) is not None
+    if not field_text and not has_field_char:
+        issues.append(ManuscriptIssue(level="warning", message="No Word citation/reference fields detected"))
+    if _has_references_section(headings) and "BIBLIOGRAPHY" not in field_text.upper():
+        issues.append(ManuscriptIssue(level="warning", message="References section found but no Word bibliography field detected"))
+    return issues
+
+
+def _inspect_docx_styles(document_xml: bytes, styles_xml: bytes) -> list[ManuscriptIssue]:
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    document_root = ElementTree.fromstring(document_xml)
+    styles_root = ElementTree.fromstring(styles_xml)
+    style_ids = {
+        node.attrib.get(f"{{{namespace['w']}}}styleId", "")
+        for node in styles_root.findall(".//w:style", namespace)
+    }
+    used_styles = {
+        node.attrib.get(f"{{{namespace['w']}}}val", "")
+        for node in document_root.findall(".//w:pStyle", namespace)
+    }
+    missing = sorted(style for style in used_styles if style and style not in style_ids)
+    return [
+        ManuscriptIssue(level="warning", message=f"DOCX paragraph style is used but not defined: {style}")
+        for style in missing
+    ]

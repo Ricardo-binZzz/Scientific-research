@@ -1,4 +1,5 @@
 import tempfile
+import sys
 import unittest
 from contextlib import redirect_stdout
 from io import StringIO
@@ -371,6 +372,32 @@ class SimulationBridgeTests(unittest.TestCase):
         text = output.getvalue()
         self.assertIn("Empty unit metadata: stress", text)
         self.assertIn("Extra unit metadata: temperature", text)
+
+    def test_cli_simulation_run_command_records_solver_log(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            log_path = root / "solver.log"
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(
+                    [
+                        "simulation",
+                        "run-command",
+                        "--log",
+                        str(log_path),
+                        str(root),
+                        "--",
+                        sys.executable,
+                        "-c",
+                        "print('solver ok')",
+                    ]
+                )
+            log_text = log_path.read_text(encoding="utf-8")
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Exit code: 0", output.getvalue())
+        self.assertIn("solver ok", log_text)
 
 
 if __name__ == "__main__":

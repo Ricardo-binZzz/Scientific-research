@@ -298,6 +298,27 @@ class ManuscriptTests(unittest.TestCase):
         self.assertEqual(report.missing_sections, [])
         self.assertEqual(report.missing_figures, [])
 
+    def test_inspect_manuscript_flags_docx_style_layout_and_reference_field_gaps(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_minimal_docx(
+                path,
+                [
+                    "Introduction",
+                    "Prior work [@zhang2024] motivates this design.",
+                    "References",
+                    "[1] Zhang. Adaptive fixture design.",
+                ],
+            )
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX styles.xml missing; cannot verify Word style definitions", messages)
+        self.assertIn("DOCX page margin settings missing", messages)
+        self.assertIn("No Word citation/reference fields detected", messages)
+        self.assertIn("References section found but no Word bibliography field detected", messages)
+
     def test_inspect_manuscript_flags_citations_missing_from_library(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"

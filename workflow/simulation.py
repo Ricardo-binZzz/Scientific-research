@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -86,8 +87,40 @@ class RangeCheckReport:
         )
 
 
+@dataclass(frozen=True)
+class ExternalSimulationRun:
+    command: list[str]
+    work_dir: Path
+    log_path: Path
+    exit_code: int
+
+
 def build_case_manifest(case: SimulationCase) -> str:
     return render_case_manifest(case)
+
+
+def run_external_simulation_command(command: list[str], work_dir: Path, log_path: Path) -> ExternalSimulationRun:
+    if not command:
+        raise ValueError("external simulation command is required")
+    work_dir.mkdir(parents=True, exist_ok=True)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    completed = subprocess.run(command, cwd=work_dir, text=True, capture_output=True, check=False)
+    log_path.write_text((completed.stdout or "") + (completed.stderr or ""), encoding="utf-8")
+    return ExternalSimulationRun(command=command, work_dir=work_dir, log_path=log_path, exit_code=completed.returncode)
+
+
+def render_external_simulation_run(run: ExternalSimulationRun) -> str:
+    return "\n".join(
+        [
+            "# External Simulation Command",
+            "",
+            f"- Command: {' '.join(run.command)}",
+            f"- Work directory: {run.work_dir}",
+            f"- Log path: {run.log_path}",
+            f"- Exit code: {run.exit_code}",
+            "",
+        ]
+    )
 
 
 def render_case_manifest(case: SimulationCase) -> str:

@@ -14,7 +14,7 @@ It is built for mechanical and manufacturing research workflows where Zotero/Wor
 
 ![Workflow guide](workflow/web_assets/workflow-guide.svg)
 
-![Web workbench preview](docs/screenshots/web-workbench-preview.svg)
+![Web workbench screenshot](docs/screenshots/web-workbench-home.png)
 
 ## Try the Demo in 3 Minutes
 
@@ -48,15 +48,15 @@ It does not try to replace expert judgment, Zotero, Word, simulation software, o
 
 | Area | What it does |
 | --- | --- |
-| Literature library | Add papers, import CSV/BibTeX metadata, search by title/author/source/DOI/abstract/keywords, check missing PDFs and notes |
+| Literature library | Add papers, import CSV/BibTeX metadata, search Crossref open metadata, download direct/open PDF links, search local records, check missing PDFs and notes |
 | Reading notes | Generate structured paper-summary notes and search-log notes for review work |
 | Writing preparation | Build writing packs, literature comparison tables, writing dashboards, literature maps, and search trackers |
-| Simulation data | Inspect normalized columns, summarize numeric ranges, validate required columns, check units, and flag out-of-range values |
+| Simulation data | Run installed solver CLI commands with logs, inspect normalized columns, summarize numeric ranges, validate required columns, check units, and flag out-of-range values |
 | Figure generation | Create SVG/JSON figure bundles from CSV/JSON data, including trend, bar, error-bar, heatmap, and contour plots |
-| Manuscript QA | Check Markdown/plain text/DOCX drafts for citations, headings, figure markers, captions, tables, and reference-section issues |
+| Manuscript QA | Check Markdown/plain text/DOCX drafts for citations, headings, figure markers, captions, tables, DOCX style/layout gaps, and Word reference-field issues |
 | Local web UI | Use common workflows from a browser without typing Python commands |
 
-![Project check preview](docs/screenshots/project-check-preview.svg)
+![Project check screenshot](docs/screenshots/project-check.png)
 
 ## Who Is This For?
 
@@ -75,6 +75,16 @@ It does not try to replace expert judgment, Zotero, Word, simulation software, o
 - Manuscript QA reports for citations, sections, figures, captions, tables, and references.
 
 ## Quick Start
+
+### Option A0: One-Click Windows Setup
+
+On Windows, double-click `install_windows.bat` or run:
+
+```powershell
+.\install_windows.bat
+```
+
+It creates a local `.venv`, verifies the web app module, and creates `Research Workflow Web.bat` in the project folder and on the Desktop when possible. After that, double-click the launcher to open the browser workbench.
 
 ### Option A: Local Web UI
 
@@ -141,11 +151,17 @@ Use it to evaluate the workflow before applying it to a real research project.
 
 ## Screenshots
 
-Preview assets and screenshot capture guidance live in [docs/screenshots](docs/screenshots). The current SVG previews are safe, generic stand-ins; real browser screenshots can replace or supplement them later.
+Real browser screenshots captured from `examples/demo-project` live in [docs/screenshots](docs/screenshots):
+
+- [Web workbench home](docs/screenshots/web-workbench-home.png)
+- [Workflow status cards](docs/screenshots/workflow-status.png)
+- [Project check cards](docs/screenshots/project-check.png)
+
+The screenshots can be regenerated with `node tools/capture_web_screenshots.js` after installing Playwright's Chromium browser.
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 152 unittest cases covering the main workflow modules and web action handlers.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 161 unittest cases covering the main workflow modules and web action handlers.
 
 ## Project Layout
 

@@ -1,10 +1,11 @@
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler
 
 from workflow.bootstrap import bootstrap_workspace
-from workflow.web_app import _create_server, handle_web_action, render_home_page
+from workflow.web_app import _create_server, _make_handler, handle_web_action, render_home_page
 
 
 class WebAppTests(unittest.TestCase):
@@ -42,6 +43,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("id=\"palette\"", html)
         self.assertIn("id=\"tickCount\"", html)
         self.assertIn("id=\"rerunLastAction\"", html)
+        self.assertIn("id=\"expandAllSections\"", html)
+        self.assertIn("id=\"collapseAllSections\"", html)
         self.assertIn("literature_insights", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
@@ -99,6 +102,9 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("lastSuccessSummary", js)
         self.assertIn("updateLastSuccess", js)
         self.assertIn("successHistory", js)
+        self.assertIn("successHistoryStorageKey", js)
+        self.assertIn("loadSuccessHistory", js)
+        self.assertIn("saveSuccessHistory", js)
         self.assertIn("setResultLoading", js)
         self.assertIn("rerunLastAction", js)
         self.assertIn("lastRunnableAction", js)
@@ -106,6 +112,9 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("setRerunBusyState", js)
         self.assertIn("setRerunBusyState(busy)", js)
         self.assertIn("clearResultState", js)
+        self.assertIn("setAllActionGroups", js)
+        self.assertIn("expandAllSections", js)
+        self.assertIn("collapseAllSections", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)
@@ -132,6 +141,26 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("success-history", css)
         self.assertIn("result-loading", css)
         self.assertIn("button:disabled:hover", css)
+
+    def test_app_js_asset_replaces_demo_project_placeholder(self) -> None:
+        handler = _make_handler("")
+        server = _create_server("127.0.0.1", 8000, handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            import urllib.request
+
+            url = f"http://127.0.0.1:{server.server_address[1]}/assets/app.js"
+            with urllib.request.urlopen(url, timeout=5) as response:
+                js = response.read().decode("utf-8")
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
+        self.assertIn("examples", js)
+        self.assertIn("demo-project", js)
+        self.assertNotIn("__DEMO_PROJECT_ROOT__", js)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

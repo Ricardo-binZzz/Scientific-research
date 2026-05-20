@@ -8,7 +8,8 @@ const resultPanel = document.getElementById("resultPanel");
 const rerunLastAction = document.getElementById("rerunLastAction");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
-const demoProjectRoot = String.raw`__DEMO_PROJECT_ROOT__`;
+const successHistoryStorageKey = "researchWorkflow.successHistory";
+const demoProjectRoot = __DEMO_PROJECT_ROOT_JSON__;
 const successHistory = [];
 let lastRunnableAction = null;
 
@@ -254,6 +255,7 @@ document.getElementById("clearOutput").addEventListener("click", () => {
 function clearResultState() {
   setResultLoading(false);
   successHistory.splice(0);
+  saveSuccessHistory();
   lastRunnableAction = null;
   updateRerunButton("");
 }
@@ -415,6 +417,7 @@ function updateLastSuccess(action, label) {
   const time = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
   successHistory.unshift({ action, label: label || action, time });
   successHistory.splice(3);
+  saveSuccessHistory();
   resultMeta.innerHTML = lastSuccessSummary(successHistory);
 }
 
@@ -429,6 +432,44 @@ function lastSuccessSummary(history) {
     </span>
     ${previous.length ? `<span class="success-history">${previous.map((item) => `<span>${escapeHtml(item.label)} ${escapeHtml(item.time)}</span>`).join("")}</span>` : ""}
   `;
+}
+
+function loadSuccessHistory() {
+  try {
+    const stored = window.localStorage.getItem(successHistoryStorageKey);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(normalizeSuccessHistoryItem).filter(Boolean).slice(0, 3);
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveSuccessHistory() {
+  try {
+    if (!successHistory.length) {
+      window.localStorage.removeItem(successHistoryStorageKey);
+      return;
+    }
+    window.localStorage.setItem(successHistoryStorageKey, JSON.stringify(successHistory.slice(0, 3)));
+  } catch (error) {
+    return;
+  }
+}
+
+function normalizeSuccessHistoryItem(item) {
+  if (!item || typeof item !== "object") return null;
+  const action = typeof item.action === "string" ? item.action : "";
+  const label = typeof item.label === "string" ? item.label : action;
+  const time = typeof item.time === "string" ? item.time : "";
+  if (!action || !label || !time) return null;
+  return { action, label, time };
+}
+
+successHistory.push(...loadSuccessHistory());
+if (successHistory.length && resultMeta) {
+  resultMeta.innerHTML = lastSuccessSummary(successHistory);
 }
 
 function hideInsightPanel() {
@@ -1318,6 +1359,22 @@ document.getElementById("loadDemoProject").addEventListener("click", () => {
 });
 
 document.getElementById("fillCommonPaths").addEventListener("click", fillCommonPaths);
+
+document.getElementById("expandAllSections").addEventListener("click", () => {
+  setAllActionGroups(true);
+  showToast("已展开全部模块");
+});
+
+document.getElementById("collapseAllSections").addEventListener("click", () => {
+  setAllActionGroups(false);
+  showToast("已收起全部模块");
+});
+
+function setAllActionGroups(open) {
+  document.querySelectorAll("details.action-group").forEach((section) => {
+    section.open = open;
+  });
+}
 
 if (insightPanel) {
   insightPanel.addEventListener("click", (event) => {

@@ -2,6 +2,8 @@
 
 ## Status
 
+- Sequential shortfall pass on 2026-05-20: added real Playwright browser screenshots, Windows one-click setup, Crossref open metadata discovery plus direct/open PDF download, deeper DOCX style/layout/reference-field QA, external solver command logging, and web expand/collapse controls.
+- Web success-history persistence on 2026-05-20: the browser stores the three latest successful actions in localStorage, restores them after refresh, and clears them when the user clears output; `WEB_GUIDE.md`, `USER_GUIDE.md`, and frontend asset coverage were updated.
 - Project scaffold, workflow docs, templates, and Python contract modules are in place.
 - CLI supports `init`, `note`, `simulation`, `library`, `figure`, and `manuscript` commands.
 - Literature entries can be added to and listed from `library-index.json`.
@@ -157,7 +159,6 @@
 - CI privacy guard on 2026-05-20: `.github/workflows/tests.yml` now scans for user-specific paths, the known GitHub account string, OpenAI-style keys, and secret/password assignments, excluding docs that intentionally describe privacy checks.
 - GitHub-star positioning on 2026-05-20: README entry points now use a real Actions badge, 3-minute demo path, target-user section, output list, screenshot guide, and clearer non-goals; CI privacy scan was adjusted to allow the public repository path in badges.
 - P1/P2/P3 GitHub presentation on 2026-05-20: README maturity/comparison/non-goal sections, checklist roadmap formatting, generic SVG preview assets, and `docs/releases/v0.1.0.md` release notes were added. `gh` was unavailable locally, so creating the actual `v0.1.0` GitHub Release remains a web-side follow-up.
-- Consider persisting recent successful actions to localStorage only if users need history after refreshing the page.
 - Consider adding cancellation only if long-running actions become common.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
