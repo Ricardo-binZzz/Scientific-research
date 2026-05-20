@@ -1,0 +1,39 @@
+name: Documentation improvement
+description: Report unclear, outdated, or missing documentation.
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: document
+    attributes:
+      label: Document
+      options:
+        - README.md
+        - README.zh-CN.md
+        - USER_GUIDE.md
+        - WEB_GUIDE.md
+        - USER_GUIDE.en.md
+        - examples/README.md
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is unclear or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested wording or structure
+  - type: dropdown
+    id: user_level
+    attributes:
+      label: Reader level affected
+      options:
+        - First-time user
+        - Daily web UI user
+        - CLI user
+        - Contributor
+        - Other

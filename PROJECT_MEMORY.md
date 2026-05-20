@@ -8,6 +8,7 @@
 - GitHub presentation positioning was upgraded on 2026-05-20: `README.md` and `README.zh-CN.md` now use a professional landing-page structure with badges, a workflow visual, value proposition, web-first quick start, CLI quick start, core capability table, demo project section, documentation entry points, differentiators, current limits, and suggested GitHub About text.
 - `start_web.bat` is portable: it no longer contains a user-specific Python path, and it tries `.venv\Scripts\python.exe`, then the Windows `py` launcher, then `python`.
 - GitHub professionalism files were added on 2026-05-20: MIT `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, and `.github/workflows/tests.yml`.
+- GitHub collaboration templates were added on 2026-05-20: issue templates for bugs, feature requests, documentation improvements, plus a pull request template with workflow, verification, documentation, and privacy checklists.
 
 ## Working Rules
 

@@ -139,6 +139,12 @@ literature-tracker.json
 - [安全策略](SECURITY.md)
 - [更新日志](CHANGELOG.md)
 
+## 参与贡献
+
+如果问题或改进建议符合“本地优先科研工作流”的范围，欢迎提交 issue 或 pull request。请优先使用 GitHub issue 模板；如果问题依赖 CSV、Markdown、DOCX 或文献库输入，请提供已经脱敏的最小示例。
+
+提交 PR 前，请先运行测试，并确认没有提交个人路径、密钥、未公开论文内容或私有科研数据。
+
 ## 当前限制
 
 - 文献检索和论文下载仍然依赖人工或外部工具。

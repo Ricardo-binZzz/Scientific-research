@@ -138,6 +138,12 @@ literature-tracker.json
 - [Security policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
 
+## Contributing
+
+Issues and pull requests are welcome when they fit the local-first research workflow scope. Please use the GitHub issue templates and include sanitized sample data when a problem depends on CSV, Markdown, DOCX, or library-index input.
+
+Before opening a pull request, run the test suite and check that no private paths, credentials, unpublished paper text, or private research data were committed.
+
 ## Current Limits
 
 - Literature search and paper downloads are still manual or handled by external tools.

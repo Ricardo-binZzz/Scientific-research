@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest a workflow improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What research workflow pain point should this solve?
+      placeholder: I need to compare simulation results from multiple folders before plotting.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Workflow area
+      options:
+        - Local web UI
+        - CLI
+        - Literature library
+        - Reading notes
+        - Simulation data
+        - Figure generation
+        - Manuscript QA
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: What should the tool do?
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Example workflow
+      description: Show the expected clicks, commands, files, or outputs.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing tools or manual steps you currently use.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This fits the local-first research workflow scope.
+          required: true
+        - label: This does not require private cloud services for the core workflow.
+          required: true
