@@ -9,6 +9,7 @@
 - `start_web.bat` is portable: it no longer contains a user-specific Python path, and it tries `.venv\Scripts\python.exe`, then the Windows `py` launcher, then `python`.
 - GitHub professionalism files were added on 2026-05-20: MIT `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, and `.github/workflows/tests.yml`.
 - GitHub collaboration templates were added on 2026-05-20: issue templates for bugs, feature requests, documentation improvements, plus a pull request template with workflow, verification, documentation, and privacy checklists.
+- `.gitattributes` was added on 2026-05-20 to normalize text files to LF while keeping Windows `.bat` launchers as CRLF.
 
 ## Working Rules
 

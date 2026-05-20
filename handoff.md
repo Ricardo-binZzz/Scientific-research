@@ -152,6 +152,7 @@
 - Privacy cleanup on 2026-05-20: user-specific Windows paths were removed from tracked docs and `start_web.bat`; the web launcher now discovers `.venv`, `py`, or `python` instead of hard-coding a local runtime.
 - GitHub professionalism files on 2026-05-20: MIT `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, and `.github/workflows/tests.yml` were added; README badges and documentation links were updated.
 - GitHub collaboration templates on 2026-05-20: issue templates for bugs, feature requests, and documentation improvements plus a PR template were added, with privacy and verification prompts tailored to this research workflow.
+- Repository hygiene on 2026-05-20: `.gitattributes` was added so Markdown, Python, JSON, YAML, web assets, SVG, and CSV use LF, while `.bat` files keep CRLF for Windows.
 - Consider persisting recent successful actions to localStorage only if users need history after refreshing the page.
 - Consider adding cancellation only if long-running actions become common.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
