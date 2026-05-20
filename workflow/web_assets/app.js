@@ -246,6 +246,10 @@ function renderResultCompanion(action, ok, text) {
     renderFigureResult(text);
     return;
   }
+  if (action === "save_standard_report" && ok) {
+    renderSavedReportResult(text);
+    return;
+  }
   if (action === "workflow_status" && ok) {
     renderWorkflowStatus(text);
     return;
@@ -536,6 +540,43 @@ function parseGeneratedPaths(text) {
     .split(/\r?\n/)
     .map((line) => line.replace(/^已生成：/, "").trim())
     .filter((line) => line.endsWith(".svg") || line.endsWith(".json"));
+}
+
+function renderSavedReportResult(text) {
+  if (!insightPanel) return;
+  const kind = valueOf("reportKind") || "writing_pack";
+  const path = text.replace(/^已保存标准报告：/, "").trim();
+  const purpose = savedReportPurpose(kind);
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>报告已保存</h3>
+        <p>下次可以直接打开这个 Markdown 文件继续写作或整理材料。</p>
+      </div>
+    </div>
+    <div class="saved-report-card">
+      <div>
+        <span>报告类型</span>
+        <strong>${escapeHtml(purpose.title)}</strong>
+      </div>
+      <code>${escapeHtml(path || "未解析到保存路径")}</code>
+      <p>${escapeHtml(purpose.description)}</p>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function savedReportPurpose(kind) {
+  const purposes = {
+    writing_pack: ["写作素材包", "汇总近期文献、关键词、缺口、图表、仿真数据和稿件草稿。"],
+    writing_dashboard: ["写作看板", "按背景、方法、结果和缺口整理当前写作准备情况。"],
+    literature_table: ["文献对比表", "把论文摘要卡整理成问题、方法、数据、结论和局限对比。"],
+    literature_map: ["文献地图", "按年份、来源、作者、关键词、数据库和高引用文献整理文献格局。"],
+    literature_tracker: ["追踪清单", "把需要继续检索的主题转换成下一轮检索建议。"],
+  };
+  const item = purposes[kind] || ["标准报告", "保存一份可复用的 Markdown 报告。"];
+  return { title: item[0], description: item[1] };
 }
 
 function renderManuscriptCheck(text) {
