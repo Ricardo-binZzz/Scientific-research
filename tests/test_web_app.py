@@ -48,8 +48,10 @@ class WebAppTests(unittest.TestCase):
     def test_frontend_assets_include_literature_insight_renderer(self) -> None:
         js_path = Path("workflow") / "web_assets" / "app.js"
         css_path = Path("workflow") / "web_assets" / "styles.css"
+        html_path = Path("workflow") / "web_assets" / "index.html"
         js = js_path.read_text(encoding="utf-8")
         css = css_path.read_text(encoding="utf-8")
+        html = html_path.read_text(encoding="utf-8")
 
         self.assertIn("renderLiteratureInsights", js)
         self.assertIn("parseMarkdownListSection", js)
@@ -113,6 +115,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("project-init-card", css)
         self.assertIn("result-fallback-card", css)
         self.assertIn("section-highlight", css)
+        self.assertIn("required-field", html)
+        self.assertIn("required-field", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -180,6 +180,20 @@ label {
   margin-bottom: var(--space-1);
 }
 
+label.required-field::after {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 999px;
+  color: #b91c1c;
+  content: "必填";
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-left: 6px;
+  padding: 2px 5px;
+}
+
 input,
 textarea,
 select {

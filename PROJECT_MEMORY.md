@@ -104,3 +104,4 @@
 - The browser UI now performs lightweight preflight validation before sending actions, covering missing project roots and missing primary file paths for CSV import, simulation, figure, and manuscript actions.
 - Web preflight validation now names the exact missing field and opens, highlights, and focuses the corresponding input when possible.
 - Figure generation preflight validation also checks the figure output directory and figure stem before calling the backend.
+- The web UI labels preflight-covered fields with a compact "required" badge so users can see key required inputs before running actions.
