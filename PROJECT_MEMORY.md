@@ -106,3 +106,4 @@
 - Figure generation preflight validation also checks the figure output directory and figure stem before calling the backend.
 - The web UI labels preflight-covered fields with a compact "required" badge so users can see key required inputs before running actions.
 - The browser result header now shows the most recent successful action name and time after any successful web action.
+- The browser result panel now gets a `result-loading` state while an action is running, giving a clearer visual cue before the response arrives.

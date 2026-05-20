@@ -407,6 +407,24 @@ details[open] .chevron {
   top: 86px;
 }
 
+.result-panel.result-loading {
+  border-color: #3b82f6;
+}
+
+.result-panel.result-loading::before {
+  background: linear-gradient(90deg, #60a5fa, #22c55e);
+  content: "";
+  height: 3px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.result-panel.result-loading #output {
+  background: #0f1a2b;
+}
+
 .insight-panel {
   background: #f8fafc;
   border-bottom: 1px solid #243143;

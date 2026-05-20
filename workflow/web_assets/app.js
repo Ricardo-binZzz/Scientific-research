@@ -4,6 +4,7 @@ const output = document.getElementById("output");
 const projectRoot = document.getElementById("projectRoot");
 const toast = document.getElementById("toast");
 const insightPanel = document.getElementById("insightPanel");
+const resultPanel = document.getElementById("resultPanel");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
 const demoProjectRoot = String.raw`C:\Users\22676\Documents\科研\examples\demo-project`;
@@ -24,6 +25,11 @@ function setBusy(button, busy) {
   });
   if (button) button.disabled = busy;
   statusText.textContent = busy ? "运行中" : "就绪";
+}
+
+function setResultLoading(loading) {
+  if (!resultPanel) return;
+  resultPanel.classList.toggle("result-loading", loading);
 }
 
 function showToast(message) {
@@ -114,11 +120,13 @@ async function runAction(action, button) {
   output.classList.remove("empty-state");
   output.textContent = "运行中...";
   resultMeta.textContent = button ? button.textContent.trim() : action;
+  setResultLoading(true);
   const validation = validateActionPayload(action, payload);
   if (!validation.ok) {
     output.textContent = validation.message;
     renderResultFallback(action, false, validation.message);
     statusText.textContent = "需要处理";
+    setResultLoading(false);
     showToast(validation.message);
     focusMissingField(validation.fieldId);
     document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -150,6 +158,7 @@ async function runAction(action, button) {
     statusText.textContent = "请求失败";
     showToast("请求失败");
   } finally {
+    setResultLoading(false);
     actionButtons.forEach((item) => {
       item.disabled = false;
     });
