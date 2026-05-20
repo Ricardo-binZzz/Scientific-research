@@ -1,4 +1,4 @@
-# Current Status
+﻿# Current Status
 
 ## Implemented
 
@@ -36,6 +36,7 @@
 Run:
 
 ```powershell
-$PY='C:\Users\22676\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$PY='C:\path\to\python.exe'
 & $PY -m unittest discover -v
 ```
+

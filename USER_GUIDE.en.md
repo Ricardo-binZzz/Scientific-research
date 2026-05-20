@@ -1,4 +1,4 @@
-# Beginner Guide for the Research Workflow
+﻿# Beginner Guide for the Research Workflow
 
 Language: English | [中文](USER_GUIDE.md)
 
@@ -28,13 +28,13 @@ Human review remains important. You still need to judge whether a paper is relia
 The current folder is the tool repository:
 
 ```text
-C:\Users\22676\Documents\科研
+C:\Users\YourName\Documents\科研
 ```
 
 For each real research topic, create a separate project workspace, for example:
 
 ```text
-C:\Users\22676\Documents\fixture-study
+C:\Users\YourName\Documents\fixture-study
 ```
 
 The tool repository provides commands. The research workspace stores papers, notes, simulation data, manuscript drafts, and generated figures.
@@ -44,13 +44,13 @@ The tool repository provides commands. The research workspace stores papers, not
 First enter the tool repository:
 
 ```powershell
-cd C:\Users\22676\Documents\科研
+cd C:\Users\YourName\Documents\科研
 ```
 
 Set the Python executable used in this environment:
 
 ```powershell
-$PY='C:\Users\22676\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$PY='C:\path\to\python.exe'
 ```
 
 All later commands assume that `$PY` has already been set.
@@ -62,7 +62,7 @@ Before creating your own workspace, use the built-in examples to confirm that th
 Validate the sample simulation data:
 
 ```powershell
-& $PY -m workflow.cli simulation validate-data C:\Users\22676\Documents\科研\examples\simulation-result.csv `
+& $PY -m workflow.cli simulation validate-data C:\Users\YourName\Documents\科研\examples\simulation-result.csv `
   --required-column time `
   --required-column stress `
   --numeric-column time `
@@ -72,7 +72,7 @@ Validate the sample simulation data:
 Generate a sample figure:
 
 ```powershell
-& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\科研\examples\simulation-result.csv C:\Users\22676\Documents\科研\examples\output `
+& $PY -m workflow.cli figure from-data C:\Users\YourName\Documents\科研\examples\simulation-result.csv C:\Users\YourName\Documents\科研\examples\output `
   --stem quick-check `
   --title "Quick check" `
   --figure-type trend `
@@ -85,7 +85,7 @@ Generate a sample figure:
 Check the sample manuscript draft:
 
 ```powershell
-& $PY -m workflow.cli manuscript check C:\Users\22676\Documents\科研\examples\chapter.md `
+& $PY -m workflow.cli manuscript check C:\Users\YourName\Documents\科研\examples\chapter.md `
   --required-section Introduction `
   --expected-figure "Figure 1"
 ```
@@ -97,7 +97,7 @@ If all three commands work, create your own research workspace next.
 Example: create a fixture optimization workspace.
 
 ```powershell
-& $PY -m workflow.cli init C:\Users\22676\Documents --slug fixture-study --name "Fixture Optimization Study"
+& $PY -m workflow.cli init C:\Users\YourName\Documents --slug fixture-study --name "Fixture Optimization Study"
 ```
 
 The generated folder looks roughly like this:
@@ -120,7 +120,7 @@ fixture-study
 After searching in Google Scholar, Web of Science, Scopus, CNKI, or another database, record the search conditions:
 
 ```powershell
-& $PY -m workflow.cli note search-log C:\Users\22676\Documents\fixture-study\notes `
+& $PY -m workflow.cli note search-log C:\Users\YourName\Documents\fixture-study\notes `
   --question "Adaptive fixture optimization research" `
   --keyword "adaptive fixture" `
   --keyword "clamping force optimization" `
@@ -139,7 +139,7 @@ The command writes a search-log note in the `notes` folder.
 Put downloaded PDFs here:
 
 ```text
-C:\Users\22676\Documents\fixture-study\literature
+C:\Users\YourName\Documents\fixture-study\literature
 ```
 
 Before adding a paper to the library, check:
@@ -154,7 +154,7 @@ Do not add every downloaded PDF. Add only papers that are useful enough to track
 ## 8. Create a Paper Summary Card
 
 ```powershell
-& $PY -m workflow.cli note paper-summary C:\Users\22676\Documents\fixture-study\notes `
+& $PY -m workflow.cli note paper-summary C:\Users\YourName\Documents\fixture-study\notes `
   --title "Adaptive clamping fixture design" `
   --author "Zhang" `
   --author "Li" `
@@ -178,7 +178,7 @@ A useful summary card records where each important conclusion came from. Page re
 Add one paper manually:
 
 ```powershell
-& $PY -m workflow.cli library add C:\Users\22676\Documents\fixture-study\literature `
+& $PY -m workflow.cli library add C:\Users\YourName\Documents\fixture-study\literature `
   --title "Adaptive clamping fixture design" `
   --author "Zhang" `
   --author "Li" `
@@ -192,7 +192,7 @@ Add one paper manually:
 If you exported paper metadata as CSV from Scopus, Web of Science, Crossref, or another platform, import it in bulk:
 
 ```powershell
-& $PY -m workflow.cli library import-csv C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\papers.csv
+& $PY -m workflow.cli library import-csv C:\Users\YourName\Documents\fixture-study\literature C:\Users\YourName\Documents\fixture-study\papers.csv
 ```
 
 Common CSV headers are recognized automatically, including `Title`, `Article Title`, `Authors`, `Author full names`, `Year`, `Publication Year`, `Source title`, `Publication Name`, `Journal`, `DOI`, `PDF`, `File`, `Notes`, and `Note`. Scopus full-author fields and Web of Science publication-name fields are handled where possible. Imports de-duplicate by DOI first, then by normalized title.
@@ -202,31 +202,31 @@ CSV exports often do not contain local PDF file names. After importing, the `PDF
 List the library:
 
 ```powershell
-& $PY -m workflow.cli library list C:\Users\22676\Documents\fixture-study\literature
+& $PY -m workflow.cli library list C:\Users\YourName\Documents\fixture-study\literature
 ```
 
 Check missing PDFs:
 
 ```powershell
-& $PY -m workflow.cli library check-pdfs C:\Users\22676\Documents\fixture-study\literature
+& $PY -m workflow.cli library check-pdfs C:\Users\YourName\Documents\fixture-study\literature
 ```
 
 Export BibTeX for Zotero:
 
 ```powershell
-& $PY -m workflow.cli library export-bibtex C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\export.bib
+& $PY -m workflow.cli library export-bibtex C:\Users\YourName\Documents\fixture-study\literature C:\Users\YourName\Documents\fixture-study\export.bib
 ```
 
 Import basic BibTeX entries back into the local library:
 
 ```powershell
-& $PY -m workflow.cli library import-bibtex C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\export.bib
+& $PY -m workflow.cli library import-bibtex C:\Users\YourName\Documents\fixture-study\literature C:\Users\YourName\Documents\fixture-study\export.bib
 ```
 
 ## 10. Generate a Manuscript Outline
 
 ```powershell
-& $PY -m workflow.cli note outline C:\Users\22676\Documents\fixture-study\notes `
+& $PY -m workflow.cli note outline C:\Users\YourName\Documents\fixture-study\notes `
   --topic "Adaptive fixture optimization research" `
   --problem-statement "Complex-part machining lacks fixture adaptability and clamping stability" `
   --section "Introduction:background|existing problems|contribution" `
@@ -240,7 +240,7 @@ Use the generated outline as a starting point, then manually revise it into your
 ## 11. Generate Literature Review Material
 
 ```powershell
-& $PY -m workflow.cli note literature-review C:\Users\22676\Documents\fixture-study\notes `
+& $PY -m workflow.cli note literature-review C:\Users\YourName\Documents\fixture-study\notes `
   --paper "Zhang et al. 2024" `
   --claim "Adaptive fixtures can reduce deformation during complex-part clamping" `
   --evidence "The authors compare stress distributions between conventional and adaptive fixtures using finite-element analysis" `
@@ -255,7 +255,7 @@ Each key claim in a review paragraph should trace back to a paper, page range, o
 Export CSV or JSON from tools such as ANSYS, Abaqus, and COMSOL, then place the files here:
 
 ```text
-C:\Users\22676\Documents\fixture-study\simulation
+C:\Users\YourName\Documents\fixture-study\simulation
 ```
 
 CSV loading recognizes some common simulation headers and converts them to stable column names:
@@ -271,13 +271,13 @@ This means many CSV files exported directly from ANSYS, Abaqus, or COMSOL can be
 Suppose the exported file is:
 
 ```text
-C:\Users\22676\Documents\fixture-study\simulation\result.csv
+C:\Users\YourName\Documents\fixture-study\simulation\result.csv
 ```
 
 If it contains `time` and `stress`, validate it:
 
 ```powershell
-& $PY -m workflow.cli simulation validate-data C:\Users\22676\Documents\fixture-study\simulation\result.csv `
+& $PY -m workflow.cli simulation validate-data C:\Users\YourName\Documents\fixture-study\simulation\result.csv `
   --required-column time `
   --required-column stress `
   --numeric-column time `
@@ -293,12 +293,12 @@ If you have unit metadata like this:
 validate data and metadata together:
 
 ```powershell
-& $PY -m workflow.cli simulation validate-data C:\Users\22676\Documents\fixture-study\simulation\result.csv `
+& $PY -m workflow.cli simulation validate-data C:\Users\YourName\Documents\fixture-study\simulation\result.csv `
   --required-column time `
   --required-column stress `
   --numeric-column time `
   --numeric-column stress `
-  --metadata C:\Users\22676\Documents\fixture-study\templates\simulation-metadata.json
+  --metadata C:\Users\YourName\Documents\fixture-study\templates\simulation-metadata.json
 ```
 
 Common report messages:
@@ -316,7 +316,7 @@ Common report messages:
 Use a line chart for time responses, load-deformation curves, and other continuous data:
 
 ```powershell
-& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\fixture-study\simulation\result.csv C:\Users\22676\Documents\fixture-study\figures `
+& $PY -m workflow.cli figure from-data C:\Users\YourName\Documents\fixture-study\simulation\result.csv C:\Users\YourName\Documents\fixture-study\figures `
   --stem stress-response `
   --title "Stress response" `
   --figure-type trend `
@@ -339,7 +339,7 @@ Use a bar chart for comparing different schemes, cases, or samples. Change the f
 If simulation or experiment data contains a mean column and an error column, such as `stress` and `stress_sd`, run:
 
 ```powershell
-& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\fixture-study\simulation\result.csv C:\Users\22676\Documents\fixture-study\figures `
+& $PY -m workflow.cli figure from-data C:\Users\YourName\Documents\fixture-study\simulation\result.csv C:\Users\YourName\Documents\fixture-study\figures `
   --stem stress-error `
   --title "Stress response" `
   --figure-type errorbar `
@@ -357,7 +357,7 @@ Each `--y-column` needs one matching `--y-error-column`.
 For `x, y, value` data, generate a two-dimensional plot:
 
 ```powershell
-& $PY -m workflow.cli figure from-data C:\Users\22676\Documents\fixture-study\simulation\grid.csv C:\Users\22676\Documents\fixture-study\figures `
+& $PY -m workflow.cli figure from-data C:\Users\YourName\Documents\fixture-study\simulation\grid.csv C:\Users\YourName\Documents\fixture-study\figures `
   --stem temperature-field `
   --title "Temperature field" `
   --figure-type heatmap `
@@ -384,17 +384,17 @@ The `.svg` file is the figure. The `.json` file records figure parameters and da
 Put drafts here:
 
 ```text
-C:\Users\22676\Documents\fixture-study\manuscript
+C:\Users\YourName\Documents\fixture-study\manuscript
 ```
 
 Check Markdown, plain text, or basic `.docx` drafts:
 
 ```powershell
-& $PY -m workflow.cli manuscript check C:\Users\22676\Documents\fixture-study\manuscript\chapter.md `
+& $PY -m workflow.cli manuscript check C:\Users\YourName\Documents\fixture-study\manuscript\chapter.md `
   --required-section Introduction `
   --required-section Method `
   --expected-figure "Figure 1" `
-  --library-root C:\Users\22676\Documents\fixture-study\literature
+  --library-root C:\Users\YourName\Documents\fixture-study\literature
 ```
 
 The check reports:
@@ -410,7 +410,7 @@ The check reports:
 ## 15. View Project Status and Run a Health Check
 
 ```powershell
-& $PY -m workflow.cli project report C:\Users\22676\Documents\fixture-study
+& $PY -m workflow.cli project report C:\Users\YourName\Documents\fixture-study
 ```
 
 This counts literature entries, notes, figures, simulation exports, and manuscript drafts.
@@ -418,7 +418,7 @@ This counts literature entries, notes, figures, simulation exports, and manuscri
 To check the whole project at once:
 
 ```powershell
-& $PY -m workflow.cli project check C:\Users\22676\Documents\fixture-study
+& $PY -m workflow.cli project check C:\Users\YourName\Documents\fixture-study
 ```
 
 `project check` summarizes:
@@ -434,7 +434,7 @@ To check the whole project at once:
 ## 16. Generate a Writing Pack
 
 ```powershell
-& $PY -m workflow.cli project writing-pack C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\writing-pack.md
+& $PY -m workflow.cli project writing-pack C:\Users\YourName\Documents\fixture-study --out C:\Users\YourName\Documents\fixture-study\writing-pack.md
 ```
 
 `writing-pack.md` summarizes literature, notes, figures, and simulation results that can support manuscript writing.
@@ -474,7 +474,7 @@ In PowerShell, the backtick character `` ` `` continues a command onto the next 
 Read the file as UTF-8. For example:
 
 ```powershell
-Get-Content C:\Users\22676\Documents\科研\USER_GUIDE.md -Encoding UTF8
+Get-Content C:\Users\YourName\Documents\科研\USER_GUIDE.md -Encoding UTF8
 ```
 
 ### Where Are Generated Figures?
@@ -492,3 +492,4 @@ The first version does not directly control ANSYS, Abaqus, or COMSOL. Model, sol
 ### Can It Automatically Check Word Layout?
 
 Currently it can read `.docx` text and run basic manuscript checks. It does not yet inspect Word styles, margins, headers, footers, captions, or reference fields.
+

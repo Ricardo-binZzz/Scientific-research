@@ -18,6 +18,8 @@ C:\Users\YourName\Documents\科研\start_web.bat
 http://127.0.0.1:8000
 ```
 
+`start_web.bat` 会依次查找 `.venv\Scripts\python.exe`、Windows 的 `py` 启动器和 `python` 命令。若提示找不到 Python，请先安装 Python 3.10+，或在工具目录里创建 `.venv`。
+
 网页服务只在本机运行，地址是 `127.0.0.1`。默认使用 `8000` 端口；如果端口被占用，工具会自动尝试 `8001` 到 `8009`，并打开实际可用的地址。
 
 如果浏览器打不开，先确认 `start_web.bat` 的窗口没有被关掉；窗口关闭后网页服务也会停止。

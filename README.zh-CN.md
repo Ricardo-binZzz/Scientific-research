@@ -1,118 +1,150 @@
-# 科研工作流
+# 科研工作流工作台
 
-语言：[English](README.md) | 中文
+中文 | [English](README.md)
 
-这个仓库是一个面向机械/制造方向科研的半自动化工作流工具，覆盖文献整理、结构化阅读笔记、论文草稿检查、仿真数据校验和科研图表生成。
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)
+![Tests](https://img.shields.io/badge/tests-unittest-2E7D32)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![本地优先](https://img.shields.io/badge/local--first-no%20account-2E7D32)
+![界面](https://img.shields.io/badge/UI-web%20%2B%20CLI-455A64)
 
-如果你想看更适合新手的完整中文教程，请阅读 [USER_GUIDE.md](USER_GUIDE.md)。如果你主要使用本地网页界面，请阅读网页操作主教程 [WEB_GUIDE.md](WEB_GUIDE.md)。英文版使用指引见 [USER_GUIDE.en.md](USER_GUIDE.en.md)。
+这是一个本地优先的科研工作台，用来管理文献导入、结构化阅读笔记、仿真数据检查、可复现 SVG 图表生成和论文草稿质量检查。
+
+它主要面向机械、制造和工程类科研场景，目标是把 Zotero/Word、仿真软件导出的数据、科研图表和论文写作检查串成一个更稳的本地流程。
+
+![工作流示意图](workflow/web_assets/workflow-guide.svg)
+
+## 为什么做这个项目？
+
+很多科研项目的问题不是“没有工具”，而是材料散在太多地方：论文文件夹、Zotero、阅读笔记、仿真结果、Excel 表格、图表草稿、论文正文各管一段。到写论文或投稿前，常见问题会集中爆发：文献缺摘要、PDF 找不到、仿真列名不统一、图表无法复现、正文引用和参考文献对不上。
+
+这个项目不替代你的判断，也不替代 Zotero、Word、仿真软件和人工阅读。它做的是给科研流程加上可重复的检查点：
+
+- 哪些论文已经收集、总结、引用？
+- 哪些 PDF 或阅读笔记还缺失？
+- 仿真数据列名是否稳定，数值列是否真的都是数字？
+- 关键仿真结果是否超出设定范围？
+- 图表是否能从同一份数据和设置重新生成？
+- 论文草稿是否缺章节、引用、图号、图注、表注或参考文献？
+
+## 核心能力
+
+| 模块 | 能做什么 |
+| --- | --- |
+| 文献库 | 添加论文，导入 CSV/BibTeX 元数据，按标题、作者、来源、DOI、摘要、关键词搜索，检查缺失 PDF 和笔记 |
+| 阅读笔记 | 生成论文总结卡片和检索记录，方便后续综述和写作 |
+| 写作准备 | 生成写作资料包、文献对比表、写作仪表盘、文献地图和后续检索计划 |
+| 仿真数据 | 预览标准化列名，统计数值范围，校验必需列和单位元数据，检查超范围数值 |
+| 图表生成 | 从 CSV/JSON 生成 SVG/JSON 图表包，支持趋势图、柱状图、误差线图、热力图和等值线图 |
+| 论文检查 | 检查 Markdown、纯文本和 DOCX 草稿中的引用、标题层级、图号、图注、表注和参考文献问题 |
+| 本地网页 | 不会敲 Python 命令也可以在浏览器里完成常用流程 |
 
 ## 快速开始
 
-在当前环境中建议使用项目记录的 bundled Python：
+### 方式 A：本地网页界面
+
+如果你不熟悉命令行，优先用网页：
+
+```powershell
+.\start_web.bat
+```
+
+启动器会在本机 `127.0.0.1` 打开网页；如果 `8000` 端口被占用，会自动尝试后面的端口，并打开实际可用的网址。
+
+建议第一次这样试：
+
+1. 打开网页。
+2. 加载 `examples/demo-project` 示例项目。
+3. 点击工作流状态。
+4. 扫描项目文件。
+5. 运行项目体检。
+6. 按页面推荐顺序试文献、仿真、图表和论文检查功能。
+
+网页专用教程：[WEB_GUIDE.md](WEB_GUIDE.md)
+
+### 方式 B：命令行
+
+如果你熟悉命令行，可以使用当前环境里的 Python：
 
 ```powershell
 $PY='C:\path\to\python.exe'
 & $PY -m workflow.cli init C:\path\to\workspace --slug demo-project --name "Demo Project"
 ```
 
-该命令会创建这些目录：
-
-- `literature`：论文文件和 `library-index.json`
-- `notes`：检索记录、论文总结、大纲和综述段落
-- `manuscript`：论文草稿材料
-- `simulation`：仿真输入/输出记录
-- `figures`：生成的 SVG/JSON 图表包
-- `templates`：可复用的 Markdown 模板
-
-## 主要流程
-
-1. 记录文献检索过程：
+生成项目体检报告：
 
 ```powershell
-& $PY -m workflow.cli note search-log notes --question "Adaptive clamping papers" --keyword "adaptive clamping" --query "adaptive clamping fixture" --source Scopus --date 2026-05-18 --filters "2020-2026" --result-count 12 --notes "Focus on mechanism design."
+& $PY -m workflow.cli project check C:\path\to\workspace
 ```
 
-2. 把已阅读论文加入本地文献库：
+生成写作资料包：
 
 ```powershell
-& $PY -m workflow.cli library add literature --title "Adaptive clamping fixture" --author Zhang --author Li --year 2024 --source "Journal of Manufacturing Systems" --doi "10.1000/example" --pdf-name paper.pdf --note-path notes/summary.md
+& $PY -m workflow.cli project writing-pack C:\path\to\workspace --out writing-pack.md
 ```
 
-检查文献库中记录的 PDF 是否存在：
-
-```powershell
-& $PY -m workflow.cli library check-pdfs literature
-```
-
-3. 与 Zotero 互通 BibTeX：
-
-```powershell
-& $PY -m workflow.cli library export-bibtex literature export.bib
-& $PY -m workflow.cli library import-bibtex literature export.bib
-```
-
-也可以从 CSV 元数据导入论文信息：
-
-```powershell
-& $PY -m workflow.cli library import-csv literature papers.csv
-```
-
-CSV 导入器能识别常见字段，例如 `Title`、`Authors`、`Year`、`Source title`、`Journal`、`DOI`、`PDF`/`File`、`Notes`/`Note`。
-
-4. 校验仿真数据：
-
-```powershell
-& $PY -m workflow.cli simulation validate-data simulation/result.csv --required-column time --required-column stress --numeric-column time --numeric-column stress
-```
-
-加上 `--metadata templates/simulation-metadata.json` 后，还会检查数值列的单位元数据。
-元数据报告会提示缺失单位、空单位值，以及数据集中不存在但元数据里多写的列。
-
-5. 从 CSV/JSON 数据生成图表：
+从仿真数据生成图表：
 
 ```powershell
 & $PY -m workflow.cli figure from-data simulation/result.csv figures --stem stress-response --title "Stress response" --figure-type trend --x-column time --y-column stress --x-label "Time (s)" --y-label "Stress (MPa)"
 ```
 
-可用图表类型包括：
+完整中文新手教程：[USER_GUIDE.md](USER_GUIDE.md)
 
-- `bar`：基础柱状图
-- `heatmap`：使用 `--x-column`、`--y-column`、`--value-column` 的热力图
-- `contour`：完整矩形网格数据的等值线图
-- `errorbar`：均值加误差线图，需要匹配的 `--y-error-column`
+## 示例项目
 
-误差线示例：
+可运行示例放在 [examples/demo-project](examples/demo-project)，里面包括：
 
-```powershell
-& $PY -m workflow.cli figure from-data simulation/result.csv figures --stem stress-error --title "Stress response" --figure-type errorbar --x-column time --y-column stress --y-error-column stress_sd --x-label "Time (s)" --y-label "Stress (MPa)"
+- 小型文献库
+- 论文总结笔记
+- 仿真 CSV 数据
+- 论文草稿
+- 项目体检配置
+- 文献追踪计划
+
+建议先用这个示例项目熟悉流程，再迁移到自己的真实课题。
+
+## 项目结构
+
+新建工作区会使用下面的结构：
+
+```text
+literature/      论文文件和 library-index.json
+notes/           检索记录、论文总结、对比表、文献地图、追踪计划
+manuscript/      论文草稿和写作报告
+simulation/      仿真导出数据和元数据
+figures/         生成的 SVG/JSON 图表包
+templates/       可复用 Markdown 模板
+project-check.json
+literature-tracker.json
 ```
 
-6. 检查论文草稿：
+## 这个项目和普通脚本有什么不同？
 
-```powershell
-& $PY -m workflow.cli manuscript check manuscript/chapter.md --required-section Introduction --required-section Method --expected-figure "Figure 1" --library-root literature
-```
+- 本地优先：数据保存在普通文件和文件夹里，不需要账号。
+- 新手可用：常用功能可以通过本地网页点击完成。
+- 可脚本化：同一套功能也能用命令行运行，适合复现和自动化。
+- 面向科研流程：文献、仿真、图表和论文检查放在同一套流程里。
+- 保留人工判断：工具负责暴露缺口和风险，不替你做黑箱决策。
+- 图表可复现：SVG 图表会配套保存 JSON 设置文件。
 
-7. 输出项目状态报告：
+## 文档入口
 
-```powershell
-& $PY -m workflow.cli project report .
-```
-
-8. 生成写作资料包：
-
-```powershell
-& $PY -m workflow.cli project writing-pack . --out writing-pack.md
-```
+- [英文 README](README.md)
+- [中文新手教程](USER_GUIDE.md)
+- [网页界面专用教程](WEB_GUIDE.md)
+- [英文新手教程](USER_GUIDE.en.md)
+- [示例说明](examples/README.md)
+- [贡献指南](CONTRIBUTING.md)
+- [安全策略](SECURITY.md)
+- [更新日志](CHANGELOG.md)
 
 ## 当前限制
 
 - 文献检索和论文下载仍然依赖人工或外部工具。
-- 图表渲染支持折线图、柱状图、误差线图、热力图和等值线图。
+- DOCX 检查会从 Word XML 中提取文本，但还不检查 Word 样式和版式。
 - 等值线图输入必须是完整矩形网格。
-- DOCX 检查会从 Word XML 中提取文本，但还不检查 Word 样式或版式。
-- 论文检查会报告重复的英文图号和跳号问题。
-- BibTeX 解析目前支持基础 article 条目和常见字段。
+- BibTeX 解析重点支持常见 article 字段。
 
 ## 验证
 
@@ -120,11 +152,16 @@ CSV 导入器能识别常见字段，例如 `Title`、`Authors`、`Year`、`Sour
 & $PY -m unittest discover -v
 ```
 
-## 示例
+## 建议填写的 GitHub About
 
-小型示例输入放在 `examples/`：
+Description:
 
-- `examples/simulation-result.csv`
-- `examples/chapter.md`
+```text
+Local-first research workflow workbench for literature notes, simulation data checks, publication figures, and manuscript QA.
+```
 
-查看 [examples/README.md](examples/README.md) 可以看到数据校验、草稿检查和 SVG 图表生成示例。
+Topics:
+
+```text
+research-workflow, reproducible-research, academic-writing, literature-review, manuscript, simulation-data, scientific-figures, local-first, python
+```

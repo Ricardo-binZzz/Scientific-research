@@ -148,6 +148,9 @@
 
 ## Next Steps
 
+- Next GitHub-facing priorities: add a real project license, add `CONTRIBUTING.md`, add `SECURITY.md`, add `CHANGELOG.md`, and consider a small CI workflow so the README can show an actual test badge.
+- Privacy cleanup on 2026-05-20: user-specific Windows paths were removed from tracked docs and `start_web.bat`; the web launcher now discovers `.venv`, `py`, or `python` instead of hard-coding a local runtime.
+- GitHub professionalism files on 2026-05-20: MIT `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, and `.github/workflows/tests.yml` were added; README badges and documentation links were updated.
 - Consider persisting recent successful actions to localStorage only if users need history after refreshing the page.
 - Consider adding cancellation only if long-running actions become common.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.

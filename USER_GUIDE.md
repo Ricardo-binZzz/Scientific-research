@@ -61,6 +61,8 @@ C:\Users\YourName\Documents\科研\start_web.bat
 http://127.0.0.1:8000
 ```
 
+启动脚本会依次查找 `.venv\Scripts\python.exe`、Windows 的 `py` 启动器和 `python` 命令。若提示找不到 Python，请先安装 Python 3.10+，或在工具目录里创建 `.venv`。
+
 网页里先填写你的课题目录，例如：
 
 ```text
