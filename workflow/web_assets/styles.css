@@ -578,6 +578,122 @@ details[open] .chevron {
   padding: 10px;
 }
 
+.next-action-card {
+  background: #fff;
+  border: 1px solid #cfe1e6;
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.next-action-card span {
+  color: var(--muted);
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.next-action-card strong {
+  color: #18212b;
+  display: block;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.workflow-progress {
+  display: grid;
+  gap: 6px;
+}
+
+.workflow-progress span {
+  color: #344250;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.workflow-progress div {
+  background: #e8edf2;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.workflow-progress i {
+  background: var(--primary);
+  display: block;
+  height: 100%;
+}
+
+.workflow-step-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.workflow-step-card {
+  align-items: start;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 9px 10px;
+}
+
+.workflow-step-card > span {
+  align-items: center;
+  background: #eef2f6;
+  border-radius: 999px;
+  color: #344250;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.workflow-step-card.ready > span {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.workflow-step-card.todo {
+  border-color: #d6dde6;
+}
+
+.workflow-step-card strong {
+  color: #18212b;
+  display: block;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.workflow-step-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.workflow-gap-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.workflow-gap-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: #344250;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+}
+
 .result-header {
   align-items: center;
   border-bottom: 1px solid #243143;
@@ -737,6 +853,11 @@ pre {
 
   .path-card {
     align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-step-grid,
+  .workflow-gap-grid {
     grid-template-columns: 1fr;
   }
 

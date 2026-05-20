@@ -238,6 +238,10 @@ function renderResultCompanion(action, ok, text) {
     renderProjectFileScan(text);
     return;
   }
+  if (action === "workflow_status" && ok) {
+    renderWorkflowStatus(text);
+    return;
+  }
   hideInsightPanel();
 }
 
@@ -310,6 +314,59 @@ function renderProjectFileScan(text) {
     </div>
   `;
   insightPanel.hidden = false;
+}
+
+function renderWorkflowStatus(text) {
+  if (!insightPanel) return;
+  const steps = parseWorkflowSteps(text);
+  const gaps = parseMarkdownListSection(text, "Current Gaps");
+  const nextActions = parseMarkdownListSection(text, "Next recommended action");
+  const readyCount = steps.filter((step) => step.ready).length;
+  const nextAction = nextActions[0] || "Run project check and fix reported gaps.";
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>任务向导</h3>
+        <p>按推荐顺序推进课题，先补最影响下一步的缺口。</p>
+      </div>
+    </div>
+    <div class="next-action-card">
+      <span>下一步建议</span>
+      <strong>${escapeHtml(nextAction)}</strong>
+    </div>
+    <div class="workflow-progress">
+      <span>${readyCount}/${steps.length || 6} 步已就绪</span>
+      <div><i style="width:${steps.length ? Math.round((readyCount / steps.length) * 100) : 0}%"></i></div>
+    </div>
+    <div class="workflow-step-grid">
+      ${steps.map((step, index) => renderWorkflowStep(step, index + 1)).join("")}
+    </div>
+    <div class="workflow-gap-grid">
+      ${gaps.map((gap) => `<div class="workflow-gap-card">${escapeHtml(gap)}</div>`).join("") || '<div class="workflow-gap-card">No gaps reported</div>'}
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function renderWorkflowStep(step, index) {
+  return `
+    <div class="workflow-step-card ${step.ready ? "ready" : "todo"}">
+      <span>${index}</span>
+      <div>
+        <strong>${escapeHtml(step.name)}</strong>
+        <p>${escapeHtml(step.detail)}</p>
+      </div>
+    </div>
+  `;
+}
+
+function parseWorkflowSteps(text) {
+  return parseMarkdownListSection(text, "Steps").map((item) => {
+    const match = item.match(/^(.+?):\s+(ready|todo)\s+-\s+(.+)$/);
+    if (!match) return { name: item, ready: false, detail: "" };
+    return { name: match[1], ready: match[2] === "ready", detail: match[3] };
+  });
 }
 
 function renderPathCard(label, targetId, path) {
