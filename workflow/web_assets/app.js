@@ -238,6 +238,10 @@ function renderResultCompanion(action, ok, text) {
     renderProjectFileScan(text);
     return;
   }
+  if (action.startsWith("simulation_") && ok) {
+    renderSimulationReport(action, text);
+    return;
+  }
   if (action === "workflow_status" && ok) {
     renderWorkflowStatus(text);
     return;
@@ -389,6 +393,87 @@ function parseWorkflowSteps(text) {
     if (!match) return { name: item, ready: false, detail: "" };
     return { name: match[1], ready: match[2] === "ready", detail: match[3] };
   });
+}
+
+function renderSimulationReport(action, text) {
+  if (!insightPanel) return;
+  const summary = parseTopLevelList(text);
+  const rows = parseSimulationReportRows(text);
+  const isValidation = action === "simulation_validate";
+  const isSummary = action === "simulation_summarize";
+  const ok = valueAfterLabel(summary, "OK") || (isValidation ? "False" : "True");
+  const missingColumns = valueAfterLabel(summary, "Missing columns") || "None";
+  const nonNumeric = valueAfterLabel(summary, "Non-numeric columns") || "None";
+  const missingUnits = valueAfterLabel(summary, "Missing unit metadata") || "None";
+  const rowsValue = valueAfterLabel(summary, "Rows") || "0";
+  const columnsValue = valueAfterLabel(summary, "Columns") || String(rows.length);
+  const issueCount = [missingColumns, nonNumeric, missingUnits].filter((value) => value && value !== "None").length;
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>仿真数据概览</h3>
+        <p>先看数据是否可用，再决定是修 CSV、补单位，还是继续画图。</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("数据行数", rowsValue)}
+      ${insightMetric(isValidation ? "校验状态" : "识别列数", isValidation ? (ok === "True" ? "OK" : "需处理") : columnCount(columnsValue))}
+      ${insightMetric("非数字列", nonNumeric === "None" ? "0" : nonNumeric)}
+      ${insightMetric("缺口类型", issueCount)}
+    </div>
+    <div class="simulation-grid">
+      <section class="simulation-card ${isValidation && ok !== "True" ? "todo" : "ready"}">
+        <h4>${isValidation ? "校验结论" : "数据结构"}</h4>
+        <ul>
+          <li>缺失列：${escapeHtml(missingColumns)}</li>
+          <li>非数字列：${escapeHtml(nonNumeric)}</li>
+          <li>缺单位元数据：${escapeHtml(missingUnits)}</li>
+        </ul>
+      </section>
+      <section class="simulation-card">
+        <h4>${isSummary ? "数值范围" : "样例/范围"}</h4>
+        <ul>
+          ${
+            rows.length
+              ? rows.slice(0, 6).map((row) => `<li>${escapeHtml(row)}</li>`).join("")
+              : "<li>没有可展示的表格行</li>"
+          }
+        </ul>
+      </section>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseSimulationReportRows(text) {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => line.includes(" | ") && !line.startsWith("Column |") && !line.startsWith("- "))
+    .map((line) => line.trim());
+}
+
+function parseTopLevelList(text) {
+  const items = [];
+  const lines = text.split(/\r?\n/);
+  let inTop = false;
+  lines.forEach((line) => {
+    if (line.startsWith("# ")) {
+      inTop = true;
+      return;
+    }
+    if (line.startsWith("## ")) {
+      inTop = false;
+      return;
+    }
+    if (inTop && line.startsWith("- ")) items.push(line.slice(2).trim());
+  });
+  return items;
+}
+
+function columnCount(value) {
+  if (!value || value === "None") return "0";
+  return String(value.split(",").map((item) => item.trim()).filter(Boolean).length);
 }
 
 function renderManuscriptCheck(text) {

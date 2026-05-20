@@ -839,6 +839,50 @@ details[open] .chevron {
   color: var(--primary);
 }
 
+.simulation-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.simulation-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid #cbd5e1;
+  border-radius: var(--radius);
+  min-width: 0;
+  padding: 10px;
+}
+
+.simulation-card.ready {
+  border-left-color: var(--primary);
+}
+
+.simulation-card.todo {
+  border-left-color: #b45309;
+}
+
+.simulation-card h4 {
+  color: #18212b;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.simulation-card ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.simulation-card li {
+  color: #344250;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .result-header {
   align-items: center;
   border-bottom: 1px solid #243143;
@@ -1004,7 +1048,8 @@ pre {
   .workflow-step-grid,
   .workflow-gap-grid,
   .health-grid,
-  .manuscript-summary-grid {
+  .manuscript-summary-grid,
+  .simulation-grid {
     grid-template-columns: 1fr;
   }
 
