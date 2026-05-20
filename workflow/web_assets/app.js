@@ -3,6 +3,7 @@ const resultMeta = document.getElementById("resultMeta");
 const output = document.getElementById("output");
 const projectRoot = document.getElementById("projectRoot");
 const toast = document.getElementById("toast");
+const insightPanel = document.getElementById("insightPanel");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
 const demoProjectRoot = String.raw`C:\Users\22676\Documents\科研\examples\demo-project`;
@@ -123,6 +124,7 @@ async function runAction(action, button) {
     });
     const responseText = await response.text();
     output.textContent = responseText;
+    renderResultCompanion(action, response.ok, responseText);
     statusText.textContent = response.ok ? "完成" : "需要处理";
     if (response.ok && action === "scan_project_files") {
       applySuggestedPaths(responseText);
@@ -131,6 +133,7 @@ async function runAction(action, button) {
     document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
   } catch (error) {
     output.textContent = "请求失败：" + error;
+    renderResultCompanion(action, false, "");
     statusText.textContent = "请求失败";
     showToast("请求失败");
   } finally {
@@ -147,6 +150,7 @@ actionButtons.forEach((button) => {
 document.getElementById("clearOutput").addEventListener("click", () => {
   output.classList.add("empty-state");
   output.textContent = "结果已清空。选择一个操作继续。";
+  hideInsightPanel();
   resultMeta.textContent = "等待操作";
   statusText.textContent = "就绪";
 });
@@ -223,6 +227,102 @@ function applySuggestedPaths(text) {
   if (applied > 0) {
     showToast("已自动填充可用路径");
   }
+}
+
+function renderResultCompanion(action, ok, text) {
+  if (action === "literature_insights" && ok) {
+    renderLiteratureInsights(text);
+    return;
+  }
+  hideInsightPanel();
+}
+
+function hideInsightPanel() {
+  if (!insightPanel) return;
+  insightPanel.hidden = true;
+  insightPanel.innerHTML = "";
+}
+
+function renderLiteratureInsights(text) {
+  if (!insightPanel) return;
+  const coverage = parseMarkdownListSection(text, "Coverage");
+  const keywords = parseMarkdownListSection(text, "Top Keywords");
+  const databases = parseMarkdownListSection(text, "Databases");
+  const cited = parseMarkdownListSection(text, "High Citation Literature");
+  const abstracts = parseMarkdownListSection(text, "Abstract-ready Literature");
+  const total = valueAfterLabel(coverage, "Total entries");
+  const abstractReady = valueAfterLabel(coverage, "Abstract-ready entries");
+  const highCitation = valueAfterLabel(coverage, "High-citation candidates");
+  const missingPdfs = valueAfterLabel(coverage, "Missing PDFs");
+  const missingNotes = valueAfterLabel(coverage, "Missing notes");
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>文献洞察</h3>
+        <p>摘要覆盖、资料缺口和重点文献的快速视图。</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("文献总数", total)}
+      ${insightMetric("已有摘要", abstractReady)}
+      ${insightMetric("高引用候选", highCitation)}
+      ${insightMetric("缺 PDF / 笔记", `${missingPdfs || "0"} / ${missingNotes || "0"}`)}
+    </div>
+    <div class="insight-columns">
+      ${renderInsightList("关键词排行", keywords, "keyword-pill")}
+      ${renderInsightList("数据库来源", databases, "source-pill")}
+      ${renderInsightList("高引用文献", cited, "rank-list")}
+      ${renderInsightList("已有摘要文献", abstracts, "rank-list")}
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function insightMetric(label, value) {
+  return `<div class="insight-card"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "0")}</strong></div>`;
+}
+
+function renderInsightList(title, items, className) {
+  const content = items.length
+    ? items.slice(0, 8).map((item) => `<li>${escapeHtml(item)}</li>`).join("")
+    : "<li>None</li>";
+  return `<section class="insight-section"><h4>${escapeHtml(title)}</h4><ul class="${className}">${content}</ul></section>`;
+}
+
+function parseMarkdownListSection(text, heading) {
+  const lines = text.split(/\r?\n/);
+  const items = [];
+  let active = false;
+  lines.forEach((line) => {
+    if (line === `## ${heading}`) {
+      active = true;
+      return;
+    }
+    if (active && line.startsWith("## ")) {
+      active = false;
+      return;
+    }
+    if (active && line.startsWith("- ")) {
+      items.push(line.slice(2).trim());
+    }
+  });
+  return items.filter((item) => item && item !== "None");
+}
+
+function valueAfterLabel(items, label) {
+  const prefix = `${label}:`;
+  const item = items.find((entry) => entry.startsWith(prefix));
+  return item ? item.slice(prefix.length).trim() : "";
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function joinPath(root, child) {

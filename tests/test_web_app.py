@@ -16,6 +16,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn('class="sidebar"', html)
         self.assertIn('class="workspace"', html)
         self.assertIn('class="result-panel"', html)
+        self.assertIn('id="insightPanel"', html)
+        self.assertIn('class="insight-panel"', html)
         self.assertIn("新建课题", html)
         self.assertIn("项目体检", html)
         self.assertIn("文献库统计", html)
@@ -42,6 +44,17 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("literature_insights", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
+
+    def test_frontend_assets_include_literature_insight_renderer(self) -> None:
+        js_path = Path("workflow") / "web_assets" / "app.js"
+        css_path = Path("workflow") / "web_assets" / "styles.css"
+        js = js_path.read_text(encoding="utf-8")
+        css = css_path.read_text(encoding="utf-8")
+
+        self.assertIn("renderLiteratureInsights", js)
+        self.assertIn("parseMarkdownListSection", js)
+        self.assertIn("insight-card", css)
+        self.assertIn("keyword-pill", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
