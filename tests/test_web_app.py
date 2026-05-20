@@ -81,6 +81,23 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("simulation/result.csv", body)
         self.assertIn("manuscript/chapter.md", body)
 
+    def test_handle_scan_project_files_includes_suggested_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            (project / "simulation" / "result.csv").write_text("time,stress\n0,10\n", encoding="utf-8")
+            (project / "manuscript" / "chapter.md").write_text("# Introduction\n", encoding="utf-8")
+            (project / "papers.csv").write_text("Title,Authors\nFixture,Zhang\n", encoding="utf-8")
+
+            status, _content_type, body = handle_web_action({"action": "scan_project_files", "project_root": str(project)})
+
+        self.assertEqual(status, 200)
+        self.assertIn("## Suggested Form Paths", body)
+        self.assertIn(f"- data_path: {project / 'simulation' / 'result.csv'}", body)
+        self.assertIn(f"- figure_data_path: {project / 'simulation' / 'result.csv'}", body)
+        self.assertIn(f"- manuscript_path: {project / 'manuscript' / 'chapter.md'}", body)
+        self.assertIn(f"- csv_path: {project / 'papers.csv'}", body)
+        self.assertIn(f"- figure_out_dir: {project / 'figures'}", body)
+
     def test_handle_writing_pack_action_returns_enriched_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

@@ -80,3 +80,4 @@
 - Figure generation supports style controls in the FigureSpec contract, CLI, and browser UI: legend on/off, grid on/off, palette, title/axis/tick font sizes, line width, and tick count.
 - Manuscript checks now warn when citation markers are present but no `References`, `Bibliography`, or `参考文献` heading exists.
 - Manuscript checks now flag empty Markdown headings, Markdown images without nearby figure captions, Markdown tables without nearby table captions, and references sections with fewer than 3 detected entries.
+- Web project file scanning now returns suggested absolute form paths and the browser auto-fills simulation data, figure data, figure output, manuscript path, and literature CSV fields after a successful scan.

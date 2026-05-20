@@ -116,8 +116,12 @@ async function runAction(action, button) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    output.textContent = await response.text();
+    const responseText = await response.text();
+    output.textContent = responseText;
     statusText.textContent = response.ok ? "完成" : "需要处理";
+    if (response.ok && action === "scan_project_files") {
+      applySuggestedPaths(responseText);
+    }
     showToast(response.ok ? "操作完成" : "操作返回问题，请查看结果");
     document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
   } catch (error) {
@@ -189,6 +193,31 @@ function setValue(id, value) {
 function setChecked(id, value) {
   const element = document.getElementById(id);
   if (element) element.checked = value;
+}
+
+function forceValue(id, value) {
+  const element = document.getElementById(id);
+  if (element && value) element.value = value;
+}
+
+function applySuggestedPaths(text) {
+  const map = {
+    data_path: "dataPath",
+    figure_data_path: "figureDataPath",
+    figure_out_dir: "figureOutDir",
+    manuscript_path: "manuscriptPath",
+    csv_path: "csvPath",
+  };
+  let applied = 0;
+  text.split(/\r?\n/).forEach((line) => {
+    const match = line.match(/^-\s+([a-z_]+):\s+(.+)$/);
+    if (!match || !map[match[1]]) return;
+    forceValue(map[match[1]], match[2].trim());
+    applied += 1;
+  });
+  if (applied > 0) {
+    showToast("已自动填充可用路径");
+  }
 }
 
 function joinPath(root, child) {

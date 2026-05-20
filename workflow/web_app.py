@@ -378,7 +378,32 @@ def _render_project_file_scan(project_root: Path) -> str:
         lines.append(f"## {title}")
         lines.extend([f"- {path}" for path in files] or ["- None"])
         lines.append("")
+    suggestions = _suggest_form_paths(project_root, groups)
+    lines.append("## Suggested Form Paths")
+    lines.extend([f"- {name}: {path}" for name, path in suggestions.items()] or ["- None"])
+    lines.append("")
     return "\n".join(lines)
+
+
+def _suggest_form_paths(project_root: Path, groups: dict[str, list[str]]) -> dict[str, str]:
+    suggestions: dict[str, str] = {}
+    simulation_file = _first_relative(groups.get("Simulation CSV/JSON", []))
+    manuscript_file = _first_relative(groups.get("Manuscripts", []))
+    csv_file = _first_relative(groups.get("Literature metadata CSV", []))
+    if simulation_file:
+        absolute = str(project_root / Path(simulation_file))
+        suggestions["data_path"] = absolute
+        suggestions["figure_data_path"] = absolute
+    if manuscript_file:
+        suggestions["manuscript_path"] = str(project_root / Path(manuscript_file))
+    if csv_file:
+        suggestions["csv_path"] = str(project_root / Path(csv_file))
+    suggestions["figure_out_dir"] = str(project_root / "figures")
+    return suggestions
+
+
+def _first_relative(paths: list[str]) -> str:
+    return paths[0] if paths else ""
 
 
 def _relative_files(project_root: Path, root: Path, suffixes: set[str]) -> list[str]:
