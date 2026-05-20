@@ -246,6 +246,10 @@ function renderResultCompanion(action, ok, text) {
     renderProjectCheck(text);
     return;
   }
+  if (action === "manuscript_check" && ok) {
+    renderManuscriptCheck(text);
+    return;
+  }
   hideInsightPanel();
 }
 
@@ -385,6 +389,78 @@ function parseWorkflowSteps(text) {
     if (!match) return { name: item, ready: false, detail: "" };
     return { name: match[1], ready: match[2] === "ready", detail: match[3] };
   });
+}
+
+function renderManuscriptCheck(text) {
+  if (!insightPanel) return;
+  const citations = parseMarkdownListSection(text, "Citations");
+  const figures = parseMarkdownListSection(text, "Figures");
+  const issues = parseManuscriptIssues(text);
+  const warningCount = issues.filter((issue) => issue.level === "warning").length;
+  const infoCount = issues.filter((issue) => issue.level === "info").length;
+  const citationIssues = issues.filter((issue) => issue.category === "citation").length;
+  const figureIssues = issues.filter((issue) => issue.category === "figure").length;
+  const structureIssues = issues.filter((issue) => issue.category === "structure").length;
+  const topIssues = issues.slice(0, 6);
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>稿件检查概览</h3>
+        <p>先看严重缺口和高频问题，完整检查报告仍在下方。</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("问题总数", issues.length)}
+      ${insightMetric("警告 / 提醒", `${warningCount} / ${infoCount}`)}
+      ${insightMetric("引用 / 图表", `${citationIssues} / ${figureIssues}`)}
+      ${insightMetric("结构问题", structureIssues)}
+    </div>
+    <div class="manuscript-summary-grid">
+      <section class="manuscript-card">
+        <h4>已识别内容</h4>
+        <ul>
+          <li>引用标记：${escapeHtml(citations.length)}</li>
+          <li>图号标记：${escapeHtml(figures.length)}</li>
+        </ul>
+      </section>
+      <section class="manuscript-card">
+        <h4>优先处理</h4>
+        <ul>
+          ${
+            topIssues.length
+              ? topIssues.map((issue) => `<li><span class="issue-chip ${issue.level}">${escapeHtml(issue.label)}</span>${escapeHtml(issue.message)}</li>`).join("")
+              : '<li><span class="issue-chip ready">就绪</span>未发现稿件问题</li>'
+          }
+        </ul>
+      </section>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseManuscriptIssues(text) {
+  return parseMarkdownListSection(text, "Issues")
+    .filter((item) => item !== "None")
+    .map((item) => {
+      const match = item.match(/^(warning|info):\s+(.+)$/i);
+      const level = match ? match[1].toLowerCase() : "info";
+      const message = match ? match[2] : item;
+      return {
+        level,
+        label: level === "warning" ? "警告" : "提醒",
+        category: manuscriptIssueCategory(message),
+        message,
+      };
+    });
+}
+
+function manuscriptIssueCategory(message) {
+  const text = message.toLowerCase();
+  if (text.includes("citation") || text.includes("reference") || text.includes("library")) return "citation";
+  if (text.includes("figure") || text.includes("table") || text.includes("caption")) return "figure";
+  if (text.includes("section") || text.includes("heading")) return "structure";
+  return "other";
 }
 
 function renderProjectCheck(text) {

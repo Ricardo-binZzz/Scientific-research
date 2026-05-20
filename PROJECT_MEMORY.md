@@ -89,3 +89,4 @@
 - The browser result panel now renders `workflow_status` as a task guide with next-action advice, ready/todo step cards, progress, and current gap cards above the raw Markdown report.
 - Workflow task-guide step cards now include "去处理" jump buttons that expand and scroll to the matching web section for project overview, literature, notes, simulation, figures, or manuscript work.
 - The browser result panel now renders `project_check` as health cards for literature, simulation, manuscript, and project assets above the raw Markdown report.
+- The browser result panel now renders `manuscript_check` as manuscript summary cards with issue totals, warning/info split, citation/figure/structure counts, and priority issue rows above the raw Markdown report.

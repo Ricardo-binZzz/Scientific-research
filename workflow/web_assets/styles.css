@@ -775,6 +775,70 @@ details[open] .chevron {
   overflow-wrap: anywhere;
 }
 
+.manuscript-summary-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+}
+
+.manuscript-card,
+.manuscript-issue-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 0;
+  padding: 10px;
+}
+
+.manuscript-card h4 {
+  color: #18212b;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.manuscript-card ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.manuscript-card li {
+  align-items: flex-start;
+  color: #344250;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  gap: 6px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.issue-chip {
+  background: #eef2f6;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: #344250;
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+}
+
+.issue-chip.warning {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+}
+
+.issue-chip.info,
+.issue-chip.ready {
+  background: var(--primary-soft);
+  border-color: #cfe1e6;
+  color: var(--primary);
+}
+
 .result-header {
   align-items: center;
   border-bottom: 1px solid #243143;
@@ -939,7 +1003,8 @@ pre {
 
   .workflow-step-grid,
   .workflow-gap-grid,
-  .health-grid {
+  .health-grid,
+  .manuscript-summary-grid {
     grid-template-columns: 1fr;
   }
 

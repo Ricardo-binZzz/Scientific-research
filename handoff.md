@@ -119,9 +119,11 @@
 - Web task guide visualization on 2026-05-20: `workflow_status` now renders a task guide with next-action advice, ready/todo step cards, progress, and current gap cards above the raw Markdown report.
 - Web task guide navigation on 2026-05-20: task-guide step cards now include "去处理" buttons that expand and scroll to the matching section in the browser UI.
 - Web project-check visualization on 2026-05-20: `project_check` now renders health cards for literature, simulation, manuscript, and project assets above the raw Markdown report.
+- Web manuscript-check visualization on 2026-05-20: `manuscript_check` now renders issue summary cards and priority issue rows above the raw Markdown report; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
+- Add visual summaries for simulation validation/summarization reports so data problems are easier to triage in the browser.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.
