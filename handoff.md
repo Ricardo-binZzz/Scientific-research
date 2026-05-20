@@ -140,6 +140,7 @@
 - Web success history on 2026-05-20: the result header now keeps the latest three successful web actions in memory, showing earlier successes as compact tags under the newest one; `USER_GUIDE.md` was updated in the main tutorial.
 - Web rerun affordance on 2026-05-20: the result action bar now includes a disabled-by-default "重跑上次" button that reruns the latest action after the user edits fields or paths; `USER_GUIDE.md` was updated in the main tutorial.
 - Web result reset cleanup on 2026-05-20: result reset behavior is centralized in `clearResultState`, so clearing output also clears loading, success history, and rerun state together.
+- Web disabled-button styling on 2026-05-20: disabled buttons now use explicit muted colors and disabled hover styling so unavailable actions are visually clear; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 

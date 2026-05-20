@@ -110,3 +110,4 @@
 - The browser result header keeps an in-memory history of the three latest successful actions, shown as compact tags under the newest success.
 - The browser result actions include a disabled-by-default `rerunLastAction` button, which reruns the most recent web action after the user has changed fields or paths.
 - Browser result reset behavior is centralized in `clearResultState`, which clears loading state, recent success history, and rerun state together.
+- Disabled web buttons now use explicit muted background, border, and text colors, including a disabled hover state, instead of relying only on opacity.

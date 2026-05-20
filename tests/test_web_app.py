@@ -128,6 +128,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("last-success", css)
         self.assertIn("success-history", css)
         self.assertIn("result-loading", css)
+        self.assertIn("button:disabled:hover", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
