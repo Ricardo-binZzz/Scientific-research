@@ -155,6 +155,7 @@
 - Repository hygiene on 2026-05-20: `.gitattributes` was added so Markdown, Python, JSON, YAML, web assets, SVG, and CSV use LF, while `.bat` files keep CRLF for Windows.
 - Research-project metadata on 2026-05-20: `CITATION.cff` and `ROADMAP.md` were added, and both README entry points now link to citation and roadmap information.
 - CI privacy guard on 2026-05-20: `.github/workflows/tests.yml` now scans for user-specific paths, the known GitHub account string, OpenAI-style keys, and secret/password assignments, excluding docs that intentionally describe privacy checks.
+- GitHub-star positioning on 2026-05-20: README entry points now use a real Actions badge, 3-minute demo path, target-user section, output list, screenshot guide, and clearer non-goals; CI privacy scan was adjusted to allow the public repository path in badges.
 - Consider persisting recent successful actions to localStorage only if users need history after refreshing the page.
 - Consider adding cancellation only if long-running actions become common.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.

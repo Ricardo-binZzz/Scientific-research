@@ -3,16 +3,32 @@
 [中文](README.zh-CN.md) | English
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)
-![Tests](https://img.shields.io/badge/tests-unittest-2E7D32)
+![Tests](https://github.com/Ricardo-binZzz/Scientific-research/actions/workflows/tests.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Local first](https://img.shields.io/badge/local--first-no%20account-2E7D32)
 ![Interface](https://img.shields.io/badge/UI-web%20%2B%20CLI-455A64)
 
-A local-first research workbench for literature intake, structured reading notes, simulation data checks, publication-ready SVG figures, and manuscript QA.
+A local-first research workbench that connects literature notes, simulation checks, reproducible SVG figures, and manuscript QA in one beginner-friendly workflow.
 
-It is designed for mechanical and manufacturing research workflows where you need a practical bridge between Zotero/Word, solver-exported data, figure generation, and thesis or paper drafting.
+It is built for mechanical and manufacturing research workflows where Zotero/Word, solver-exported data, figures, and thesis drafts need to stay traceable without forcing every user into a heavy workflow engine.
 
 ![Workflow guide](workflow/web_assets/workflow-guide.svg)
+
+## Try the Demo in 3 Minutes
+
+```powershell
+.\start_web.bat
+```
+
+Then in the local web UI:
+
+1. Load `examples/demo-project`.
+2. Run `Workflow Status`.
+3. Run `Scan Project Files`.
+4. Run `Project Check`.
+5. Try one literature, simulation, figure, or manuscript action.
+
+The demo project includes sample literature, notes, simulation data, a manuscript draft, and project-check settings, so you can evaluate the workflow before using it on real research data.
 
 ## Why This Project?
 
@@ -37,6 +53,22 @@ It does not try to replace expert judgment, Zotero, Word, simulation software, o
 | Figure generation | Create SVG/JSON figure bundles from CSV/JSON data, including trend, bar, error-bar, heatmap, and contour plots |
 | Manuscript QA | Check Markdown/plain text/DOCX drafts for citations, headings, figure markers, captions, tables, and reference-section issues |
 | Local web UI | Use common workflows from a browser without typing Python commands |
+
+## Who Is This For?
+
+- Mechanical, manufacturing, and engineering researchers who manage literature, simulation exports, figures, and thesis drafts together.
+- Students who want a local browser workflow before learning more Python automation.
+- Researchers who need repeatable checks but still write in Word, manage references in Zotero, and review papers manually.
+- Labs that want a transparent project folder structure instead of a cloud-only research workspace.
+
+## Outputs You Get
+
+- `literature/library-index.json` for local paper metadata.
+- Paper-summary and search-log notes.
+- Writing packs, literature tables, writing dashboards, literature maps, and search trackers.
+- Simulation inspection, validation, summary, and range-check reports.
+- SVG figures paired with JSON FigureSpec files.
+- Manuscript QA reports for citations, sections, figures, captions, tables, and references.
 
 ## Quick Start
 
@@ -103,6 +135,10 @@ A runnable example workspace lives in [examples/demo-project](examples/demo-proj
 
 Use it to evaluate the workflow before applying it to a real research project.
 
+## Screenshots
+
+Screenshot placeholders and capture guidance live in [docs/screenshots](docs/screenshots). Recommended screenshots include the web workbench home screen, workflow status, project check, simulation summary, and figure result cards.
+
 ## Project Layout
 
 New workspaces use a consistent structure:
@@ -152,6 +188,9 @@ If this workbench helps your research workflow, cite it as software using [CITAT
 ## Current Limits
 
 - Literature search and paper downloads are still manual or handled by external tools.
+- It does not replace Zotero, Word, or human paper review.
+- It does not directly control ANSYS, Abaqus, COMSOL, or other simulation software.
+- It does not automatically write a thesis or paper.
 - DOCX checking extracts text from Word XML but does not inspect Word layout or styles.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.

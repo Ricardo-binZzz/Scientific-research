@@ -12,6 +12,7 @@
 - `.gitattributes` was added on 2026-05-20 to normalize text files to LF while keeping Windows `.bat` launchers as CRLF.
 - `CITATION.cff` and `ROADMAP.md` were added on 2026-05-20 so GitHub can expose citation metadata and readers can understand near-term project direction.
 - GitHub Actions now includes a privacy scan for user-specific paths, the known GitHub account string, OpenAI-style keys, and secret/password assignments, excluding documentation that intentionally describes privacy checks.
+- README GitHub-star positioning was improved after web review on 2026-05-20: real Actions badge, 3-minute demo, target-user section, output list, screenshot capture guide, and clearer non-goals were added; the CI privacy scan no longer treats the public GitHub repository path as sensitive.
 
 ## Working Rules
 

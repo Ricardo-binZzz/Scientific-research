@@ -3,16 +3,32 @@
 中文 | [English](README.md)
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)
-![Tests](https://img.shields.io/badge/tests-unittest-2E7D32)
+![Tests](https://github.com/Ricardo-binZzz/Scientific-research/actions/workflows/tests.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![本地优先](https://img.shields.io/badge/local--first-no%20account-2E7D32)
 ![界面](https://img.shields.io/badge/UI-web%20%2B%20CLI-455A64)
 
-这是一个本地优先的科研工作台，用来管理文献导入、结构化阅读笔记、仿真数据检查、可复现 SVG 图表生成和论文草稿质量检查。
+这是一个本地优先的科研工作台，把文献笔记、仿真检查、可复现 SVG 图表和论文草稿 QA 串成一套新手也能用的流程。
 
-它主要面向机械、制造和工程类科研场景，目标是把 Zotero/Word、仿真软件导出的数据、科研图表和论文写作检查串成一个更稳的本地流程。
+它主要面向机械、制造和工程类科研场景：你可以继续用 Zotero 管文献、用 Word 写论文、从仿真软件导出数据，同时用这个工具把检查点、图表和写作材料放进同一个可追踪的本地工作区。
 
 ![工作流示意图](workflow/web_assets/workflow-guide.svg)
+
+## 3 分钟试用 Demo
+
+```powershell
+.\start_web.bat
+```
+
+然后在本地网页里按顺序操作：
+
+1. 加载 `examples/demo-project`。
+2. 运行 `Workflow Status`。
+3. 运行 `Scan Project Files`。
+4. 运行 `Project Check`。
+5. 任选一个文献、仿真、图表或论文检查功能试用。
+
+示例项目已经包含文献库、阅读笔记、仿真数据、论文草稿和项目体检配置，适合先看效果，再迁移到自己的真实课题。
 
 ## 为什么做这个项目？
 
@@ -38,6 +54,22 @@
 | 图表生成 | 从 CSV/JSON 生成 SVG/JSON 图表包，支持趋势图、柱状图、误差线图、热力图和等值线图 |
 | 论文检查 | 检查 Markdown、纯文本和 DOCX 草稿中的引用、标题层级、图号、图注、表注和参考文献问题 |
 | 本地网页 | 不会敲 Python 命令也可以在浏览器里完成常用流程 |
+
+## 适合谁？
+
+- 机械、制造和工程方向，需要同时管理文献、仿真数据、图表和论文草稿的研究者。
+- 想先用本地网页工作流、暂时不想手敲 Python 命令的学生。
+- 仍然使用 Word 写作、Zotero 管参考文献，但希望关键检查可复现的人。
+- 希望用普通文件夹保存科研材料，而不是完全依赖云端平台的课题组。
+
+## 你会得到什么产出？
+
+- `literature/library-index.json` 本地文献元数据。
+- 论文总结卡片和检索记录。
+- 写作资料包、文献对比表、写作仪表盘、文献地图和检索追踪计划。
+- 仿真数据预览、校验、统计和范围检查报告。
+- SVG 图表和配套 JSON FigureSpec 设置文件。
+- 论文草稿引用、章节、图号、图注、表注和参考文献检查报告。
 
 ## 快速开始
 
@@ -104,6 +136,10 @@ $PY='C:\path\to\python.exe'
 
 建议先用这个示例项目熟悉流程，再迁移到自己的真实课题。
 
+## 截图
+
+截图占位和采集说明放在 [docs/screenshots](docs/screenshots)。推荐后续补充网页首页、工作流状态、项目体检、仿真摘要和图表生成结果卡片截图。
+
 ## 项目结构
 
 新建工作区会使用下面的结构：
@@ -153,6 +189,9 @@ literature-tracker.json
 ## 当前限制
 
 - 文献检索和论文下载仍然依赖人工或外部工具。
+- 不替代 Zotero、Word 或人工阅读判断。
+- 不直接控制 ANSYS、Abaqus、COMSOL 等仿真软件。
+- 不自动生成整篇论文或学位论文。
 - DOCX 检查会从 Word XML 中提取文本，但还不检查 Word 样式和版式。
 - 等值线图输入必须是完整矩形网格。
 - BibTeX 解析重点支持常见 article 字段。
