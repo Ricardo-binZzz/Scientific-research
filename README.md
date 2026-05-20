@@ -137,12 +137,17 @@ literature-tracker.json
 - [Contributing](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
+- [Roadmap](ROADMAP.md)
 
 ## Contributing
 
 Issues and pull requests are welcome when they fit the local-first research workflow scope. Please use the GitHub issue templates and include sanitized sample data when a problem depends on CSV, Markdown, DOCX, or library-index input.
 
 Before opening a pull request, run the test suite and check that no private paths, credentials, unpublished paper text, or private research data were committed.
+
+## Citation
+
+If this workbench helps your research workflow, cite it as software using [CITATION.cff](CITATION.cff). The citation file is intentionally contributor-based until the project has a formal release and named maintainers.
 
 ## Current Limits
 

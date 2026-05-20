@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If this research workflow workbench helps your project, please cite it as software."
+type: software
+title: "Research Workflow Workbench"
+abstract: "A local-first research workflow workbench for literature notes, simulation data checks, reproducible SVG figures, and manuscript quality assurance."
+authors:
+  - name: "Scientific Research Workflow contributors"
+keywords:
+  - research-workflow
+  - reproducible-research
+  - academic-writing
+  - literature-review
+  - simulation-data
+  - scientific-figures
+  - manuscript
+  - local-first
+license: MIT
+version: "0.1.0"
+date-released: "2026-05-20"

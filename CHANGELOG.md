@@ -10,6 +10,8 @@ All notable changes to this project are summarized here.
 - Portable `start_web.bat` launcher that discovers `.venv`, `py`, or `python`.
 - Dedicated project metadata files: `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, and this changelog.
 - GitHub Actions test workflow for the Python unittest suite.
+- Citation metadata in `CITATION.cff`.
+- Project direction notes in `ROADMAP.md`.
 
 ### Changed
 
