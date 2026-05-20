@@ -87,3 +87,4 @@
 - The browser result panel now renders `literature_insights` with visual cards/lists above the raw Markdown output, while keeping copy/download behavior based on the original Markdown report.
 - The browser result panel now renders `scan_project_files` as a path helper with clickable fill buttons for simulation data, figure data, figure output, manuscript path, and literature CSV path.
 - The browser result panel now renders `workflow_status` as a task guide with next-action advice, ready/todo step cards, progress, and current gap cards above the raw Markdown report.
+- Workflow task-guide step cards now include "去处理" jump buttons that expand and scroll to the matching web section for project overview, literature, notes, simulation, figures, or manuscript work.

@@ -678,6 +678,19 @@ details[open] .chevron {
   margin: 0;
 }
 
+.workflow-jump-button {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  color: var(--primary);
+  margin-top: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+}
+
+.workflow-jump-button:hover {
+  background: var(--primary-soft);
+}
+
 .workflow-gap-grid {
   display: grid;
   gap: 6px;

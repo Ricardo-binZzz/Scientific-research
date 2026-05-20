@@ -57,12 +57,15 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("parseSuggestedPaths", js)
         self.assertIn("renderWorkflowStatus", js)
         self.assertIn("parseWorkflowSteps", js)
+        self.assertIn("workflowTargetForStep", js)
+        self.assertIn("workflow-jump-button", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)
         self.assertIn("path-fill-button", css)
         self.assertIn("workflow-step-card", css)
         self.assertIn("next-action-card", css)
+        self.assertIn("workflow-jump-button", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

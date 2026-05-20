@@ -350,15 +350,29 @@ function renderWorkflowStatus(text) {
 }
 
 function renderWorkflowStep(step, index) {
+  const target = workflowTargetForStep(step.name);
   return `
     <div class="workflow-step-card ${step.ready ? "ready" : "todo"}">
       <span>${index}</span>
       <div>
         <strong>${escapeHtml(step.name)}</strong>
         <p>${escapeHtml(step.detail)}</p>
+        ${target ? `<button class="workflow-jump-button" type="button" data-target-section="${escapeHtml(target)}">去处理</button>` : ""}
       </div>
     </div>
   `;
+}
+
+function workflowTargetForStep(name) {
+  const targets = {
+    "Project structure": "overview",
+    "Literature library": "library",
+    "Paper summaries": "notes",
+    "Simulation data": "simulation",
+    "Figures": "figures",
+    "Manuscript draft": "manuscript",
+  };
+  return targets[name] || "";
 }
 
 function parseWorkflowSteps(text) {
@@ -481,9 +495,18 @@ document.getElementById("fillCommonPaths").addEventListener("click", fillCommonP
 
 if (insightPanel) {
   insightPanel.addEventListener("click", (event) => {
-    const button = event.target.closest(".path-fill-button");
-    if (!button) return;
-    forceValue(button.dataset.fillId, button.dataset.fillValue);
-    showToast("路径已填入");
+    const fillButton = event.target.closest(".path-fill-button");
+    if (fillButton) {
+      forceValue(fillButton.dataset.fillId, fillButton.dataset.fillValue);
+      showToast("路径已填入");
+      return;
+    }
+    const jumpButton = event.target.closest(".workflow-jump-button");
+    if (!jumpButton) return;
+    const section = document.getElementById(jumpButton.dataset.targetSection);
+    if (!section) return;
+    section.open = true;
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    showToast("已跳到对应步骤");
   });
 }
