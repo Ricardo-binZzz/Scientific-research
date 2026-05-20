@@ -118,6 +118,7 @@
 - Web path helper visualization on 2026-05-20: `scan_project_files` now renders clickable path-helper cards above the raw Markdown scan report, allowing users to refill common form paths from scan suggestions.
 - Web task guide visualization on 2026-05-20: `workflow_status` now renders a task guide with next-action advice, ready/todo step cards, progress, and current gap cards above the raw Markdown report.
 - Web task guide navigation on 2026-05-20: task-guide step cards now include "去处理" buttons that expand and scroll to the matching section in the browser UI.
+- Web project-check visualization on 2026-05-20: `project_check` now renders health cards for literature, simulation, manuscript, and project assets above the raw Markdown report.
 
 ## Next Steps
 

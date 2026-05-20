@@ -88,3 +88,4 @@
 - The browser result panel now renders `scan_project_files` as a path helper with clickable fill buttons for simulation data, figure data, figure output, manuscript path, and literature CSV path.
 - The browser result panel now renders `workflow_status` as a task guide with next-action advice, ready/todo step cards, progress, and current gap cards above the raw Markdown report.
 - Workflow task-guide step cards now include "去处理" jump buttons that expand and scroll to the matching web section for project overview, literature, notes, simulation, figures, or manuscript work.
+- The browser result panel now renders `project_check` as health cards for literature, simulation, manuscript, and project assets above the raw Markdown report.

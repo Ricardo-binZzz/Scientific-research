@@ -242,6 +242,10 @@ function renderResultCompanion(action, ok, text) {
     renderWorkflowStatus(text);
     return;
   }
+  if (action === "project_check" && ok) {
+    renderProjectCheck(text);
+    return;
+  }
   hideInsightPanel();
 }
 
@@ -381,6 +385,68 @@ function parseWorkflowSteps(text) {
     if (!match) return { name: item, ready: false, detail: "" };
     return { name: match[1], ready: match[2] === "ready", detail: match[3] };
   });
+}
+
+function renderProjectCheck(text) {
+  if (!insightPanel) return;
+  const cards = parseProjectCheckCards(text);
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>体检概览</h3>
+        <p>优先处理有缺口或有问题的模块，完整报告仍在下方。</p>
+      </div>
+    </div>
+    <div class="health-grid">
+      ${cards.map((card) => renderHealthCard(card)).join("")}
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseProjectCheckCards(text) {
+  const literature = parseMarkdownListSection(text, "Literature");
+  const simulation = parseMarkdownListSection(text, "Simulation");
+  const manuscript = parseMarkdownListSection(text, "Manuscript");
+  const summary = parseMarkdownListSection(text, "Project Summary");
+  const missingPdfs = valueAfterLabel(literature, "Missing PDFs") || "None";
+  const missingNotes = valueAfterLabel(literature, "Missing notes") || "None";
+  const simulationIssues = simulation.filter((item) => item !== "None");
+  const manuscriptIssues = manuscript.filter((item) => item !== "None");
+  return [
+    {
+      title: "文献",
+      status: missingPdfs === "None" && missingNotes === "None" ? "ready" : "todo",
+      lines: [`条目 ${valueAfterLabel(literature, "Library entries") || "0"}`, `缺 PDF ${missingPdfs}`, `缺笔记 ${missingNotes}`],
+    },
+    {
+      title: "仿真",
+      status: simulationIssues.length ? "todo" : "ready",
+      lines: simulationIssues.length ? simulationIssues.slice(0, 3) : ["未发现仿真问题"],
+    },
+    {
+      title: "稿件",
+      status: manuscriptIssues.length ? "todo" : "ready",
+      lines: manuscriptIssues.length ? manuscriptIssues.slice(0, 3) : ["未发现稿件问题"],
+    },
+    {
+      title: "资产",
+      status: "ready",
+      lines: summary,
+    },
+  ];
+}
+
+function renderHealthCard(card) {
+  return `
+    <section class="health-card ${card.status}">
+      <div>
+        <h4>${escapeHtml(card.title)}</h4>
+        <span>${card.status === "ready" ? "就绪" : "需处理"}</span>
+      </div>
+      <ul>${card.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+    </section>
+  `;
 }
 
 function renderPathCard(label, targetId, path) {
