@@ -124,10 +124,14 @@
 - Web figure-result visualization on 2026-05-20: `figure_from_data` now renders generated SVG/JSON paths and key figure settings above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 - Web saved-report visualization on 2026-05-20: `save_standard_report` now renders report type, saved path, and purpose above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 - Web note-result visualization on 2026-05-20: `note_paper_summary` and `note_search_log` now render created note path, note type, and next-step guidance above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
+- Web library-result visualization on 2026-05-20: library add/import/search/recent/source actions now render count, query label, and result-title cards above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
+- Web library-asset visualization on 2026-05-20: library stats/check-pdfs/check-notes actions now render asset gap cards above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
+- Web planning-report visualization on 2026-05-20: writing pack, writing dashboard, literature table, literature map, and literature tracker now render planning overview cards above the raw Markdown output; `USER_GUIDE.md` was updated in the main tutorial.
+- Web project-overview visualization on 2026-05-20: project report now renders a project overview card, and project creation now renders a created-project card with a fill-project-root action above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
-- Add visual summaries for library add/import/search actions so users can triage literature operations without reading raw text first.
+- Add a shared empty/error state for result companion panels so failed actions explain what to fix without hiding all context.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.

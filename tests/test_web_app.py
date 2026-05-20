@@ -71,6 +71,16 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("savedReportPurpose", js)
         self.assertIn("renderNoteResult", js)
         self.assertIn("noteResultPurpose", js)
+        self.assertIn("renderLibraryResult", js)
+        self.assertIn("parseLibraryEntries", js)
+        self.assertIn("renderLibraryAssetReport", js)
+        self.assertIn("parseInventorySection", js)
+        self.assertIn("renderPlanningReport", js)
+        self.assertIn("planningReportSections", js)
+        self.assertIn("renderProjectReport", js)
+        self.assertIn("parseProjectReportMetrics", js)
+        self.assertIn("renderProjectInitResult", js)
+        self.assertIn("parseCreatedProjectPath", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)
@@ -84,6 +94,11 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("figure-result-card", css)
         self.assertIn("saved-report-card", css)
         self.assertIn("note-result-card", css)
+        self.assertIn("library-result-card", css)
+        self.assertIn("library-asset-card", css)
+        self.assertIn("planning-report-card", css)
+        self.assertIn("project-report-card", css)
+        self.assertIn("project-init-card", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

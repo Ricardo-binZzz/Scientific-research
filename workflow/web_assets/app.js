@@ -254,8 +254,28 @@ function renderResultCompanion(action, ok, text) {
     renderNoteResult(action, text);
     return;
   }
+  if ((action === "library_stats" || action === "library_check_pdfs" || action === "library_check_notes") && ok) {
+    renderLibraryAssetReport(action, text);
+    return;
+  }
+  if (["writing_dashboard", "literature_map", "literature_table", "literature_tracker", "writing_pack"].includes(action) && ok) {
+    renderPlanningReport(action, text);
+    return;
+  }
+  if (action.startsWith("library_") && ok) {
+    renderLibraryResult(action, text);
+    return;
+  }
   if (action === "workflow_status" && ok) {
     renderWorkflowStatus(text);
+    return;
+  }
+  if (action === "project_report" && ok) {
+    renderProjectReport(text);
+    return;
+  }
+  if (action === "init_project" && ok) {
+    renderProjectInitResult(text);
     return;
   }
   if (action === "project_check" && ok) {
@@ -620,6 +640,230 @@ function noteResultPurpose(action) {
     title: valueOf("summaryTitle") || "Paper summary",
     next: "下一步：把这篇论文加入文献库，并在 note-path 里填写这张摘要卡路径。",
   };
+}
+
+function renderLibraryResult(action, text) {
+  if (!insightPanel) return;
+  const entries = parseLibraryEntries(text);
+  const countMatch = text.match(/(?:当前文献库共有|共有)\s+(\d+)\s+条/);
+  const total = countMatch ? countMatch[1] : String(entries.length);
+  const isSearch = ["library_search", "library_recent", "library_source"].includes(action);
+  const title = isSearch ? "文献检索结果" : "文献库已更新";
+  const description = isSearch ? "先看命中数量和题名，再决定是否生成摘要卡或加入写作素材。" : "文献条目已经写入本地 library-index.json。";
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>${title}</h3>
+        <p>${description}</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric(isSearch ? "命中条目" : "当前条目", total)}
+      ${insightMetric("查询", libraryActionLabel(action))}
+      ${insightMetric("缺 PDF 后续", "check-pdfs")}
+      ${insightMetric("缺笔记后续", "check-notes")}
+    </div>
+    <div class="library-result-card">
+      <h4>${isSearch ? "前几条结果" : "下一步"}</h4>
+      <ul>
+        ${
+          entries.length
+            ? entries.slice(0, 6).map((entry) => `<li>${escapeHtml(entry)}</li>`).join("")
+            : `<li>${escapeHtml(isSearch ? "没有匹配条目" : "建议继续检查 PDF 和摘要卡是否齐全。")}</li>`
+        }
+      </ul>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseLibraryEntries(text) {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("- Title: "))
+    .map((line) => line.replace("- Title: ", "").trim());
+}
+
+function libraryActionLabel(action) {
+  const labels = {
+    library_add: "添加",
+    library_import_csv: "导入 CSV",
+    library_search: valueOf("libraryQuery") || "关键词",
+    library_recent: `>= ${valueOf("sinceYear") || ""}`,
+    library_source: valueOf("sourceQuery") || "来源",
+  };
+  return labels[action] || action.replace("library_", "");
+}
+
+function renderLibraryAssetReport(action, text) {
+  if (!insightPanel) return;
+  const top = parseTopLevelList(text);
+  const present = parseInventorySection(text, "Present");
+  const missing = parseInventorySection(text, "Missing");
+  const total = valueAfterLabel(top, "Total entries") || "-";
+  const missingPdfs = valueAfterLabel(top, "Missing PDFs") || (action === "library_check_pdfs" ? String(missing.length) : "-");
+  const missingNotes = valueAfterLabel(top, "Missing notes") || (action === "library_check_notes" ? String(missing.length) : "-");
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>文献资产概览</h3>
+        <p>先看缺 PDF、缺摘要卡和资产列表，再决定补哪些材料。</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("文献总数", total)}
+      ${insightMetric("缺 PDF", missingPdfs)}
+      ${insightMetric("缺笔记", missingNotes)}
+      ${insightMetric("已找到资产", present.length)}
+    </div>
+    <div class="library-asset-grid">
+      <section class="library-asset-card ${missing.length ? "todo" : "ready"}">
+        <h4>${missing.length ? "缺失项" : "缺失项"}</h4>
+        <ul>${(missing.length ? missing : ["没有缺失项"]).slice(0, 8).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </section>
+      <section class="library-asset-card ready">
+        <h4>已找到</h4>
+        <ul>${(present.length ? present : ["没有可列出的已找到资产"]).slice(0, 8).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </section>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseInventorySection(text, heading) {
+  return parseMarkdownListSection(text, heading).filter((item) => item !== "None");
+}
+
+function renderPlanningReport(action, text) {
+  if (!insightPanel) return;
+  const sections = planningReportSections(text);
+  const listItems = text.split(/\r?\n/).filter((line) => line.startsWith("- ") || line.startsWith("|")).length;
+  const purpose = planningReportPurpose(action);
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>${escapeHtml(purpose.title)}</h3>
+        <p>${escapeHtml(purpose.description)}</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("报告区块", sections.length)}
+      ${insightMetric("可用条目", listItems)}
+      ${insightMetric("建议用途", purpose.use)}
+      ${insightMetric("后续", purpose.next)}
+    </div>
+    <div class="planning-report-card">
+      <h4>主要区块</h4>
+      <ul>${(sections.length ? sections : ["没有解析到区块"]).slice(0, 8).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function planningReportSections(text) {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("## "))
+    .map((line) => line.replace(/^##\s+/, "").trim());
+}
+
+function planningReportPurpose(action) {
+  const purposes = {
+    writing_pack: ["写作素材概览", "把能用于正文写作的文献、笔记、图表、仿真数据和草稿集中起来。", "写正文", "补缺口"],
+    writing_dashboard: ["写作看板概览", "快速判断背景、方法、结果和稿件材料是否够用。", "排优先级", "补材料"],
+    literature_map: ["文献地图概览", "查看年份、来源、作者、关键词、数据库和高引用文献分布。", "定综述结构", "筛重点"],
+    literature_table: ["文献对比表概览", "比较多篇论文的问题、方法、数据、结论、局限和复用价值。", "写综述", "挑证据"],
+    literature_tracker: ["追踪清单概览", "把后续检索主题转换成下一轮检索建议。", "继续检索", "记 search-log"],
+  };
+  const item = purposes[action] || ["规划报告概览", "用于整理当前课题的下一步动作。", "规划", "执行"];
+  return { title: item[0], description: item[1], use: item[2], next: item[3] };
+}
+
+function renderProjectReport(text) {
+  if (!insightPanel) return;
+  const metrics = parseProjectReportMetrics(text);
+  const libraryEntries = metrics["Library entries"] || "0";
+  const noteFiles = metrics["Note files"] || "0";
+  const figureBundles = metrics["Figure bundles"] || "0";
+  const simulationExports = metrics["Simulation exports"] || "0";
+  const manuscriptFiles = metrics["Manuscript files"] || "0";
+  const nextStep = projectReportNextStep(metrics);
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>项目总览</h3>
+        <p>把当前课题的文献、笔记、图表、仿真和稿件资产先汇总成一屏。</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("文献条目", libraryEntries)}
+      ${insightMetric("笔记文件", noteFiles)}
+      ${insightMetric("图表包", figureBundles)}
+      ${insightMetric("仿真导出 / 稿件", `${simulationExports} / ${manuscriptFiles}`)}
+    </div>
+    <div class="project-report-card">
+      <div>
+        <span>项目目录</span>
+        <code>${escapeHtml(metrics.Root || valueOf("projectRoot") || "未解析到目录")}</code>
+      </div>
+      <div>
+        <span>下一步建议</span>
+        <strong>${escapeHtml(nextStep)}</strong>
+      </div>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseProjectReportMetrics(text) {
+  const metrics = {};
+  parseTopLevelList(text).forEach((item) => {
+    const splitAt = item.indexOf(":");
+    if (splitAt === -1) return;
+    metrics[item.slice(0, splitAt).trim()] = item.slice(splitAt + 1).trim();
+  });
+  return metrics;
+}
+
+function projectReportNextStep(metrics) {
+  const numberValue = (label) => Number(metrics[label] || 0);
+  if (!numberValue("Library entries")) return "先添加或导入文献，再做文献洞察。";
+  if (!numberValue("Note files")) return "给核心论文生成摘要卡，方便后续写作。";
+  if (!numberValue("Simulation exports")) return "把仿真 CSV/JSON 放到 simulation 文件夹。";
+  if (!numberValue("Figure bundles")) return "用仿真或实验数据生成论文图。";
+  if (!numberValue("Manuscript files")) return "在 manuscript 文件夹放入论文草稿，再运行稿件检查。";
+  return "运行项目体检，优先处理缺 PDF、缺笔记和稿件问题。";
+}
+
+function renderProjectInitResult(text) {
+  if (!insightPanel) return;
+  const path = parseCreatedProjectPath(text);
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>课题已创建</h3>
+        <p>新课题目录和基础文件夹已经生成，可以直接把它填入项目根目录继续操作。</p>
+      </div>
+    </div>
+    <div class="project-init-card">
+      <div>
+        <span>新项目路径</span>
+        <code>${escapeHtml(path || "未解析到创建路径")}</code>
+      </div>
+      <button class="path-fill-button" type="button" data-fill-id="projectRoot" data-fill-value="${escapeHtml(path)}">填入项目根目录</button>
+      <p>下一步：点击“流程状态”或“扫描可用文件”，再按任务向导补文献、笔记、仿真数据和稿件。</p>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseCreatedProjectPath(text) {
+  const match = text.match(/已创建课题：(.+)/);
+  return match ? match[1].trim() : text.trim();
 }
 
 function renderManuscriptCheck(text) {
