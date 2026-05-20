@@ -11,6 +11,7 @@
 - GitHub collaboration templates were added on 2026-05-20: issue templates for bugs, feature requests, documentation improvements, plus a pull request template with workflow, verification, documentation, and privacy checklists.
 - `.gitattributes` was added on 2026-05-20 to normalize text files to LF while keeping Windows `.bat` launchers as CRLF.
 - `CITATION.cff` and `ROADMAP.md` were added on 2026-05-20 so GitHub can expose citation metadata and readers can understand near-term project direction.
+- GitHub Actions now includes a privacy scan for user-specific paths, the known GitHub account string, OpenAI-style keys, and secret/password assignments, excluding documentation that intentionally describes privacy checks.
 
 ## Working Rules
 

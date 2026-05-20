@@ -154,6 +154,7 @@
 - GitHub collaboration templates on 2026-05-20: issue templates for bugs, feature requests, and documentation improvements plus a PR template were added, with privacy and verification prompts tailored to this research workflow.
 - Repository hygiene on 2026-05-20: `.gitattributes` was added so Markdown, Python, JSON, YAML, web assets, SVG, and CSV use LF, while `.bat` files keep CRLF for Windows.
 - Research-project metadata on 2026-05-20: `CITATION.cff` and `ROADMAP.md` were added, and both README entry points now link to citation and roadmap information.
+- CI privacy guard on 2026-05-20: `.github/workflows/tests.yml` now scans for user-specific paths, the known GitHub account string, OpenAI-style keys, and secret/password assignments, excluding docs that intentionally describe privacy checks.
 - Consider persisting recent successful actions to localStorage only if users need history after refreshing the page.
 - Consider adding cancellation only if long-running actions become common.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.

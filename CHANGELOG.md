@@ -12,6 +12,7 @@ All notable changes to this project are summarized here.
 - GitHub Actions test workflow for the Python unittest suite.
 - Citation metadata in `CITATION.cff`.
 - Project direction notes in `ROADMAP.md`.
+- CI privacy scan for obvious local paths and secret-like assignments.
 
 ### Changed
 

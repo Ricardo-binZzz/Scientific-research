@@ -22,3 +22,33 @@ jobs:
 
       - name: Run tests
         run: python -m unittest discover -v
+
+      - name: Scan for private paths and obvious secrets
+        shell: pwsh
+        run: |
+          $patterns = @(
+            'C:\\Users\\22676',
+            'Ricardo-binZzz',
+            'sk-[A-Za-z0-9]{20,}',
+            '(?i)(api[_-]?key|secret|password)\s*[:=]\s*["''][^"'']+["'']'
+          )
+          $matches = @()
+          $files = git ls-files | Where-Object {
+            $_ -notin @(
+              'CONTRIBUTING.md',
+              'SECURITY.md',
+              '.github/workflows/tests.yml'
+            )
+          }
+          foreach ($pattern in $patterns) {
+            foreach ($file in $files) {
+              $hits = Select-String -Path $file -Pattern $pattern -Encoding UTF8
+              foreach ($hit in $hits) {
+                $matches += "$($hit.Path):$($hit.LineNumber):$($hit.Line.Trim())"
+              }
+            }
+          }
+          if ($matches.Count -gt 0) {
+            $matches
+            throw "Potential private path or secret found."
+          }
