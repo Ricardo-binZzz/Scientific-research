@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import re
 import socket
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -301,6 +302,11 @@ def _add_library_entry(project_root: Path, payload: dict[str, str]) -> ContentRe
             doi=payload.get("doi", "").strip(),
             pdf_name=payload.get("pdf_name", "").strip(),
             note_path=payload.get("note_path", "").strip(),
+            abstract=payload.get("abstract", "").strip(),
+            keywords=_split_semicolon_input(payload.get("keywords", "")),
+            url=payload.get("url", "").strip(),
+            database_source=payload.get("database_source", "").strip(),
+            citation_count=_int_or_zero(payload.get("citation_count", "")),
         ),
     )
     return _text(f"已添加。当前文献库共有 {len(updated.entries)} 条。")
@@ -492,6 +498,10 @@ def _split_csv_input(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
+def _split_semicolon_input(value: str) -> list[str]:
+    return [item.strip() for item in re.split(r"\s*(?:;|,|\|)\s*", value) if item.strip()]
+
+
 def _first_value(value: str) -> str:
     values = _split_csv_input(value)
     return values[0] if values else ""
@@ -505,6 +515,11 @@ def _int_or_default(value: str, default: int) -> int:
     if parsed <= 0:
         raise ValueError("figure size must be greater than 0")
     return parsed
+
+
+def _int_or_zero(value: str) -> int:
+    text = value.strip()
+    return int(text) if text else 0
 
 
 def _optional_float(value: str) -> float | None:

@@ -380,6 +380,37 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn("Adaptive clamping fixture", body)
 
+    def test_handle_library_add_action_preserves_rich_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+
+            status, _content_type, _body = handle_web_action(
+                {
+                    "action": "library_add",
+                    "project_root": str(project),
+                    "title": "Adaptive clamping fixture",
+                    "authors": "Zhang; Li",
+                    "year": "2024",
+                    "source": "Journal",
+                    "doi": "10.1000/example",
+                    "pdf_name": "paper.pdf",
+                    "note_path": "notes/summary.md",
+                    "abstract": "Fixture abstract",
+                    "keywords": "fixture; clamping",
+                    "url": "https://example.com",
+                    "database_source": "Scopus",
+                    "citation_count": "12",
+                }
+            )
+            search_status, _content_type, search_body = handle_web_action(
+                {"action": "library_search", "project_root": str(project), "query": "Scopus"}
+            )
+
+        self.assertEqual(status, 200)
+        self.assertEqual(search_status, 200)
+        self.assertIn("Adaptive clamping fixture", search_body)
+        self.assertIn("Citation count: 12", search_body)
+
     def test_handle_simulation_actions_return_reports(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

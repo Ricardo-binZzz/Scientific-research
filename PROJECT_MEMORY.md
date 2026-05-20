@@ -81,3 +81,4 @@
 - Manuscript checks now warn when citation markers are present but no `References`, `Bibliography`, or `参考文献` heading exists.
 - Manuscript checks now flag empty Markdown headings, Markdown images without nearby figure captions, Markdown tables without nearby table captions, and references sections with fewer than 3 detected entries.
 - Web project file scanning now returns suggested absolute form paths and the browser auto-fills simulation data, figure data, figure output, manuscript path, and literature CSV fields after a successful scan.
+- Literature entries now preserve richer metadata fields: abstract, keywords, URL, database source, and citation count. CSV import maps common Scopus/Web of Science style columns for these fields, and library search includes abstract, keywords, URL, and database source.

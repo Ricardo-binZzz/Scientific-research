@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from io import StringIO
 from pathlib import Path
 
@@ -20,6 +20,11 @@ class LibraryEntry:
     doi: str
     pdf_name: str
     note_path: str
+    abstract: str = ""
+    keywords: list[str] = field(default_factory=list)
+    url: str = ""
+    database_source: str = ""
+    citation_count: int = 0
 
 
 @dataclass(frozen=True)
@@ -71,6 +76,11 @@ def load_index(root: Path) -> LibraryIndex:
             doi=item["doi"],
             pdf_name=item["pdf_name"],
             note_path=item["note_path"],
+            abstract=item.get("abstract", ""),
+            keywords=list(item.get("keywords", [])),
+            url=item.get("url", ""),
+            database_source=item.get("database_source", ""),
+            citation_count=int(item.get("citation_count", 0) or 0),
         )
         for item in payload.get("entries", [])
     ]
@@ -101,6 +111,10 @@ def render_index(index: LibraryIndex) -> str:
                 f"  - DOI: {entry.doi}",
                 f"  - PDF: {entry.pdf_name}",
                 f"  - Note: {entry.note_path}",
+                f"  - Keywords: {'; '.join(entry.keywords)}",
+                f"  - URL: {entry.url}",
+                f"  - Database: {entry.database_source}",
+                f"  - Citation count: {entry.citation_count}",
                 "",
             ]
         )
@@ -236,6 +250,10 @@ def render_search_results(entries: list[LibraryEntry]) -> str:
                 f"  - DOI: {entry.doi}",
                 f"  - PDF: {entry.pdf_name}",
                 f"  - Note: {entry.note_path}",
+                f"  - Keywords: {'; '.join(entry.keywords)}",
+                f"  - URL: {entry.url}",
+                f"  - Database: {entry.database_source}",
+                f"  - Citation count: {entry.citation_count}",
                 "",
             ]
         )
@@ -312,6 +330,11 @@ def import_csv_metadata(text: str) -> LibraryIndex:
                 doi=_first_csv_value(row, "doi"),
                 pdf_name=_first_csv_value(row, "pdf", "file", "pdf name", "pdf_name"),
                 note_path=_first_csv_value(row, "notes", "note", "note path", "note_path"),
+                abstract=_first_csv_value(row, "abstract", "summary"),
+                keywords=_parse_keywords(_first_csv_value(row, "keywords", "author keywords", "index keywords")),
+                url=_first_csv_value(row, "url", "link", "document url", "source url"),
+                database_source=_first_csv_value(row, "database", "database source", "source database") or _infer_database_source(row),
+                citation_count=_parse_int(_first_csv_value(row, "cited by", "times cited", "citation count", "citations")),
             )
         )
     return LibraryIndex(entries=_merge_existing_entries(entries))
@@ -332,7 +355,18 @@ def _same_entry(left: LibraryEntry, right: LibraryEntry) -> bool:
 
 
 def _entry_matches_query(entry: LibraryEntry, needle: str) -> bool:
-    haystack = " ".join([entry.title, *entry.authors, entry.source, entry.doi]).lower()
+    haystack = " ".join(
+        [
+            entry.title,
+            *entry.authors,
+            entry.source,
+            entry.doi,
+            entry.abstract,
+            *entry.keywords,
+            entry.url,
+            entry.database_source,
+        ]
+    ).lower()
     return needle in haystack
 
 
@@ -397,6 +431,27 @@ def _parse_csv_authors(value: str) -> list[str]:
     return [part.strip() for part in parts if part.strip()]
 
 
+def _parse_keywords(value: str) -> list[str]:
+    if not value:
+        return []
+    parts = re.split(r"\s*(?:;|,|\|)\s*", value)
+    return [part.strip() for part in parts if part.strip()]
+
+
 def _parse_year(value: str) -> int:
     match = re.search(r"\d{4}", value)
     return int(match.group(0)) if match else 0
+
+
+def _parse_int(value: str) -> int:
+    match = re.search(r"\d+", value or "")
+    return int(match.group(0)) if match else 0
+
+
+def _infer_database_source(row: dict[str, str]) -> str:
+    headers = {_normalize_csv_header(key) for key in row if key is not None}
+    if "eid" in headers or "author keywords" in headers:
+        return "Scopus"
+    if "web of science categories" in headers or "times cited" in headers:
+        return "Web of Science"
+    return ""

@@ -212,6 +212,11 @@ def _handle_library(args: Namespace) -> int:
                 doi=args.doi,
                 pdf_name=args.pdf_name,
                 note_path=args.note_path,
+                abstract=args.abstract,
+                keywords=args.keywords,
+                url=args.url,
+                database_source=args.database_source,
+                citation_count=args.citation_count,
             ),
         )
         return 0

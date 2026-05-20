@@ -138,8 +138,9 @@ class LibraryTests(unittest.TestCase):
 
     def test_import_csv_metadata_reads_common_export_columns(self) -> None:
         text = (
-            "Title,Authors,Year,Source title,DOI,PDF,Notes\n"
-            '"Adaptive clamping fixture","Zhang; Li",2024,Journal of Manufacturing Systems,10.1000/example,paper.pdf,notes/summary.md\n'
+            "Title,Authors,Year,Source title,DOI,PDF,Notes,Abstract,Keywords,URL,Database,Cited by\n"
+            '"Adaptive clamping fixture","Zhang; Li",2024,Journal of Manufacturing Systems,10.1000/example,paper.pdf,notes/summary.md,'
+            '"Fixture abstract","fixture; clamping",https://example.com,Scopus,12\n'
         )
 
         index = import_csv_metadata(text)
@@ -152,6 +153,41 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual(index.entries[0].doi, "10.1000/example")
         self.assertEqual(index.entries[0].pdf_name, "paper.pdf")
         self.assertEqual(index.entries[0].note_path, "notes/summary.md")
+        self.assertEqual(index.entries[0].abstract, "Fixture abstract")
+        self.assertEqual(index.entries[0].keywords, ["fixture", "clamping"])
+        self.assertEqual(index.entries[0].url, "https://example.com")
+        self.assertEqual(index.entries[0].database_source, "Scopus")
+        self.assertEqual(index.entries[0].citation_count, 12)
+
+    def test_library_entry_save_and_load_preserves_rich_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            LibraryIndex(
+                entries=[
+                    LibraryEntry(
+                        title="Adaptive clamping fixture",
+                        authors=["Zhang"],
+                        year=2024,
+                        source="Journal",
+                        doi="10.1000/example",
+                        pdf_name="paper.pdf",
+                        note_path="notes/summary.md",
+                        abstract="Fixture abstract",
+                        keywords=["fixture", "clamping"],
+                        url="https://example.com",
+                        database_source="Scopus",
+                        citation_count=12,
+                    )
+                ]
+            ).save(root)
+
+            loaded = load_index(root)
+
+        self.assertEqual(loaded.entries[0].abstract, "Fixture abstract")
+        self.assertEqual(loaded.entries[0].keywords, ["fixture", "clamping"])
+        self.assertEqual(loaded.entries[0].url, "https://example.com")
+        self.assertEqual(loaded.entries[0].database_source, "Scopus")
+        self.assertEqual(loaded.entries[0].citation_count, 12)
 
     def test_import_csv_metadata_reads_scopus_full_name_export_columns(self) -> None:
         text = (
@@ -169,6 +205,10 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual(index.entries[0].doi, "10.1000/scopus")
         self.assertEqual(index.entries[0].pdf_name, "")
         self.assertEqual(index.entries[0].note_path, "")
+        self.assertEqual(index.entries[0].abstract, "Abstract text")
+        self.assertEqual(index.entries[0].keywords, ["fixture", "clamping"])
+        self.assertEqual(index.entries[0].url, "https://example.com")
+        self.assertEqual(index.entries[0].database_source, "Scopus")
 
     def test_import_csv_metadata_reads_web_of_science_publication_name_columns(self) -> None:
         text = (
@@ -545,6 +585,11 @@ class LibraryTests(unittest.TestCase):
                     doi="10.1000/fixture",
                     pdf_name="fixture.pdf",
                     note_path="notes/fixture.md",
+                    abstract="A reusable fixture planning method.",
+                    keywords=["fixture", "clamping"],
+                    url="https://example.com/fixture",
+                    database_source="Scopus",
+                    citation_count=5,
                 ),
                 LibraryEntry(
                     title="Heat treatment simulation",
@@ -562,11 +607,17 @@ class LibraryTests(unittest.TestCase):
         author_matches = search_library(index, "wang")
         source_matches = search_library(index, "manufacturing")
         doi_matches = search_library(index, "10.1000/heat")
+        abstract_matches = search_library(index, "planning")
+        keyword_matches = search_library(index, "clamping")
+        database_matches = search_library(index, "scopus")
 
         self.assertEqual([entry.title for entry in title_matches], ["Adaptive clamping fixture"])
         self.assertEqual([entry.title for entry in author_matches], ["Heat treatment simulation"])
         self.assertEqual([entry.title for entry in source_matches], ["Adaptive clamping fixture"])
         self.assertEqual([entry.title for entry in doi_matches], ["Heat treatment simulation"])
+        self.assertEqual([entry.title for entry in abstract_matches], ["Adaptive clamping fixture"])
+        self.assertEqual([entry.title for entry in keyword_matches], ["Adaptive clamping fixture"])
+        self.assertEqual([entry.title for entry in database_matches], ["Adaptive clamping fixture"])
 
     def test_filter_library_by_year_keeps_entries_since_year(self) -> None:
         index = LibraryIndex(

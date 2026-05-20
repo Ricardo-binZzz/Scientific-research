@@ -112,6 +112,11 @@ def build_parser() -> argparse.ArgumentParser:
     add_parser.add_argument("--doi", required=True)
     add_parser.add_argument("--pdf-name", required=True)
     add_parser.add_argument("--note-path", required=True)
+    add_parser.add_argument("--abstract", default="")
+    add_parser.add_argument("--keyword", action="append", default=[], dest="keywords")
+    add_parser.add_argument("--url", default="")
+    add_parser.add_argument("--database-source", default="")
+    add_parser.add_argument("--citation-count", type=int, default=0)
 
     list_library_parser = library_subparsers.add_parser("list", help="list literature entries")
     list_library_parser.add_argument("root_dir", help="library root directory")

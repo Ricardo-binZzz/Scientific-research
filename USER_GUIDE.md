@@ -282,7 +282,12 @@ C:\Users\22676\Documents\fixture-study\literature
   --source "Journal of Manufacturing Systems" `
   --doi "10.1000/example" `
   --pdf-name "adaptive-clamping-fixture-design.pdf" `
-  --note-path "notes/paper-summary-adaptive-clamping-fixture-design.md"
+  --note-path "notes/paper-summary-adaptive-clamping-fixture-design.md" `
+  --keyword "fixture" `
+  --keyword "clamping" `
+  --url "https://example.com/paper" `
+  --database-source "Scopus" `
+  --citation-count 12
 ```
 
 如果你从 Scopus、Web of Science、Crossref 或其他平台导出了论文元数据 CSV，可以批量导入：
@@ -291,7 +296,9 @@ C:\Users\22676\Documents\fixture-study\literature
 & $PY -m workflow.cli library import-csv C:\Users\22676\Documents\fixture-study\literature C:\Users\22676\Documents\fixture-study\papers.csv
 ```
 
-CSV 常见列名会自动识别，包括 `Title`、`Article Title`、`Authors`、`Author full names`、`Year`、`Publication Year`、`Source title`、`Publication Name`、`Journal`、`DOI`、`PDF`、`File`、`Notes`、`Note`。Scopus 导出的作者全名列、Web of Science 导出的期刊名列也会尽量自动匹配。导入时按 DOI 优先、标题其次去重。
+CSV 常见列名会自动识别，包括 `Title`、`Article Title`、`Authors`、`Author full names`、`Year`、`Publication Year`、`Source title`、`Publication Name`、`Journal`、`DOI`、`PDF`、`File`、`Notes`、`Note`、`Abstract`、`Keywords`、`Author Keywords`、`URL`、`Link`、`Database`、`Cited by`、`Times Cited`。Scopus 导出的作者全名、作者关键词、链接和引用次数，Web of Science 导出的期刊名、分类和被引次数也会尽量自动匹配。导入时按 DOI 优先、标题其次去重。
+
+本地文献库现在可以保存更多信息：摘要、关键词、论文链接、数据库来源和引用次数。`library search` 不只搜索题名、作者、来源和 DOI，也会搜索摘要、关键词、链接和数据库来源。
 
 平台导出的 CSV 通常没有本地 PDF 文件名，所以导入后 `PDF` 字段可能为空。你可以后续手动整理 `literature` 文件夹里的 PDF 文件名，或用 `library check-pdfs` 检查哪些条目还没有对应 PDF。
 

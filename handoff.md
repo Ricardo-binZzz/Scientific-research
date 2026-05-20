@@ -111,6 +111,7 @@
 - Figure polish on 2026-05-20: FigureSpec, CLI, SVG rendering, and the browser form now support legend/grid toggles, palette selection, title/axis/tick font sizes, line width, and tick count; `USER_GUIDE.md` was updated in the main tutorial rather than adding a separate guide.
 - Manuscript polish on 2026-05-20: manuscript checks now report empty Markdown headings, Markdown images without nearby figure captions, Markdown tables without nearby table captions, and references sections with fewer than 3 detected entries; `USER_GUIDE.md` was updated in the main tutorial.
 - Web path workflow on 2026-05-20: `scan_project_files` now emits suggested absolute form paths, and the browser auto-fills data, figure, manuscript, and literature CSV fields after a successful scan; `USER_GUIDE.md` was updated in the main tutorial.
+- Literature metadata expansion on 2026-05-20: library entries now store abstract, keywords, URL, database source, and citation count; CSV import maps common rich metadata columns, search covers the new text fields, and the browser add-literature form exposes the fields.
 
 ## Next Steps
 
