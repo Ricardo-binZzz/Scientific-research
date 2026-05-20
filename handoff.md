@@ -108,6 +108,8 @@
 - Figure axis options on 2026-05-20: web figure generation accepts optional x/y axis min/max overrides and records them in the FigureSpec JSON.
 - Manuscript references check on 2026-05-20: citation markers now trigger a warning when no `References`, `Bibliography`, or `参考文献` heading is present.
 
+- Figure polish on 2026-05-20: FigureSpec, CLI, SVG rendering, and the browser form now support legend/grid toggles, palette selection, title/axis/tick font sizes, line width, and tick count; `USER_GUIDE.md` was updated in the main tutorial rather than adding a separate guide.
+
 ## Next Steps
 
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.

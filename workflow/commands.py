@@ -267,6 +267,7 @@ def _handle_library(args: Namespace) -> int:
 def _handle_figure(args: Namespace) -> int:
     if args.figure_command == "from-data":
         dataset = load_tabular_result(Path(args.data_path))
+        style_options = _figure_style_options(args)
         if args.figure_type == "heatmap":
             if not args.value_column:
                 raise ValueError("value-column is required for heatmap figures")
@@ -281,6 +282,7 @@ def _handle_figure(args: Namespace) -> int:
                 width_mm=args.width_mm,
                 height_mm=args.height_mm,
                 dpi=args.dpi,
+                **style_options,
             )
         elif args.figure_type == "contour":
             if not args.value_column:
@@ -296,6 +298,7 @@ def _handle_figure(args: Namespace) -> int:
                 width_mm=args.width_mm,
                 height_mm=args.height_mm,
                 dpi=args.dpi,
+                **style_options,
             )
         else:
             spec = build_spec_from_dataset(
@@ -310,6 +313,7 @@ def _handle_figure(args: Namespace) -> int:
                 width_mm=args.width_mm,
                 height_mm=args.height_mm,
                 dpi=args.dpi,
+                **style_options,
             )
         export_figure_bundle(spec, Path(args.out_dir), stem=args.stem)
         return 0
@@ -377,3 +381,16 @@ def _parse_range_specs(items: list[str]) -> dict[str, tuple[float, float]]:
         column, minimum, maximum = parts
         ranges[column] = (float(minimum), float(maximum))
     return ranges
+
+
+def _figure_style_options(args: Namespace) -> dict[str, object]:
+    return {
+        "show_legend": args.show_legend == "true",
+        "show_grid": args.show_grid == "true",
+        "palette": args.palette,
+        "title_font_size": args.title_font_size,
+        "label_font_size": args.label_font_size,
+        "tick_font_size": args.tick_font_size,
+        "line_width": args.line_width,
+        "tick_count": args.tick_count,
+    }

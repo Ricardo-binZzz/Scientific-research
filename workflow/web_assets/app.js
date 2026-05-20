@@ -12,6 +12,11 @@ function valueOf(id) {
   return element ? element.value : "";
 }
 
+function checkedValueOf(id) {
+  const element = document.getElementById(id);
+  return element && element.checked ? "true" : "false";
+}
+
 function setBusy(button, busy) {
   actionButtons.forEach((item) => {
     item.disabled = busy;
@@ -86,6 +91,14 @@ async function runAction(action, button) {
     x_max: valueOf("xMax"),
     y_min: valueOf("yMin"),
     y_max: valueOf("yMax"),
+    show_legend: checkedValueOf("showLegend"),
+    show_grid: checkedValueOf("showGrid"),
+    palette: valueOf("palette"),
+    title_font_size: valueOf("titleFontSize"),
+    label_font_size: valueOf("labelFontSize"),
+    tick_font_size: valueOf("tickFontSize"),
+    line_width: valueOf("lineWidth"),
+    tick_count: valueOf("tickCount"),
     manuscript_path: valueOf("manuscriptPath"),
     required_sections: valueOf("requiredSections"),
     expected_figures: valueOf("expectedFigures"),
@@ -173,6 +186,11 @@ function setValue(id, value) {
   if (element && !element.value) element.value = value;
 }
 
+function setChecked(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.checked = value;
+}
+
 function joinPath(root, child) {
   return root.replace(/[\\/]$/, "") + "\\" + child;
 }
@@ -195,6 +213,14 @@ function fillCommonPaths() {
   setValue("yLabel", "Stress (MPa)");
   setValue("figureWidthMm", "180");
   setValue("figureHeightMm", "120");
+  setValue("palette", "default");
+  setValue("titleFontSize", "18");
+  setValue("labelFontSize", "15");
+  setValue("tickFontSize", "14");
+  setValue("lineWidth", "2");
+  setValue("tickCount", "5");
+  setChecked("showLegend", true);
+  setChecked("showGrid", true);
   setValue("manuscriptPath", joinPath(root, "manuscript\\chapter.md"));
   setValue("requiredSections", "Introduction,Method,Results");
   setValue("expectedFigures", "Figure 1");

@@ -118,6 +118,39 @@ class FigureExportTests(unittest.TestCase):
         self.assertIn("Stress (MPa)", svg)
         self.assertIn("<polyline", svg)
 
+    def test_render_svg_line_plot_applies_style_options(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "result.csv"
+            path.write_text("time,stress\n0,0\n1,2\n2,3\n", encoding="utf-8")
+            dataset = load_tabular_result(path)
+            spec = build_spec_from_dataset(
+                dataset,
+                title="Stress response",
+                figure_type="trend",
+                x_column="time",
+                y_columns=["stress"],
+                x_label="Time (s)",
+                y_label="Stress (MPa)",
+                show_legend=False,
+                show_grid=False,
+                palette="mono",
+                title_font_size=20,
+                label_font_size=16,
+                tick_font_size=11,
+                line_width=3.5,
+                tick_count=7,
+            )
+
+            svg = render_svg_line_plot(spec)
+
+        self.assertIn(".title{font-size:20px", svg)
+        self.assertIn(".label{font-size:16px", svg)
+        self.assertIn(".tick{font-size:11px", svg)
+        self.assertIn('stroke="#333333" stroke-width="3.5"', svg)
+        self.assertNotIn('class="grid"', svg)
+        self.assertNotIn("stress</text>", svg)
+        self.assertEqual(svg.count('text-anchor="middle" class="tick"'), 7)
+
     def test_render_svg_bar_chart_contains_rectangles_and_labels(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "result.csv"

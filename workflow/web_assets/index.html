@@ -218,6 +218,22 @@
             <div class="field"><label for="xMax">X 最大值</label><input id="xMax" placeholder="不填则自动"></div>
             <div class="field"><label for="yMin">Y 最小值</label><input id="yMin" placeholder="不填则自动"></div>
             <div class="field"><label for="yMax">Y 最大值</label><input id="yMax" placeholder="不填则自动"></div>
+            <div class="field">
+              <label for="palette">配色方案</label>
+              <select id="palette">
+                <option value="default">默认科研配色</option>
+                <option value="colorblind">色盲友好</option>
+                <option value="mono">黑白灰</option>
+                <option value="journal">期刊稳重色</option>
+              </select>
+            </div>
+            <div class="field"><label for="titleFontSize">标题字号</label><input id="titleFontSize" placeholder="18"></div>
+            <div class="field"><label for="labelFontSize">轴标签字号</label><input id="labelFontSize" placeholder="15"></div>
+            <div class="field"><label for="tickFontSize">刻度字号</label><input id="tickFontSize" placeholder="14"></div>
+            <div class="field"><label for="lineWidth">线宽</label><input id="lineWidth" placeholder="2"></div>
+            <div class="field"><label for="tickCount">刻度数量</label><input id="tickCount" placeholder="5"></div>
+            <label class="check-field"><input id="showLegend" type="checkbox" checked> 显示图例</label>
+            <label class="check-field"><input id="showGrid" type="checkbox" checked> 显示网格</label>
           </div>
           <div class="button-row"><button class="primary" data-action="figure_from_data">生成 SVG 图</button></div>
         </div>

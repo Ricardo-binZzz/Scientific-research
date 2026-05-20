@@ -29,6 +29,14 @@ class FigureSpec:
     x_max: float | None = None
     y_min: float | None = None
     y_max: float | None = None
+    show_legend: bool = True
+    show_grid: bool = True
+    palette: str = "default"
+    title_font_size: int = 18
+    label_font_size: int = 15
+    tick_font_size: int = 14
+    line_width: float = 2.0
+    tick_count: int = 5
 
 
 def build_figure_spec(
@@ -45,6 +53,14 @@ def build_figure_spec(
     x_max: float | None = None,
     y_min: float | None = None,
     y_max: float | None = None,
+    show_legend: bool = True,
+    show_grid: bool = True,
+    palette: str = "default",
+    title_font_size: int = 18,
+    label_font_size: int = 15,
+    tick_font_size: int = 14,
+    line_width: float = 2.0,
+    tick_count: int = 5,
 ) -> FigureSpec:
     return FigureSpec(
         title=title,
@@ -59,6 +75,14 @@ def build_figure_spec(
         x_max=x_max,
         y_min=y_min,
         y_max=y_max,
+        show_legend=show_legend,
+        show_grid=show_grid,
+        palette=palette,
+        title_font_size=title_font_size,
+        label_font_size=label_font_size,
+        tick_font_size=tick_font_size,
+        line_width=line_width,
+        tick_count=tick_count,
     )
 
 
@@ -94,6 +118,14 @@ def figure_spec_from_dict(payload: dict[str, Any]) -> FigureSpec:
         x_max=_optional_float(payload.get("x_max")),
         y_min=_optional_float(payload.get("y_min")),
         y_max=_optional_float(payload.get("y_max")),
+        show_legend=bool(payload.get("show_legend", True)),
+        show_grid=bool(payload.get("show_grid", True)),
+        palette=str(payload.get("palette", "default")),
+        title_font_size=int(payload.get("title_font_size", 18)),
+        label_font_size=int(payload.get("label_font_size", 15)),
+        tick_font_size=int(payload.get("tick_font_size", 14)),
+        line_width=float(payload.get("line_width", 2.0)),
+        tick_count=int(payload.get("tick_count", 5)),
     )
 
 

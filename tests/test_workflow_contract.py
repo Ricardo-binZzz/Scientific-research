@@ -41,6 +41,35 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertEqual(restored.height_mm, 120)
         self.assertEqual(restored.dpi, 300)
 
+    def test_figure_spec_round_trip_preserves_style_fields(self) -> None:
+        spec = build_figure_spec(
+            title="Stress response",
+            figure_type="trend",
+            x_label="Time (s)",
+            y_label="Stress (MPa)",
+            series=[PlotSeries(label="Case A", x=[0, 1], y=[0, 2])],
+            show_legend=False,
+            show_grid=False,
+            palette="mono",
+            title_font_size=20,
+            label_font_size=16,
+            tick_font_size=11,
+            line_width=3.5,
+            tick_count=7,
+        )
+
+        payload = figure_spec_to_dict(spec)
+        restored = figure_spec_from_dict(payload)
+
+        self.assertFalse(restored.show_legend)
+        self.assertFalse(restored.show_grid)
+        self.assertEqual(restored.palette, "mono")
+        self.assertEqual(restored.title_font_size, 20)
+        self.assertEqual(restored.label_font_size, 16)
+        self.assertEqual(restored.tick_font_size, 11)
+        self.assertEqual(restored.line_width, 3.5)
+        self.assertEqual(restored.tick_count, 7)
+
     def test_tabular_result_loader_reads_csv_and_builds_plot_series(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "result.csv"

@@ -35,6 +35,10 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("id=\"figureHeightMm\"", html)
         self.assertIn("id=\"xMin\"", html)
         self.assertIn("id=\"yMax\"", html)
+        self.assertIn("id=\"showLegend\"", html)
+        self.assertIn("id=\"showGrid\"", html)
+        self.assertIn("id=\"palette\"", html)
+        self.assertIn("id=\"tickCount\"", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
 
@@ -432,11 +436,20 @@ class WebAppTests(unittest.TestCase):
                     "x_max": "2",
                     "y_min": "0",
                     "y_max": "30",
+                    "show_legend": "false",
+                    "show_grid": "false",
+                    "palette": "mono",
+                    "title_font_size": "20",
+                    "label_font_size": "16",
+                    "tick_font_size": "11",
+                    "line_width": "3.5",
+                    "tick_count": "7",
                 }
             )
             svg_exists = (out_dir / "stress-response.svg").exists()
             json_exists = (out_dir / "stress-response.json").exists()
             payload = (out_dir / "stress-response.json").read_text(encoding="utf-8")
+            svg_text = (out_dir / "stress-response.svg").read_text(encoding="utf-8")
 
         self.assertEqual(status, 200)
         self.assertIn("stress-response.svg", body)
@@ -444,6 +457,10 @@ class WebAppTests(unittest.TestCase):
         self.assertTrue(json_exists)
         self.assertIn('"x_min": 0.0', payload)
         self.assertIn('"y_max": 30.0', payload)
+        self.assertIn('"show_legend": false', payload)
+        self.assertIn('"palette": "mono"', payload)
+        self.assertIn(".title{font-size:20px", svg_text)
+        self.assertNotIn('class="grid"', svg_text)
 
     def test_handle_figure_from_data_action_writes_heatmap_bundle(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

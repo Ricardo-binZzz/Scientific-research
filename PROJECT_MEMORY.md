@@ -77,4 +77,5 @@
 - Manuscript checks now flag skipped Markdown heading levels, such as jumping from `#` directly to `###`.
 - The browser UI can scan a project for common input/output files under `simulation`, `manuscript`, and `figures`, returning a text list for users who forgot exact file names.
 - Web figure generation accepts optional x/y axis range overrides and stores them in the FigureSpec JSON.
+- Figure generation supports style controls in the FigureSpec contract, CLI, and browser UI: legend on/off, grid on/off, palette, title/axis/tick font sizes, line width, and tick count.
 - Manuscript checks now warn when citation markers are present but no `References`, `Bibliography`, or `参考文献` heading exists.

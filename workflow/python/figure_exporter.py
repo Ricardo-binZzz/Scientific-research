@@ -40,6 +40,14 @@ def build_spec_from_dataset(
     x_max: float | None = None,
     y_min: float | None = None,
     y_max: float | None = None,
+    show_legend: bool = True,
+    show_grid: bool = True,
+    palette: str = "default",
+    title_font_size: int = 18,
+    label_font_size: int = 15,
+    tick_font_size: int = 14,
+    line_width: float = 2.0,
+    tick_count: int = 5,
 ) -> FigureSpec:
     series = dataset_to_plot_series(dataset, x_column=x_column, y_columns=y_columns)
     if y_error_columns:
@@ -67,6 +75,14 @@ def build_spec_from_dataset(
         x_max=x_max,
         y_min=y_min,
         y_max=y_max,
+        show_legend=show_legend,
+        show_grid=show_grid,
+        palette=palette,
+        title_font_size=title_font_size,
+        label_font_size=label_font_size,
+        tick_font_size=tick_font_size,
+        line_width=line_width,
+        tick_count=tick_count,
     )
 
 
@@ -86,6 +102,14 @@ def build_heatmap_spec_from_dataset(
     x_max: float | None = None,
     y_min: float | None = None,
     y_max: float | None = None,
+    show_legend: bool = True,
+    show_grid: bool = True,
+    palette: str = "default",
+    title_font_size: int = 18,
+    label_font_size: int = 15,
+    tick_font_size: int = 14,
+    line_width: float = 2.0,
+    tick_count: int = 5,
 ) -> FigureSpec:
     points = [
         HeatmapPoint(
@@ -108,6 +132,14 @@ def build_heatmap_spec_from_dataset(
         x_max=x_max,
         y_min=y_min,
         y_max=y_max,
+        show_legend=show_legend,
+        show_grid=show_grid,
+        palette=palette,
+        title_font_size=title_font_size,
+        label_font_size=label_font_size,
+        tick_font_size=tick_font_size,
+        line_width=line_width,
+        tick_count=tick_count,
     )
 
 
@@ -127,6 +159,14 @@ def build_contour_spec_from_dataset(
     x_max: float | None = None,
     y_min: float | None = None,
     y_max: float | None = None,
+    show_legend: bool = True,
+    show_grid: bool = True,
+    palette: str = "default",
+    title_font_size: int = 18,
+    label_font_size: int = 15,
+    tick_font_size: int = 14,
+    line_width: float = 2.0,
+    tick_count: int = 5,
 ) -> FigureSpec:
     points = [
         HeatmapPoint(
@@ -158,6 +198,14 @@ def build_contour_spec_from_dataset(
         x_max=x_max,
         y_min=y_min,
         y_max=y_max,
+        show_legend=show_legend,
+        show_grid=show_grid,
+        palette=palette,
+        title_font_size=title_font_size,
+        label_font_size=label_font_size,
+        tick_font_size=tick_font_size,
+        line_width=line_width,
+        tick_count=tick_count,
     )
 
 
@@ -195,35 +243,38 @@ def render_svg_line_plot(spec: FigureSpec) -> str:
     y_values = [value for item in spec.series for value in item.y]
     min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
     min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
-    colors = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"]
+    colors = _palette_colors(spec.palette)
+    tick_count = _tick_count(spec.tick_count)
 
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        "<style>text{font-family:Arial, sans-serif;font-size:14px;} .axis{stroke:#222;stroke-width:1.2;} .grid{stroke:#ddd;stroke-width:0.8;} .label{font-size:15px;} .title{font-size:18px;font-weight:700;}</style>",
+        _svg_style(spec),
         f'<text class="title" x="{width / 2:.1f}" y="28" text-anchor="middle">{html.escape(spec.title)}</text>',
         f'<line class="axis" x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" />',
         f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" />',
         f'<text class="label" x="{width / 2:.1f}" y="{height - 18}" text-anchor="middle">{html.escape(spec.x_label)}</text>',
         f'<text class="label" x="18" y="{height / 2:.1f}" text-anchor="middle" transform="rotate(-90 18 {height / 2:.1f})">{html.escape(spec.y_label)}</text>',
     ]
-    for tick in range(5):
-        ratio = tick / 4
+    for tick in range(tick_count):
+        ratio = _tick_ratio(tick, tick_count)
         x = margin_left + ratio * plot_width
         y = height - margin_bottom - ratio * plot_height
-        lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
-        lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
-        lines.append(f'<text x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
-        lines.append(f'<text x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
+        if spec.show_grid:
+            lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
+            lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
+        lines.append(f'<text x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle" class="tick">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
+        lines.append(f'<text class="tick" x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
     for idx, item in enumerate(spec.series):
         points = [
             f"{_scale(x, min_x, max_x, margin_left, margin_left + plot_width):.1f},{_scale(y, min_y, max_y, height - margin_bottom, margin_top):.1f}"
             for x, y in zip(item.x, item.y)
         ]
         color = colors[idx % len(colors)]
-        lines.append(f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{" ".join(points)}" />')
-        legend_y = margin_top + idx * 22
-        lines.append(f'<line x1="{width - 160}" y1="{legend_y}" x2="{width - 130}" y2="{legend_y}" stroke="{color}" stroke-width="2" />')
-        lines.append(f'<text x="{width - 124}" y="{legend_y + 5}">{html.escape(item.label)}</text>')
+        lines.append(f'<polyline fill="none" stroke="{color}" stroke-width="{spec.line_width:g}" points="{" ".join(points)}" />')
+        if spec.show_legend:
+            legend_y = margin_top + idx * 22
+            lines.append(f'<line x1="{width - 160}" y1="{legend_y}" x2="{width - 130}" y2="{legend_y}" stroke="{color}" stroke-width="{spec.line_width:g}" />')
+            lines.append(f'<text x="{width - 124}" y="{legend_y + 5}">{html.escape(item.label)}</text>')
     lines.append("</svg>")
     return "\n".join(lines)
 
@@ -239,7 +290,8 @@ def render_svg_bar_chart(spec: FigureSpec) -> str:
     plot_height = max(10, height - margin_top - margin_bottom)
     y_values = [value for item in spec.series for value in item.y]
     min_y, max_y = _spec_range(spec.y_min, spec.y_max, [0.0] + y_values)
-    colors = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"]
+    colors = _palette_colors(spec.palette)
+    tick_count = _tick_count(spec.tick_count)
     first_series = spec.series[0] if spec.series else None
     category_count = len(first_series.x) if first_series else 0
     group_width = plot_width / max(1, category_count)
@@ -247,18 +299,19 @@ def render_svg_bar_chart(spec: FigureSpec) -> str:
 
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        "<style>text{font-family:Arial, sans-serif;font-size:14px;} .axis{stroke:#222;stroke-width:1.2;} .grid{stroke:#ddd;stroke-width:0.8;} .label{font-size:15px;} .title{font-size:18px;font-weight:700;}</style>",
+        _svg_style(spec),
         f'<text class="title" x="{width / 2:.1f}" y="28" text-anchor="middle">{html.escape(spec.title)}</text>',
         f'<line class="axis" x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" />',
         f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" />',
         f'<text class="label" x="{width / 2:.1f}" y="{height - 18}" text-anchor="middle">{html.escape(spec.x_label)}</text>',
         f'<text class="label" x="18" y="{height / 2:.1f}" text-anchor="middle" transform="rotate(-90 18 {height / 2:.1f})">{html.escape(spec.y_label)}</text>',
     ]
-    for tick in range(5):
-        ratio = tick / 4
+    for tick in range(tick_count):
+        ratio = _tick_ratio(tick, tick_count)
         y = height - margin_bottom - ratio * plot_height
-        lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
-        lines.append(f'<text x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
+        if spec.show_grid:
+            lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
+        lines.append(f'<text class="tick" x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
     for series_idx, item in enumerate(spec.series):
         color = colors[series_idx % len(colors)]
         for point_idx, (x_value, y_value) in enumerate(zip(item.x, item.y)):
@@ -271,10 +324,11 @@ def render_svg_bar_chart(spec: FigureSpec) -> str:
             lines.append(f'<rect x="{x:.1f}" y="{top:.1f}" width="{bar_width * 0.8:.1f}" height="{bar_height:.1f}" fill="{color}" />')
             if series_idx == 0:
                 label_x = group_start + group_width / 2
-                lines.append(f'<text x="{label_x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(x_value)}</text>')
-        legend_y = margin_top + series_idx * 22
-        lines.append(f'<rect x="{width - 160}" y="{legend_y - 10}" width="22" height="12" fill="{color}" />')
-        lines.append(f'<text x="{width - 130}" y="{legend_y + 1}">{html.escape(item.label)}</text>')
+                lines.append(f'<text class="tick" x="{label_x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(x_value)}</text>')
+        if spec.show_legend:
+            legend_y = margin_top + series_idx * 22
+            lines.append(f'<rect x="{width - 160}" y="{legend_y - 10}" width="22" height="12" fill="{color}" />')
+            lines.append(f'<text x="{width - 130}" y="{legend_y + 1}">{html.escape(item.label)}</text>')
     lines.append("</svg>")
     return "\n".join(lines)
 
@@ -298,25 +352,27 @@ def render_svg_errorbar_plot(spec: FigureSpec) -> str:
             y_values.extend(item.y)
     min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
     min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
-    colors = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"]
+    colors = _palette_colors(spec.palette)
+    tick_count = _tick_count(spec.tick_count)
 
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        "<style>text{font-family:Arial, sans-serif;font-size:14px;} .axis{stroke:#222;stroke-width:1.2;} .grid{stroke:#ddd;stroke-width:0.8;} .label{font-size:15px;} .title{font-size:18px;font-weight:700;} .errorbar{stroke-width:1.4;}</style>",
+        _svg_style(spec, extra=".errorbar{stroke-width:1.4;}"),
         f'<text class="title" x="{width / 2:.1f}" y="28" text-anchor="middle">{html.escape(spec.title)}</text>',
         f'<line class="axis" x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" />',
         f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" />',
         f'<text class="label" x="{width / 2:.1f}" y="{height - 18}" text-anchor="middle">{html.escape(spec.x_label)}</text>',
         f'<text class="label" x="18" y="{height / 2:.1f}" text-anchor="middle" transform="rotate(-90 18 {height / 2:.1f})">{html.escape(spec.y_label)}</text>',
     ]
-    for tick in range(5):
-        ratio = tick / 4
+    for tick in range(tick_count):
+        ratio = _tick_ratio(tick, tick_count)
         x = margin_left + ratio * plot_width
         y = height - margin_bottom - ratio * plot_height
-        lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
-        lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
-        lines.append(f'<text x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
-        lines.append(f'<text x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
+        if spec.show_grid:
+            lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
+            lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
+        lines.append(f'<text class="tick" x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
+        lines.append(f'<text class="tick" x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
     for idx, item in enumerate(spec.series):
         color = colors[idx % len(colors)]
         points = []
@@ -330,10 +386,11 @@ def render_svg_errorbar_plot(spec: FigureSpec) -> str:
                 lines.append(f'<line class="errorbar" x1="{x:.1f}" y1="{y_low:.1f}" x2="{x:.1f}" y2="{y_high:.1f}" stroke="{color}" />')
                 lines.append(f'<line class="errorbar" x1="{x - 5:.1f}" y1="{y_low:.1f}" x2="{x + 5:.1f}" y2="{y_low:.1f}" stroke="{color}" />')
                 lines.append(f'<line class="errorbar" x1="{x - 5:.1f}" y1="{y_high:.1f}" x2="{x + 5:.1f}" y2="{y_high:.1f}" stroke="{color}" />')
-        lines.append(f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{" ".join(points)}" />')
-        legend_y = margin_top + idx * 22
-        lines.append(f'<line x1="{width - 160}" y1="{legend_y}" x2="{width - 130}" y2="{legend_y}" stroke="{color}" stroke-width="2" />')
-        lines.append(f'<text x="{width - 124}" y="{legend_y + 5}">{html.escape(item.label)}</text>')
+        lines.append(f'<polyline fill="none" stroke="{color}" stroke-width="{spec.line_width:g}" points="{" ".join(points)}" />')
+        if spec.show_legend:
+            legend_y = margin_top + idx * 22
+            lines.append(f'<line x1="{width - 160}" y1="{legend_y}" x2="{width - 130}" y2="{legend_y}" stroke="{color}" stroke-width="{spec.line_width:g}" />')
+            lines.append(f'<text x="{width - 124}" y="{legend_y + 5}">{html.escape(item.label)}</text>')
     lines.append("</svg>")
     return "\n".join(lines)
 
@@ -354,24 +411,26 @@ def render_svg_heatmap_plot(spec: FigureSpec) -> str:
     min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
     min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
     min_v, max_v = _range(values)
+    tick_count = _tick_count(spec.tick_count)
 
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        "<style>text{font-family:Arial, sans-serif;font-size:14px;} .axis{stroke:#222;stroke-width:1.2;} .grid{stroke:#ddd;stroke-width:0.8;} .label{font-size:15px;} .title{font-size:18px;font-weight:700;} .cell{stroke:#fff;stroke-width:1;}</style>",
+        _svg_style(spec, extra=".cell{stroke:#fff;stroke-width:1;}"),
         f'<text class="title" x="{width / 2:.1f}" y="28" text-anchor="middle">{html.escape(spec.title)}</text>',
         f'<line class="axis" x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" />',
         f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" />',
         f'<text class="label" x="{width / 2:.1f}" y="{height - 18}" text-anchor="middle">{html.escape(spec.x_label)}</text>',
         f'<text class="label" x="18" y="{height / 2:.1f}" text-anchor="middle" transform="rotate(-90 18 {height / 2:.1f})">{html.escape(spec.y_label)}</text>',
     ]
-    for tick in range(5):
-        ratio = tick / 4
+    for tick in range(tick_count):
+        ratio = _tick_ratio(tick, tick_count)
         x = margin_left + ratio * plot_width
         y = height - margin_bottom - ratio * plot_height
-        lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
-        lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
-        lines.append(f'<text x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
-        lines.append(f'<text x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
+        if spec.show_grid:
+            lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
+            lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
+        lines.append(f'<text class="tick" x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
+        lines.append(f'<text class="tick" x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
     for point in points:
         x = _scale(point["x"], min_x, max_x, margin_left, margin_left + plot_width)
         y = _scale(point["y"], min_y, max_y, height - margin_bottom, margin_top)
@@ -402,24 +461,26 @@ def render_svg_contour_plot(spec: FigureSpec) -> str:
     grid = {(point["x"], point["y"]): point["value"] for point in points}
     x_levels = sorted(set(x_values))
     y_levels = sorted(set(y_values))
+    tick_count = _tick_count(spec.tick_count)
 
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        "<style>text{font-family:Arial, sans-serif;font-size:14px;} .axis{stroke:#222;stroke-width:1.2;} .grid{stroke:#ddd;stroke-width:0.8;} .label{font-size:15px;} .title{font-size:18px;font-weight:700;} .contour{fill:none;stroke:#1f77b4;stroke-width:1.6;}</style>",
+        _svg_style(spec, extra=f".contour{{fill:none;stroke:{_palette_colors(spec.palette)[0]};stroke-width:{max(1.0, spec.line_width * 0.8):g};}}"),
         f'<text class="title" x="{width / 2:.1f}" y="28" text-anchor="middle">{html.escape(spec.title)}</text>',
         f'<line class="axis" x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" />',
         f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" />',
         f'<text class="label" x="{width / 2:.1f}" y="{height - 18}" text-anchor="middle">{html.escape(spec.x_label)}</text>',
         f'<text class="label" x="18" y="{height / 2:.1f}" text-anchor="middle" transform="rotate(-90 18 {height / 2:.1f})">{html.escape(spec.y_label)}</text>',
     ]
-    for tick in range(5):
-        ratio = tick / 4
+    for tick in range(tick_count):
+        ratio = _tick_ratio(tick, tick_count)
         x = margin_left + ratio * plot_width
         y = height - margin_bottom - ratio * plot_height
-        lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
-        lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
-        lines.append(f'<text x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
-        lines.append(f'<text x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
+        if spec.show_grid:
+            lines.append(f'<line class="grid" x1="{x:.1f}" y1="{margin_top}" x2="{x:.1f}" y2="{height - margin_bottom}" />')
+            lines.append(f'<line class="grid" x1="{margin_left}" y1="{y:.1f}" x2="{width - margin_right}" y2="{y:.1f}" />')
+        lines.append(f'<text class="tick" x="{x:.1f}" y="{height - margin_bottom + 22}" text-anchor="middle">{_format_value(min_x + ratio * (max_x - min_x))}</text>')
+        lines.append(f'<text class="tick" x="{margin_left - 8}" y="{y + 5:.1f}" text-anchor="end">{_format_value(min_y + ratio * (max_y - min_y))}</text>')
 
     if len(x_levels) >= 2 and len(y_levels) >= 2:
         for level in spec.contour_levels:
@@ -444,6 +505,38 @@ def _range(values: list[float]) -> tuple[float, float]:
     if low == high:
         return low - 0.5, high + 0.5
     return low, high
+
+
+def _svg_style(spec: FigureSpec, *, extra: str = "") -> str:
+    return (
+        "<style>"
+        "text{font-family:Arial, sans-serif;font-size:14px;}"
+        ".axis{stroke:#222;stroke-width:1.2;}"
+        ".grid{stroke:#ddd;stroke-width:0.8;}"
+        f".label{{font-size:{spec.label_font_size}px;}}"
+        f".title{{font-size:{spec.title_font_size}px;font-weight:700;}}"
+        f".tick{{font-size:{spec.tick_font_size}px;}}"
+        f"{extra}"
+        "</style>"
+    )
+
+
+def _palette_colors(name: str) -> list[str]:
+    palettes = {
+        "default": ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"],
+        "colorblind": ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00"],
+        "mono": ["#333333", "#666666", "#999999", "#bbbbbb", "#111111"],
+        "journal": ["#005A8D", "#C44900", "#2E7D32", "#6A4C93", "#8C564B"],
+    }
+    return palettes.get(name, palettes["default"])
+
+
+def _tick_count(value: int) -> int:
+    return max(2, min(12, int(value)))
+
+
+def _tick_ratio(index: int, tick_count: int) -> float:
+    return 0.0 if tick_count <= 1 else index / (tick_count - 1)
 
 
 def _spec_range(low_override: float | None, high_override: float | None, values: list[float]) -> tuple[float, float]:

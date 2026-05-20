@@ -187,6 +187,7 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             stem = payload.get("figure_stem", "").strip()
             dataset = load_tabular_result(Path(payload.get("figure_data_path", "").strip()))
             figure_type = payload.get("figure_type", "").strip() or "trend"
+            style_options = _figure_style_options(payload)
             if figure_type == "heatmap":
                 spec = build_heatmap_spec_from_dataset(
                     dataset,
@@ -203,6 +204,7 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     x_max=_optional_float(payload.get("x_max", "")),
                     y_min=_optional_float(payload.get("y_min", "")),
                     y_max=_optional_float(payload.get("y_max", "")),
+                    **style_options,
                 )
             elif figure_type == "contour":
                 spec = build_contour_spec_from_dataset(
@@ -220,6 +222,7 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     x_max=_optional_float(payload.get("x_max", "")),
                     y_min=_optional_float(payload.get("y_min", "")),
                     y_max=_optional_float(payload.get("y_max", "")),
+                    **style_options,
                 )
             else:
                 spec = build_spec_from_dataset(
@@ -238,6 +241,7 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     x_max=_optional_float(payload.get("x_max", "")),
                     y_min=_optional_float(payload.get("y_min", "")),
                     y_max=_optional_float(payload.get("y_max", "")),
+                    **style_options,
                 )
             export_figure_bundle(spec, out_dir, stem=stem)
             return _text(f"已生成：{out_dir / f'{stem}.svg'}\n已生成：{out_dir / f'{stem}.json'}")
@@ -481,6 +485,36 @@ def _int_or_default(value: str, default: int) -> int:
 def _optional_float(value: str) -> float | None:
     text = value.strip()
     return None if not text else float(text)
+
+
+def _figure_style_options(payload: dict[str, str]) -> dict[str, object]:
+    return {
+        "show_legend": _bool_or_default(payload.get("show_legend", ""), True),
+        "show_grid": _bool_or_default(payload.get("show_grid", ""), True),
+        "palette": payload.get("palette", "").strip() or "default",
+        "title_font_size": _int_or_default(payload.get("title_font_size", ""), 18),
+        "label_font_size": _int_or_default(payload.get("label_font_size", ""), 15),
+        "tick_font_size": _int_or_default(payload.get("tick_font_size", ""), 14),
+        "line_width": _float_or_default(payload.get("line_width", ""), 2.0),
+        "tick_count": _int_or_default(payload.get("tick_count", ""), 5),
+    }
+
+
+def _bool_or_default(value: str, default: bool) -> bool:
+    text = value.strip().lower()
+    if not text:
+        return default
+    return text in {"1", "true", "yes", "on"}
+
+
+def _float_or_default(value: str, default: float) -> float:
+    text = value.strip()
+    if not text:
+        return default
+    parsed = float(text)
+    if parsed <= 0:
+        raise ValueError("figure style numeric values must be greater than 0")
+    return parsed
 
 
 if __name__ == "__main__":
