@@ -124,7 +124,7 @@ async function runAction(action, button) {
   output.textContent = "运行中...";
   resultMeta.textContent = button ? button.textContent.trim() : action;
   lastRunnableAction = { action, button };
-  if (rerunLastAction) rerunLastAction.disabled = false;
+  updateRerunButton(button ? button.textContent.trim() : action);
   setResultLoading(true);
   const validation = validateActionPayload(action, payload);
   if (!validation.ok) {
@@ -256,7 +256,7 @@ function clearResultState() {
   setResultLoading(false);
   successHistory.splice(0);
   lastRunnableAction = null;
-  if (rerunLastAction) rerunLastAction.disabled = true;
+  updateRerunButton("");
 }
 
 if (rerunLastAction) {
@@ -264,6 +264,12 @@ if (rerunLastAction) {
     if (!lastRunnableAction) return;
     runAction(lastRunnableAction.action, lastRunnableAction.button);
   });
+}
+
+function updateRerunButton(label) {
+  if (!rerunLastAction) return;
+  rerunLastAction.disabled = !label;
+  rerunLastAction.textContent = label ? `重跑：${label}` : "重跑上次";
 }
 
 document.getElementById("copyOutput").addEventListener("click", async () => {
