@@ -121,10 +121,11 @@
 - Web project-check visualization on 2026-05-20: `project_check` now renders health cards for literature, simulation, manuscript, and project assets above the raw Markdown report.
 - Web manuscript-check visualization on 2026-05-20: `manuscript_check` now renders issue summary cards and priority issue rows above the raw Markdown report; `USER_GUIDE.md` was updated in the main tutorial.
 - Web simulation-report visualization on 2026-05-20: `simulation_inspect`, `simulation_summarize`, and `simulation_validate` now render data overview cards above the raw Markdown report; `USER_GUIDE.md` was updated in the main tutorial.
+- Web figure-result visualization on 2026-05-20: `figure_from_data` now renders generated SVG/JSON paths and key figure settings above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
-- Add visual summaries for generated figure reports so users can quickly see output paths and figure settings.
+- Add visual summaries for saved standard reports so users can see target paths and report purpose immediately.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.

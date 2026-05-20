@@ -91,3 +91,4 @@
 - The browser result panel now renders `project_check` as health cards for literature, simulation, manuscript, and project assets above the raw Markdown report.
 - The browser result panel now renders `manuscript_check` as manuscript summary cards with issue totals, warning/info split, citation/figure/structure counts, and priority issue rows above the raw Markdown report.
 - The browser result panel now renders `simulation_inspect`, `simulation_summarize`, and `simulation_validate` as simulation data overview cards above the raw Markdown report.
+- The browser result panel now renders `figure_from_data` as figure result cards with generated SVG/JSON paths and key figure settings above the raw text output.

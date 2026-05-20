@@ -883,6 +883,52 @@ details[open] .chevron {
   overflow-wrap: anywhere;
 }
 
+.figure-result-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.figure-result-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 0;
+  padding: 10px;
+}
+
+.figure-result-card h4 {
+  color: #18212b;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.figure-result-card ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.figure-result-card li {
+  color: #344250;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.figure-result-card code {
+  background: #f6f8fa;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #202b37;
+  display: block;
+  font-size: 11px;
+  padding: 5px 6px;
+  white-space: normal;
+}
+
 .result-header {
   align-items: center;
   border-bottom: 1px solid #243143;
@@ -1049,7 +1095,8 @@ pre {
   .workflow-gap-grid,
   .health-grid,
   .manuscript-summary-grid,
-  .simulation-grid {
+  .simulation-grid,
+  .figure-result-grid {
     grid-template-columns: 1fr;
   }
 

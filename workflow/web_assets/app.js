@@ -242,6 +242,10 @@ function renderResultCompanion(action, ok, text) {
     renderSimulationReport(action, text);
     return;
   }
+  if (action === "figure_from_data" && ok) {
+    renderFigureResult(text);
+    return;
+  }
   if (action === "workflow_status" && ok) {
     renderWorkflowStatus(text);
     return;
@@ -474,6 +478,64 @@ function parseTopLevelList(text) {
 function columnCount(value) {
   if (!value || value === "None") return "0";
   return String(value.split(",").map((item) => item.trim()).filter(Boolean).length);
+}
+
+function renderFigureResult(text) {
+  if (!insightPanel) return;
+  const paths = parseGeneratedPaths(text);
+  const figureType = valueOf("figureType") || "trend";
+  const size = `${valueOf("figureWidthMm") || "180"} x ${valueOf("figureHeightMm") || "120"} mm`;
+  const axes = `${valueOf("xColumn") || "-"} / ${valueOf("yColumns") || "-"}`;
+  const ranges = [
+    valueOf("xMin") || "auto",
+    valueOf("xMax") || "auto",
+    valueOf("yMin") || "auto",
+    valueOf("yMax") || "auto",
+  ].join(" / ");
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>图形生成结果</h3>
+        <p>SVG 可放进论文，JSON 记录参数，便于以后复现。</p>
+      </div>
+    </div>
+    <div class="insight-grid">
+      ${insightMetric("图类型", figureType)}
+      ${insightMetric("尺寸", size)}
+      ${insightMetric("坐标列", axes)}
+      ${insightMetric("配色", valueOf("palette") || "default")}
+    </div>
+    <div class="figure-result-grid">
+      <section class="figure-result-card">
+        <h4>输出文件</h4>
+        <ul>
+          ${
+            paths.length
+              ? paths.map((path) => `<li><code>${escapeHtml(path)}</code></li>`).join("")
+              : "<li>没有解析到输出路径</li>"
+          }
+        </ul>
+      </section>
+      <section class="figure-result-card">
+        <h4>关键参数</h4>
+        <ul>
+          <li>标题：${escapeHtml(valueOf("figureTitle") || "-")}</li>
+          <li>坐标范围：${escapeHtml(ranges)}</li>
+          <li>图例/网格：${checkedValueOf("showLegend") === "true" ? "显示" : "隐藏"} / ${checkedValueOf("showGrid") === "true" ? "显示" : "隐藏"}</li>
+          <li>字号/线宽：${escapeHtml(valueOf("titleFontSize") || "18")} / ${escapeHtml(valueOf("lineWidth") || "2")}</li>
+        </ul>
+      </section>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function parseGeneratedPaths(text) {
+  return text
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^已生成：/, "").trim())
+    .filter((line) => line.endsWith(".svg") || line.endsWith(".json"));
 }
 
 function renderManuscriptCheck(text) {
