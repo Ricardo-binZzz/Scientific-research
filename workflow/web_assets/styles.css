@@ -527,6 +527,57 @@ details[open] .chevron {
   padding-bottom: 0;
 }
 
+.path-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.path-card {
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 86px minmax(0, 1fr) auto;
+  padding: 9px 10px;
+}
+
+.path-card span {
+  color: #344250;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.path-card code {
+  color: #1f2937;
+  font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.path-fill-button {
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  color: #fff;
+  min-height: 30px;
+  padding: 0 9px;
+}
+
+.path-fill-button:hover {
+  background: var(--primary-hover);
+}
+
+.path-empty {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 12px;
+  padding: 10px;
+}
+
 .result-header {
   align-items: center;
   border-bottom: 1px solid #243143;
@@ -681,6 +732,11 @@ pre {
 
   .insight-grid,
   .insight-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .path-card {
+    align-items: stretch;
     grid-template-columns: 1fr;
   }
 

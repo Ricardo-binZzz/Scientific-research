@@ -234,6 +234,10 @@ function renderResultCompanion(action, ok, text) {
     renderLiteratureInsights(text);
     return;
   }
+  if (action === "scan_project_files" && ok) {
+    renderProjectFileScan(text);
+    return;
+  }
   hideInsightPanel();
 }
 
@@ -277,6 +281,54 @@ function renderLiteratureInsights(text) {
     </div>
   `;
   insightPanel.hidden = false;
+}
+
+function renderProjectFileScan(text) {
+  if (!insightPanel) return;
+  const suggestions = parseSuggestedPaths(text);
+  const groups = [
+    ["仿真数据", "dataPath", suggestions.data_path],
+    ["绘图数据", "figureDataPath", suggestions.figure_data_path],
+    ["图表输出", "figureOutDir", suggestions.figure_out_dir],
+    ["稿件检查", "manuscriptPath", suggestions.manuscript_path],
+    ["文献 CSV", "csvPath", suggestions.csv_path],
+  ].filter((item) => item[2]);
+
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>路径助手</h3>
+        <p>扫描结果已自动填入第一批可用路径，也可以点下面的按钮重新填入对应表单。</p>
+      </div>
+    </div>
+    <div class="path-grid">
+      ${
+        groups.length
+          ? groups.map(([label, targetId, path]) => renderPathCard(label, targetId, path)).join("")
+          : '<div class="path-empty">没有找到可自动填入的路径。</div>'
+      }
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function renderPathCard(label, targetId, path) {
+  return `
+    <div class="path-card">
+      <span>${escapeHtml(label)}</span>
+      <code>${escapeHtml(path)}</code>
+      <button class="path-fill-button" type="button" data-fill-id="${escapeHtml(targetId)}" data-fill-value="${escapeHtml(path)}">填入</button>
+    </div>
+  `;
+}
+
+function parseSuggestedPaths(text) {
+  const suggestions = {};
+  text.split(/\r?\n/).forEach((line) => {
+    const match = line.match(/^-\s+([a-z_]+):\s+(.+)$/);
+    if (match) suggestions[match[1]] = match[2].trim();
+  });
+  return suggestions;
 }
 
 function insightMetric(label, value) {
@@ -369,3 +421,12 @@ document.getElementById("loadDemoProject").addEventListener("click", () => {
 });
 
 document.getElementById("fillCommonPaths").addEventListener("click", fillCommonPaths);
+
+if (insightPanel) {
+  insightPanel.addEventListener("click", (event) => {
+    const button = event.target.closest(".path-fill-button");
+    if (!button) return;
+    forceValue(button.dataset.fillId, button.dataset.fillValue);
+    showToast("路径已填入");
+  });
+}

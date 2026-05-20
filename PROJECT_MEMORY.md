@@ -85,3 +85,4 @@
 - Writing reports now use rich literature metadata: `project writing-pack` shows high-citation literature, keyword coverage, and abstract coverage; `project writing-dashboard` shows abstract-ready count, high-citation candidate count, and top keywords; `library map` shows keyword distribution, database distribution, and high-citation literature.
 - The browser UI exposes a `literature_insights` action and "文献洞察" buttons for a compact literature quality summary covering abstracts, missing assets, high-citation entries, keywords, and database sources.
 - The browser result panel now renders `literature_insights` with visual cards/lists above the raw Markdown output, while keeping copy/download behavior based on the original Markdown report.
+- The browser result panel now renders `scan_project_files` as a path helper with clickable fill buttons for simulation data, figure data, figure output, manuscript path, and literature CSV path.
