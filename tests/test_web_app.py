@@ -85,6 +85,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("resultFallbackAdvice", js)
         self.assertIn("fallbackTargetForAction", js)
         self.assertIn("data-target-section", js)
+        self.assertIn("highlightTargetSection", js)
+        self.assertIn("section-highlight", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)
@@ -104,6 +106,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("project-report-card", css)
         self.assertIn("project-init-card", css)
         self.assertIn("result-fallback-card", css)
+        self.assertIn("section-highlight", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

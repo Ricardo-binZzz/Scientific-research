@@ -1265,6 +1265,11 @@ details.action-group > summary:hover {
   background: var(--surface-subtle);
 }
 
+details.action-group.section-highlight {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(12, 95, 68, 0.14);
+}
+
 pre {
   background: transparent;
   color: #e5edf5;

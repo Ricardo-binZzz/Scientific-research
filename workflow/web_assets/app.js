@@ -1190,7 +1190,16 @@ if (insightPanel) {
     const section = document.getElementById(jumpButton.dataset.targetSection);
     if (!section) return;
     section.open = true;
+    highlightTargetSection(section);
     section.scrollIntoView({ behavior: "smooth", block: "start" });
     showToast("已跳到对应步骤");
+  });
+}
+
+function highlightTargetSection(section) {
+  section.classList.remove("section-highlight");
+  window.requestAnimationFrame(() => {
+    section.classList.add("section-highlight");
+    window.setTimeout(() => section.classList.remove("section-highlight"), 1800);
   });
 }

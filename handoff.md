@@ -130,10 +130,11 @@
 - Web project-overview visualization on 2026-05-20: project report now renders a project overview card, and project creation now renders a created-project card with a fill-project-root action above the raw text output; `USER_GUIDE.md` was updated in the main tutorial.
 - Web result fallback on 2026-05-20: failed actions and actions without a dedicated companion now render a shared guidance card above the raw result, with next checks for project root, missing files, and required fields; `USER_GUIDE.md` was updated in the main tutorial.
 - Web fallback navigation on 2026-05-20: fallback result cards now include a "go to related section" jump button mapped to overview, library, notes, simulation, figures, or manuscript sections; `USER_GUIDE.md` was updated in the main tutorial.
+- Web jump highlighting on 2026-05-20: section jumps now briefly highlight the destination action group after scrolling, making error recovery easier for beginners; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
-- Add small visual state improvements for form sections, such as briefly highlighting the section reached by a fallback jump.
+- Consider adding lightweight form validation hints before sending actions, especially for missing project root and missing file paths.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.
