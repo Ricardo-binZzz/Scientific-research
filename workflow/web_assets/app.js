@@ -114,6 +114,15 @@ async function runAction(action, button) {
   output.classList.remove("empty-state");
   output.textContent = "运行中...";
   resultMeta.textContent = button ? button.textContent.trim() : action;
+  const validation = validateActionPayload(action, payload);
+  if (!validation.ok) {
+    output.textContent = validation.message;
+    renderResultFallback(action, false, validation.message);
+    statusText.textContent = "需要处理";
+    showToast(validation.message);
+    document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    return;
+  }
   setBusy(button, true);
 
   try {
@@ -146,6 +155,33 @@ async function runAction(action, button) {
 actionButtons.forEach((button) => {
   button.addEventListener("click", () => runAction(button.dataset.action, button));
 });
+
+function validateActionPayload(action, payload) {
+  if (actionNeedsProjectRoot(action) && !payload.project_root.trim()) {
+    return { ok: false, message: "请先填写项目根目录。" };
+  }
+  const pathField = actionPrimaryPath(action);
+  if (pathField && !payload[pathField].trim()) {
+    return { ok: false, message: "请先填写这个操作需要的文件路径。" };
+  }
+  return { ok: true, message: "" };
+}
+
+function actionNeedsProjectRoot(action) {
+  return !["init_project", "library_add"].includes(action);
+}
+
+function actionPrimaryPath(action) {
+  const pathFields = {
+    library_import_csv: "csv_path",
+    simulation_inspect: "data_path",
+    simulation_summarize: "data_path",
+    simulation_validate: "data_path",
+    figure_from_data: "figure_data_path",
+    manuscript_check: "manuscript_path",
+  };
+  return pathFields[action] || "";
+}
 
 document.getElementById("clearOutput").addEventListener("click", () => {
   output.classList.add("empty-state");

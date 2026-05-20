@@ -101,3 +101,4 @@
 - The browser result panel now has a shared fallback card for failed actions and actions without a dedicated visual companion, keeping the raw result below while surfacing likely next checks.
 - Fallback result cards now include a jump button that opens and scrolls to the most relevant web section for the failed or generic action.
 - Web section jumps now briefly highlight the destination action group after scrolling, making fallback navigation easier to notice.
+- The browser UI now performs lightweight preflight validation before sending actions, covering missing project roots and missing primary file paths for CSV import, simulation, figure, and manuscript actions.
