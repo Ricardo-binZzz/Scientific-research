@@ -90,6 +90,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("validateActionPayload", js)
         self.assertIn("actionNeedsProjectRoot", js)
         self.assertIn("actionPrimaryPath", js)
+        self.assertIn("focusMissingField", js)
+        self.assertIn("fieldLabelForId", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)

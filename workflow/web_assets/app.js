@@ -120,6 +120,7 @@ async function runAction(action, button) {
     renderResultFallback(action, false, validation.message);
     statusText.textContent = "需要处理";
     showToast(validation.message);
+    focusMissingField(validation.fieldId);
     document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
     return;
   }
@@ -158,13 +159,14 @@ actionButtons.forEach((button) => {
 
 function validateActionPayload(action, payload) {
   if (actionNeedsProjectRoot(action) && !payload.project_root.trim()) {
-    return { ok: false, message: "请先填写项目根目录。" };
+    return { ok: false, fieldId: "projectRoot", message: "请先填写项目根目录。" };
   }
   const pathField = actionPrimaryPath(action);
   if (pathField && !payload[pathField].trim()) {
-    return { ok: false, message: "请先填写这个操作需要的文件路径。" };
+    const fieldId = payloadFieldToElementId(pathField);
+    return { ok: false, fieldId, message: `请先填写${fieldLabelForId(fieldId)}。` };
   }
-  return { ok: true, message: "" };
+  return { ok: true, fieldId: "", message: "" };
 }
 
 function actionNeedsProjectRoot(action) {
@@ -181,6 +183,33 @@ function actionPrimaryPath(action) {
     manuscript_check: "manuscript_path",
   };
   return pathFields[action] || "";
+}
+
+function payloadFieldToElementId(field) {
+  const fields = {
+    csv_path: "csvPath",
+    data_path: "dataPath",
+    figure_data_path: "figureDataPath",
+    manuscript_path: "manuscriptPath",
+  };
+  return fields[field] || "";
+}
+
+function fieldLabelForId(id) {
+  const element = document.getElementById(id);
+  const label = element ? document.querySelector(`label[for="${id}"]`) : null;
+  return label ? label.textContent.trim() : "必填字段";
+}
+
+function focusMissingField(id) {
+  const element = document.getElementById(id);
+  if (!element) return;
+  const section = element.closest("details.action-group");
+  if (section) {
+    section.open = true;
+    highlightTargetSection(section);
+  }
+  element.focus({ preventScroll: true });
 }
 
 document.getElementById("clearOutput").addEventListener("click", () => {
