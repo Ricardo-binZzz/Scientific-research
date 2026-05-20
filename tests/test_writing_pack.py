@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from workflow.cli import main
+from workflow.library import LibraryEntry, add_entry, load_index
 from workflow.writing_pack import build_writing_pack, render_writing_pack
 
 
@@ -128,6 +129,57 @@ class WritingPackTests(unittest.TestCase):
         self.assertIn("## Library Gaps", text)
         self.assertIn("- Missing PDFs: missing.pdf", text)
         self.assertIn("- Missing notes: notes/missing.md", text)
+
+    def test_writing_pack_surfaces_rich_literature_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self.assertEqual(main(["init", tmpdir, "--slug", "demo", "--name", "Demo"]), 0)
+            root = Path(tmpdir) / "demo"
+            add_entry(
+                root / "literature",
+                load_index(root / "literature"),
+                LibraryEntry(
+                    title="Highly cited fixture review",
+                    authors=["Zhang"],
+                    year=2024,
+                    source="Journal A",
+                    doi="10.1000/rich-a",
+                    pdf_name="a.pdf",
+                    note_path="notes/a.md",
+                    abstract="Reviews adaptive fixture methods.",
+                    keywords=["fixture", "adaptive"],
+                    database_source="Scopus",
+                    citation_count=42,
+                ),
+            )
+            add_entry(
+                root / "literature",
+                load_index(root / "literature"),
+                LibraryEntry(
+                    title="Fixture case study",
+                    authors=["Li"],
+                    year=2023,
+                    source="Journal B",
+                    doi="10.1000/rich-b",
+                    pdf_name="b.pdf",
+                    note_path="notes/b.md",
+                    keywords=["fixture"],
+                    database_source="Web of Science",
+                    citation_count=7,
+                ),
+            )
+
+            pack = build_writing_pack(root)
+            text = render_writing_pack(pack)
+
+        self.assertEqual(pack.top_cited_literature, ["Highly cited fixture review (42 citations)", "Fixture case study (7 citations)"])
+        self.assertEqual(pack.keyword_counts, {"fixture": 2, "adaptive": 1})
+        self.assertEqual(pack.abstract_ready_titles, ["Highly cited fixture review"])
+        self.assertIn("## High Citation Literature", text)
+        self.assertIn("- Highly cited fixture review (42 citations)", text)
+        self.assertIn("## Keyword Coverage", text)
+        self.assertIn("- fixture: 2", text)
+        self.assertIn("## Abstract Coverage", text)
+        self.assertIn("- Abstract-ready entries: 1", text)
 
     def test_render_writing_pack_contains_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

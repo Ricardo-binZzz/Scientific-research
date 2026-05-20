@@ -13,6 +13,9 @@ class LiteratureMap:
     source_counts: dict[str, int]
     author_counts: dict[str, int]
     author_links: dict[str, list[str]]
+    keyword_counts: dict[str, int]
+    database_counts: dict[str, int]
+    top_cited_titles: list[str]
 
 
 def build_literature_map(root: Path) -> LiteratureMap:
@@ -21,6 +24,8 @@ def build_literature_map(root: Path) -> LiteratureMap:
     source_counts: dict[str, int] = {}
     author_counts: dict[str, int] = {}
     author_links: dict[str, list[str]] = {}
+    keyword_counts: dict[str, int] = {}
+    database_counts: dict[str, int] = {}
     for entry in index.entries:
         if entry.year > 0:
             year_counts[entry.year] = year_counts.get(entry.year, 0) + 1
@@ -29,12 +34,28 @@ def build_literature_map(root: Path) -> LiteratureMap:
         for author in entry.authors:
             author_counts[author] = author_counts.get(author, 0) + 1
             author_links.setdefault(author, []).append(entry.title)
+        for keyword in entry.keywords:
+            normalized = keyword.strip().lower()
+            if normalized:
+                keyword_counts[normalized] = keyword_counts.get(normalized, 0) + 1
+        database = entry.database_source.strip()
+        if database:
+            database_counts[database] = database_counts.get(database, 0) + 1
     return LiteratureMap(
         root=root,
         year_counts=dict(sorted(year_counts.items(), reverse=True)),
         source_counts=dict(sorted(source_counts.items(), key=lambda item: (-item[1], item[0]))),
         author_counts=dict(sorted(author_counts.items(), key=lambda item: (-item[1], item[0]))),
         author_links=dict(sorted(author_links.items())),
+        keyword_counts=dict(sorted(keyword_counts.items(), key=lambda item: (-item[1], item[0]))),
+        database_counts=dict(sorted(database_counts.items(), key=lambda item: (-item[1], item[0]))),
+        top_cited_titles=[
+            f"{entry.title} ({entry.citation_count} citations)"
+            for entry in sorted(
+                [entry for entry in index.entries if entry.citation_count > 0],
+                key=lambda item: (-item.citation_count, item.title),
+            )[:5]
+        ],
     )
 
 
@@ -45,6 +66,15 @@ def render_literature_map(literature_map: LiteratureMap) -> str:
     lines.append("")
     lines.append("## Sources")
     lines.extend([f"- {source}: {count}" for source, count in literature_map.source_counts.items()] or ["- None"])
+    lines.append("")
+    lines.append("## Keywords")
+    lines.extend([f"- {keyword}: {count}" for keyword, count in literature_map.keyword_counts.items()] or ["- None"])
+    lines.append("")
+    lines.append("## Databases")
+    lines.extend([f"- {database}: {count}" for database, count in literature_map.database_counts.items()] or ["- None"])
+    lines.append("")
+    lines.append("## High Citation Literature")
+    lines.extend([f"- {title}" for title in literature_map.top_cited_titles] or ["- None"])
     lines.append("")
     lines.append("## Authors")
     lines.extend([f"- {author}: {count}" for author, count in literature_map.author_counts.items()] or ["- None"])

@@ -653,6 +653,9 @@ C:\Users\22676\Documents\fixture-study\manuscript
 素材包还会单独列出：
 
 - `Recent Literature (since 2020)`：2020 年及之后的近期文献，适合写研究现状时优先查看。
+- `High Citation Literature`：按引用次数列出优先关注的高引用文献，适合快速挑综述里需要重点阅读的论文。
+- `Keyword Coverage`：统计文献关键词出现次数，适合判断当前文献是否覆盖了你的主要研究方向。
+- `Abstract Coverage`：列出已经有摘要的文献数量和题名，适合判断哪些条目能直接进入综述筛选。
 - `Library Gaps`：缺失的 PDF 和缺失的摘要卡或阅读笔记，适合写作前补材料。
 - `Manuscript Drafts`：当前 `manuscript` 文件夹里的 `.md`、`.txt`、`.docx` 草稿。
 
@@ -678,7 +681,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 & $PY -m workflow.cli project writing-dashboard C:\Users\22676\Documents\fixture-study --out C:\Users\22676\Documents\fixture-study\writing-dashboard.md
 ```
 
-它会按背景、方法、结果和草稿整理近期文献数量、摘要卡数量、仿真导出、图表包、稿件文件，以及缺失 PDF、缺失笔记等待补项。写论文前可以先看这份看板，再决定先补文献、补图，还是继续写正文。
+它会按背景、方法、结果和草稿整理近期文献数量、摘要卡数量、已有摘要的文献数量、高引用候选文献数量、关键词排行、仿真导出、图表包、稿件文件，以及缺失 PDF、缺失笔记等待补项。写论文前可以先看这份看板，再决定先补文献、补图，还是继续写正文。
 
 ## 19. 生成文献地图
 
@@ -688,7 +691,7 @@ C:\Users\22676\Documents\fixture-study\manuscript
 & $PY -m workflow.cli library map C:\Users\22676\Documents\fixture-study\literature --out C:\Users\22676\Documents\fixture-study\literature-map.md
 ```
 
-它会汇总年份分布、来源期刊或会议分布、作者分布，以及每个作者对应哪些论文。第一版先用文本报告，适合快速判断文献是否集中在某几年、某个来源或某几个作者。
+它会汇总年份分布、来源期刊或会议分布、关键词分布、数据库来源分布、高引用文献、作者分布，以及每个作者对应哪些论文。适合快速判断文献是否集中在某几年、某个来源、某些关键词或某几个作者。
 
 ## 20. 生成新文献追踪清单
 

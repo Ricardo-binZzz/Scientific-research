@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from workflow.library import inspect_library_stats, inspect_note_inventory, inspect_pdf_inventory, load_index
+from workflow.library import LibraryEntry, inspect_library_stats, inspect_note_inventory, inspect_pdf_inventory, load_index
 from workflow.simulation import collect_export_files
 
 
@@ -24,6 +24,9 @@ class WritingPack:
     figure_bundles: list[str]
     simulation_exports: list[str]
     manuscript_files: list[str]
+    top_cited_literature: list[str]
+    keyword_counts: dict[str, int]
+    abstract_ready_titles: list[str]
 
 
 def build_writing_pack(root: Path) -> WritingPack:
@@ -45,6 +48,9 @@ def build_writing_pack(root: Path) -> WritingPack:
         figure_bundles=_figure_bundle_stems(root / "figures"),
         simulation_exports=[path.name for path in collect_export_files(root / "simulation")] if (root / "simulation").exists() else [],
         manuscript_files=_names(root / "manuscript", {".md", ".txt", ".docx"}),
+        top_cited_literature=_top_cited_literature(library_index.entries),
+        keyword_counts=_keyword_counts(library_index.entries),
+        abstract_ready_titles=sorted(entry.title for entry in library_index.entries if entry.abstract.strip()),
     )
 
 
@@ -57,6 +63,16 @@ def render_writing_pack(pack: WritingPack) -> str:
     lines.append("")
     lines.append(f"## Recent Literature (since {RECENT_LITERATURE_YEAR})")
     lines.extend([f"- {title}" for title in pack.recent_library_titles] or ["- None"])
+    lines.append("")
+    lines.append("## High Citation Literature")
+    lines.extend([f"- {title}" for title in pack.top_cited_literature] or ["- None"])
+    lines.append("")
+    lines.append("## Keyword Coverage")
+    lines.extend([f"- {keyword}: {count}" for keyword, count in pack.keyword_counts.items()] or ["- None"])
+    lines.append("")
+    lines.append("## Abstract Coverage")
+    lines.append(f"- Abstract-ready entries: {len(pack.abstract_ready_titles)}")
+    lines.extend([f"- {title}" for title in pack.abstract_ready_titles] or ["- None"])
     lines.append("")
     lines.append("## Library Gaps")
     lines.append(f"- Missing PDFs: {', '.join(pack.missing_pdf_names) if pack.missing_pdf_names else 'None'}")
@@ -97,3 +113,19 @@ def _year_range(year_min: int | None, year_max: int | None) -> str:
     if year_min is None or year_max is None:
         return "None"
     return f"{year_min}-{year_max}"
+
+
+def _top_cited_literature(entries: list[LibraryEntry], limit: int = 5) -> list[str]:
+    cited = [entry for entry in entries if entry.citation_count > 0]
+    ordered = sorted(cited, key=lambda entry: (-entry.citation_count, entry.title))
+    return [f"{entry.title} ({entry.citation_count} citations)" for entry in ordered[:limit]]
+
+
+def _keyword_counts(entries: list[LibraryEntry]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for entry in entries:
+        for keyword in entry.keywords:
+            normalized = keyword.strip().lower()
+            if normalized:
+                counts[normalized] = counts.get(normalized, 0) + 1
+    return dict(sorted(counts.items(), key=lambda item: (-item[1], item[0])))

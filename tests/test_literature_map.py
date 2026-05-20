@@ -70,6 +70,52 @@ class LiteratureMapTests(unittest.TestCase):
         self.assertIn("## Author Links", text)
         self.assertIn("- Zhang: Adaptive fixture", text)
 
+    def test_literature_map_groups_keywords_databases_and_citations(self) -> None:
+        index = LibraryIndex(
+            entries=[
+                LibraryEntry(
+                    title="Highly cited fixture review",
+                    authors=["Zhang"],
+                    year=2024,
+                    source="Journal A",
+                    doi="10.1000/rich-a",
+                    pdf_name="a.pdf",
+                    note_path="notes/a.md",
+                    keywords=["Fixture", "Adaptive"],
+                    database_source="Scopus",
+                    citation_count=42,
+                ),
+                LibraryEntry(
+                    title="Fixture case study",
+                    authors=["Li"],
+                    year=2023,
+                    source="Journal B",
+                    doi="10.1000/rich-b",
+                    pdf_name="b.pdf",
+                    note_path="notes/b.md",
+                    keywords=["fixture"],
+                    database_source="Web of Science",
+                    citation_count=7,
+                ),
+            ]
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            index.save(root)
+
+            literature_map = build_literature_map(root)
+            text = render_literature_map(literature_map)
+
+        self.assertEqual(literature_map.keyword_counts, {"fixture": 2, "adaptive": 1})
+        self.assertEqual(literature_map.database_counts, {"Scopus": 1, "Web of Science": 1})
+        self.assertEqual(literature_map.top_cited_titles, ["Highly cited fixture review (42 citations)", "Fixture case study (7 citations)"])
+        self.assertIn("## Keywords", text)
+        self.assertIn("- fixture: 2", text)
+        self.assertIn("## Databases", text)
+        self.assertIn("- Scopus: 1", text)
+        self.assertIn("## High Citation Literature", text)
+        self.assertIn("- Highly cited fixture review (42 citations)", text)
+
     def test_cli_library_map_writes_file(self) -> None:
         index = LibraryIndex(
             entries=[

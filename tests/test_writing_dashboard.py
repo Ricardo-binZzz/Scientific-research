@@ -78,6 +78,51 @@ class WritingDashboardTests(unittest.TestCase):
         self.assertIn("## Ready for Results", text)
         self.assertIn("## Gaps to Fix", text)
 
+    def test_writing_dashboard_includes_rich_literature_signals(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            add_entry(
+                project / "literature",
+                load_index(project / "literature"),
+                LibraryEntry(
+                    title="Highly cited fixture review",
+                    authors=["Zhang"],
+                    year=2024,
+                    source="Journal A",
+                    doi="10.1000/rich-a",
+                    pdf_name="a.pdf",
+                    note_path="notes/a.md",
+                    abstract="Reviews adaptive fixture methods.",
+                    keywords=["fixture", "adaptive"],
+                    citation_count=42,
+                ),
+            )
+            add_entry(
+                project / "literature",
+                load_index(project / "literature"),
+                LibraryEntry(
+                    title="Fixture case study",
+                    authors=["Li"],
+                    year=2023,
+                    source="Journal B",
+                    doi="10.1000/rich-b",
+                    pdf_name="b.pdf",
+                    note_path="notes/b.md",
+                    keywords=["fixture"],
+                    citation_count=7,
+                ),
+            )
+
+            dashboard = build_writing_dashboard(project)
+            text = render_writing_dashboard(dashboard)
+
+        self.assertEqual(dashboard.abstract_ready_count, 1)
+        self.assertEqual(dashboard.top_keywords, ["fixture (2)", "adaptive (1)"])
+        self.assertEqual(dashboard.high_citation_count, 2)
+        self.assertIn("- Abstract-ready literature: 1", text)
+        self.assertIn("- High-citation candidates: 2", text)
+        self.assertIn("- Top keywords: fixture (2), adaptive (1)", text)
+
     def test_cli_project_writing_dashboard_writes_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")

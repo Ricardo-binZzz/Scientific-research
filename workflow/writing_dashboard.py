@@ -16,6 +16,9 @@ class WritingDashboard:
     simulation_exports: list[str]
     manuscript_files: list[str]
     gaps: list[str]
+    abstract_ready_count: int
+    top_keywords: list[str]
+    high_citation_count: int
 
 
 def build_writing_dashboard(root: Path) -> WritingDashboard:
@@ -36,6 +39,9 @@ def build_writing_dashboard(root: Path) -> WritingDashboard:
         simulation_exports=pack.simulation_exports,
         manuscript_files=pack.manuscript_files,
         gaps=gaps,
+        abstract_ready_count=len(pack.abstract_ready_titles),
+        top_keywords=[f"{keyword} ({count})" for keyword, count in list(pack.keyword_counts.items())[:5]],
+        high_citation_count=len(pack.top_cited_literature),
     )
 
 
@@ -44,6 +50,9 @@ def render_writing_dashboard(dashboard: WritingDashboard) -> str:
     lines.append("## Ready for Background")
     lines.append(f"- Recent literature items: {dashboard.recent_literature_count}")
     lines.append(f"- Paper summary notes: {dashboard.summary_note_count}")
+    lines.append(f"- Abstract-ready literature: {dashboard.abstract_ready_count}")
+    lines.append(f"- High-citation candidates: {dashboard.high_citation_count}")
+    lines.append(f"- Top keywords: {', '.join(dashboard.top_keywords) if dashboard.top_keywords else 'None'}")
     lines.append("")
     lines.append("## Ready for Methods")
     lines.extend([f"- Simulation export: {name}" for name in dashboard.simulation_exports] or ["- No simulation exports"])
