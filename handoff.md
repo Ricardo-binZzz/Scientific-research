@@ -133,10 +133,11 @@
 - Web jump highlighting on 2026-05-20: section jumps now briefly highlight the destination action group after scrolling, making error recovery easier for beginners; `USER_GUIDE.md` was updated in the main tutorial.
 - Web preflight validation on 2026-05-20: the browser now catches missing project roots and missing primary file paths for CSV import, simulation, figure, and manuscript actions before calling the backend; `USER_GUIDE.md` was updated in the main tutorial.
 - Web field-focused validation on 2026-05-20: preflight validation now names the exact missing field and opens, highlights, and focuses the corresponding input where possible; `USER_GUIDE.md` was updated in the main tutorial.
+- Web figure preflight validation on 2026-05-20: figure generation now checks output directory and figure stem before calling the backend; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
-- Consider adding preflight validation for figure output directory and figure stem before SVG generation.
+- Consider adding lightweight required-field indicators in the form labels for the fields currently covered by preflight validation.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.

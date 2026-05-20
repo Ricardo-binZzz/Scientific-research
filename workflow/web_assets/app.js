@@ -166,6 +166,11 @@ function validateActionPayload(action, payload) {
     const fieldId = payloadFieldToElementId(pathField);
     return { ok: false, fieldId, message: `请先填写${fieldLabelForId(fieldId)}。` };
   }
+  const extraField = actionSecondaryRequiredField(action, payload);
+  if (extraField) {
+    const fieldId = payloadFieldToElementId(extraField);
+    return { ok: false, fieldId, message: `请先填写${fieldLabelForId(fieldId)}。` };
+  }
   return { ok: true, fieldId: "", message: "" };
 }
 
@@ -185,11 +190,20 @@ function actionPrimaryPath(action) {
   return pathFields[action] || "";
 }
 
+function actionSecondaryRequiredField(action, payload) {
+  if (action !== "figure_from_data") return "";
+  if (!payload.figure_out_dir.trim()) return "figure_out_dir";
+  if (!payload.figure_stem.trim()) return "figure_stem";
+  return "";
+}
+
 function payloadFieldToElementId(field) {
   const fields = {
     csv_path: "csvPath",
     data_path: "dataPath",
     figure_data_path: "figureDataPath",
+    figure_out_dir: "figureOutDir",
+    figure_stem: "figureStem",
     manuscript_path: "manuscriptPath",
   };
   return fields[field] || "";

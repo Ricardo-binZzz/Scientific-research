@@ -103,3 +103,4 @@
 - Web section jumps now briefly highlight the destination action group after scrolling, making fallback navigation easier to notice.
 - The browser UI now performs lightweight preflight validation before sending actions, covering missing project roots and missing primary file paths for CSV import, simulation, figure, and manuscript actions.
 - Web preflight validation now names the exact missing field and opens, highlights, and focuses the corresponding input when possible.
+- Figure generation preflight validation also checks the figure output directory and figure stem before calling the backend.
