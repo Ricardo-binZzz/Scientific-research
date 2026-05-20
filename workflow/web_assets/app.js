@@ -286,13 +286,69 @@ function renderResultCompanion(action, ok, text) {
     renderManuscriptCheck(text);
     return;
   }
-  hideInsightPanel();
+  renderResultFallback(action, ok, text);
 }
 
 function hideInsightPanel() {
   if (!insightPanel) return;
   insightPanel.hidden = true;
   insightPanel.innerHTML = "";
+}
+
+function renderResultFallback(action, ok, text) {
+  if (!insightPanel) return;
+  const advice = resultFallbackAdvice(action, ok, text);
+  insightPanel.innerHTML = `
+    <div class="insight-title">
+      <div>
+        <h3>${ok ? "操作已完成" : "操作需要处理"}</h3>
+        <p>${escapeHtml(advice.description)}</p>
+      </div>
+    </div>
+    <div class="result-fallback-card ${ok ? "ready" : "todo"}">
+      <div>
+        <span>当前操作</span>
+        <strong>${escapeHtml(advice.actionLabel)}</strong>
+      </div>
+      <div>
+        <span>${ok ? "下一步" : "优先检查"}</span>
+        <p>${escapeHtml(advice.nextStep)}</p>
+      </div>
+      <p>完整原始结果仍在下方，可以复制或下载保存。</p>
+    </div>
+  `;
+  insightPanel.hidden = false;
+}
+
+function resultFallbackAdvice(action, ok, text) {
+  const labels = {
+    project_report: "项目总览",
+    project_check: "项目体检",
+    workflow_status: "流程状态",
+    scan_project_files: "扫描可用文件",
+    init_project: "创建课题",
+    figure_from_data: "生成 SVG 图",
+    manuscript_check: "检查稿件",
+  };
+  if (ok) {
+    return {
+      actionLabel: labels[action] || action,
+      description: "这个操作暂时没有专属概览卡片，但已经返回结果。",
+      nextStep: "先看下方原始结果；如果要保存，可用复制或下载按钮。",
+    };
+  }
+  const lowered = (text || "").toLowerCase();
+  let nextStep = "先检查项目根目录、输入路径和必填字段是否正确。";
+  if (lowered.includes("项目根目录")) nextStep = "先填写项目根目录，或点击“加载示例课题”确认网页能正常运行。";
+  if (lowered.includes("no such file") || lowered.includes("找不到") || lowered.includes("不存在")) {
+    nextStep = "先确认文件路径真实存在；也可以点击“扫描可用文件”自动填入常见路径。";
+  }
+  if (lowered.includes("required") || lowered.includes("必填")) nextStep = "先补齐当前功能区里的必填字段，再重新运行。";
+  return {
+    actionLabel: labels[action] || action,
+    description: "操作没有完成。上方先给出最可能的处理方向，下方保留原始错误文本。",
+    nextStep,
+  };
 }
 
 function renderLiteratureInsights(text) {

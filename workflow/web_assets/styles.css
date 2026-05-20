@@ -1179,6 +1179,44 @@ details[open] .chevron {
   margin: 0;
 }
 
+.result-fallback-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.result-fallback-card.todo {
+  border-left-color: #b45309;
+}
+
+.result-fallback-card > div {
+  display: grid;
+  gap: 4px;
+}
+
+.result-fallback-card span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.result-fallback-card strong {
+  color: #18212b;
+  font-size: 14px;
+}
+
+.result-fallback-card p {
+  color: #344250;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+
 .result-header {
   align-items: center;
   border-bottom: 1px solid #243143;

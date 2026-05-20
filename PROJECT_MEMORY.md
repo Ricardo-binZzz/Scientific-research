@@ -98,3 +98,4 @@
 - The browser result panel now renders library stats/check-pdfs/check-notes actions as library-asset cards with total entries, missing PDF/note counts, present assets, and missing assets above the raw text output.
 - The browser result panel now renders writing pack, writing dashboard, literature table, literature map, and literature tracker outputs as planning-report cards with section counts, item counts, recommended use, and next action above the raw Markdown output.
 - The browser result panel now renders `project_report` as a project overview card and `init_project` as a project-created card with a fill-project-root button above the raw text output.
+- The browser result panel now has a shared fallback card for failed actions and actions without a dedicated visual companion, keeping the raw result below while surfacing likely next checks.
