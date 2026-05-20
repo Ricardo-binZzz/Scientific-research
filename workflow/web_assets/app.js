@@ -5,10 +5,12 @@ const projectRoot = document.getElementById("projectRoot");
 const toast = document.getElementById("toast");
 const insightPanel = document.getElementById("insightPanel");
 const resultPanel = document.getElementById("resultPanel");
+const rerunLastAction = document.getElementById("rerunLastAction");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
 const demoProjectRoot = String.raw`C:\Users\22676\Documents\科研\examples\demo-project`;
 const successHistory = [];
+let lastRunnableAction = null;
 
 function valueOf(id) {
   const element = document.getElementById(id);
@@ -121,6 +123,8 @@ async function runAction(action, button) {
   output.classList.remove("empty-state");
   output.textContent = "运行中...";
   resultMeta.textContent = button ? button.textContent.trim() : action;
+  lastRunnableAction = { action, button };
+  if (rerunLastAction) rerunLastAction.disabled = false;
   setResultLoading(true);
   const validation = validateActionPayload(action, payload);
   if (!validation.ok) {
@@ -244,9 +248,18 @@ document.getElementById("clearOutput").addEventListener("click", () => {
   output.textContent = "结果已清空。选择一个操作继续。";
   hideInsightPanel();
   successHistory.splice(0);
+  lastRunnableAction = null;
+  if (rerunLastAction) rerunLastAction.disabled = true;
   resultMeta.textContent = "等待操作";
   statusText.textContent = "就绪";
 });
+
+if (rerunLastAction) {
+  rerunLastAction.addEventListener("click", () => {
+    if (!lastRunnableAction) return;
+    runAction(lastRunnableAction.action, lastRunnableAction.button);
+  });
+}
 
 document.getElementById("copyOutput").addEventListener("click", async () => {
   try {

@@ -138,11 +138,12 @@
 - Web last-success feedback on 2026-05-20: the result header now records the latest successful web action name and time, helping users confirm which step just completed; `USER_GUIDE.md` was updated in the main tutorial.
 - Web running-state feedback on 2026-05-20: the result panel now applies a `result-loading` state while an action is in progress, with a subtle top bar and darker output background; `USER_GUIDE.md` was updated in the main tutorial.
 - Web success history on 2026-05-20: the result header now keeps the latest three successful web actions in memory, showing earlier successes as compact tags under the newest one; `USER_GUIDE.md` was updated in the main tutorial.
+- Web rerun affordance on 2026-05-20: the result action bar now includes a disabled-by-default "重跑上次" button that reruns the latest action after the user edits fields or paths; `USER_GUIDE.md` was updated in the main tutorial.
 
 ## Next Steps
 
 - Consider persisting recent successful actions to localStorage only if users need history after refreshing the page.
-- Consider adding a cancel/retry affordance only if long-running actions become common.
+- Consider adding cancellation only if long-running actions become common.
 - Add interpolation or smoothing for sparse 2D contour data when a real non-grid dataset requires it.
 - Extend simulation export adapters when real ANSYS, Abaqus, or COMSOL files expose additional field names, units, or multi-table formats.
 - Consider richer Scopus/Web of Science import fields later, such as abstracts, keywords, links, and citation counts, if the workflow starts using them.
