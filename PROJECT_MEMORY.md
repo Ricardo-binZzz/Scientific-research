@@ -105,3 +105,4 @@
 - Web preflight validation now names the exact missing field and opens, highlights, and focuses the corresponding input when possible.
 - Figure generation preflight validation also checks the figure output directory and figure stem before calling the backend.
 - The web UI labels preflight-covered fields with a compact "required" badge so users can see key required inputs before running actions.
+- The browser result header now shows the most recent successful action name and time after any successful web action.

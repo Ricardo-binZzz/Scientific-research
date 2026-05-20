@@ -95,6 +95,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("actionSecondaryRequiredField", js)
         self.assertIn("focusMissingField", js)
         self.assertIn("fieldLabelForId", js)
+        self.assertIn("lastSuccessSummary", js)
+        self.assertIn("updateLastSuccess", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
         self.assertIn("path-card", css)
@@ -117,6 +119,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("section-highlight", css)
         self.assertIn("required-field", html)
         self.assertIn("required-field", css)
+        self.assertIn("last-success", css)
 
     def test_handle_project_check_action_returns_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

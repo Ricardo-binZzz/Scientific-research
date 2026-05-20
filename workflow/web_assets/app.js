@@ -136,6 +136,9 @@ async function runAction(action, button) {
     output.textContent = responseText;
     renderResultCompanion(action, response.ok, responseText);
     statusText.textContent = response.ok ? "完成" : "需要处理";
+    if (response.ok) {
+      updateLastSuccess(action, button ? button.textContent.trim() : action);
+    }
     if (response.ok && action === "scan_project_files") {
       applySuggestedPaths(responseText);
     }
@@ -366,6 +369,23 @@ function renderResultCompanion(action, ok, text) {
     return;
   }
   renderResultFallback(action, ok, text);
+}
+
+function updateLastSuccess(action, label) {
+  if (!resultMeta) return;
+  resultMeta.innerHTML = lastSuccessSummary(action, label);
+}
+
+function lastSuccessSummary(action, label) {
+  const time = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+  const displayLabel = label || action;
+  return `
+    <span class="last-success">
+      <span>最近成功</span>
+      <strong>${escapeHtml(displayLabel)}</strong>
+      <em>${escapeHtml(time)}</em>
+    </span>
+  `;
 }
 
 function hideInsightPanel() {

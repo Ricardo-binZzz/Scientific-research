@@ -1256,6 +1256,29 @@ details[open] .chevron {
   margin-top: 2px;
 }
 
+.last-success {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.last-success span {
+  color: #8fb4ff;
+  font-weight: 700;
+}
+
+.last-success strong {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.last-success em {
+  color: #9fb0c3;
+  font-style: normal;
+}
+
 .panel-title h2,
 .result-header h2,
 .summary-copy h2 {
