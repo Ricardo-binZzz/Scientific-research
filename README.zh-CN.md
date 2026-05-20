@@ -14,6 +14,8 @@
 
 ![工作流示意图](workflow/web_assets/workflow-guide.svg)
 
+![网页工作台预览](docs/screenshots/web-workbench-preview.svg)
+
 ## 3 分钟试用 Demo
 
 ```powershell
@@ -54,6 +56,8 @@
 | 图表生成 | 从 CSV/JSON 生成 SVG/JSON 图表包，支持趋势图、柱状图、误差线图、热力图和等值线图 |
 | 论文检查 | 检查 Markdown、纯文本和 DOCX 草稿中的引用、标题层级、图号、图注、表注和参考文献问题 |
 | 本地网页 | 不会敲 Python 命令也可以在浏览器里完成常用流程 |
+
+![项目体检预览](docs/screenshots/project-check-preview.svg)
 
 ## 适合谁？
 
@@ -138,7 +142,11 @@ $PY='C:\path\to\python.exe'
 
 ## 截图
 
-截图占位和采集说明放在 [docs/screenshots](docs/screenshots)。推荐后续补充网页首页、工作流状态、项目体检、仿真摘要和图表生成结果卡片截图。
+预览图和截图采集说明放在 [docs/screenshots](docs/screenshots)。当前 SVG 预览图是安全、通用的展示素材；后续可以再补真实浏览器截图。
+
+## 项目成熟度
+
+这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块和网页 action 的 152 个 unittest。
 
 ## 项目结构
 
@@ -164,6 +172,16 @@ literature-tracker.json
 - 保留人工判断：工具负责暴露缺口和风险，不替你做黑箱决策。
 - 图表可复现：SVG 图表会配套保存 JSON 设置文件。
 
+## 和其他工具的关系
+
+| 工具 | 主要关注点 | 和本项目的关系 |
+| --- | --- | --- |
+| Zotero | 参考文献管理 | 继续使用 Zotero；本项目补充本地阅读笔记、缺口检查和写作资产整理。 |
+| Word | 论文正文写作 | 继续用 Word 写作；本项目做轻量文本和结构检查。 |
+| Snakemake | 通用计算工作流 | 更适合复杂计算流水线；本项目更窄，更面向新手科研工作台。 |
+| Cookiecutter Data Science | 数据项目结构 | 都强调目录纪律；本项目更偏文献、仿真、图表和论文检查。 |
+| 本项目 | 本地科研工作台 | 把文献、仿真导出、图表包和论文 QA 串到同一个网页/CLI 流程里。 |
+
 ## 文档入口
 
 - [英文 README](README.md)
@@ -186,12 +204,15 @@ literature-tracker.json
 
 如果这个工作台对你的科研流程有帮助，可以使用 [CITATION.cff](CITATION.cff) 将它作为软件引用。当前引用文件先采用 contributors 形式；等项目有正式版本和明确维护者后，再补充更完整的发布信息。
 
-## 当前限制
+## 这个项目不做什么
 
 - 文献检索和论文下载仍然依赖人工或外部工具。
 - 不替代 Zotero、Word 或人工阅读判断。
 - 不直接控制 ANSYS、Abaqus、COMSOL 等仿真软件。
 - 不自动生成整篇论文或学位论文。
+
+## 当前限制
+
 - DOCX 检查会从 Word XML 中提取文本，但还不检查 Word 样式和版式。
 - 等值线图输入必须是完整矩形网格。
 - BibTeX 解析重点支持常见 article 字段。

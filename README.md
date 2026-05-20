@@ -14,6 +14,8 @@ It is built for mechanical and manufacturing research workflows where Zotero/Wor
 
 ![Workflow guide](workflow/web_assets/workflow-guide.svg)
 
+![Web workbench preview](docs/screenshots/web-workbench-preview.svg)
+
 ## Try the Demo in 3 Minutes
 
 ```powershell
@@ -53,6 +55,8 @@ It does not try to replace expert judgment, Zotero, Word, simulation software, o
 | Figure generation | Create SVG/JSON figure bundles from CSV/JSON data, including trend, bar, error-bar, heatmap, and contour plots |
 | Manuscript QA | Check Markdown/plain text/DOCX drafts for citations, headings, figure markers, captions, tables, and reference-section issues |
 | Local web UI | Use common workflows from a browser without typing Python commands |
+
+![Project check preview](docs/screenshots/project-check-preview.svg)
 
 ## Who Is This For?
 
@@ -137,7 +141,11 @@ Use it to evaluate the workflow before applying it to a real research project.
 
 ## Screenshots
 
-Screenshot placeholders and capture guidance live in [docs/screenshots](docs/screenshots). Recommended screenshots include the web workbench home screen, workflow status, project check, simulation summary, and figure result cards.
+Preview assets and screenshot capture guidance live in [docs/screenshots](docs/screenshots). The current SVG previews are safe, generic stand-ins; real browser screenshots can replace or supplement them later.
+
+## Project Maturity
+
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 152 unittest cases covering the main workflow modules and web action handlers.
 
 ## Project Layout
 
@@ -163,6 +171,16 @@ literature-tracker.json
 - Human review points: the tool highlights gaps; it does not hide decisions behind opaque automation.
 - Reproducible figures: SVG output is paired with a JSON spec that records plotting settings.
 
+## How It Compares
+
+| Tool | Primary focus | Relationship to this project |
+| --- | --- | --- |
+| Zotero | Reference management | Keep using it; this project tracks local reading notes, gaps, and writing assets around it. |
+| Word | Manuscript writing | Keep writing in Word; this project adds lightweight text/structure checks. |
+| Snakemake | General workflow automation | More powerful for computational pipelines; this project is narrower and beginner-oriented. |
+| Cookiecutter Data Science | Data project structure | Similar folder-discipline idea, but tuned for literature, simulation, figures, and manuscripts. |
+| This project | Local research workbench | Connects literature, simulation exports, figure bundles, and manuscript QA in one browser/CLI workflow. |
+
 ## Documentation
 
 - [Chinese README](README.zh-CN.md)
@@ -185,12 +203,15 @@ Before opening a pull request, run the test suite and check that no private path
 
 If this workbench helps your research workflow, cite it as software using [CITATION.cff](CITATION.cff). The citation file is intentionally contributor-based until the project has a formal release and named maintainers.
 
-## Current Limits
+## What This Is Not
 
 - Literature search and paper downloads are still manual or handled by external tools.
 - It does not replace Zotero, Word, or human paper review.
 - It does not directly control ANSYS, Abaqus, COMSOL, or other simulation software.
 - It does not automatically write a thesis or paper.
+
+## Current Limits
+
 - DOCX checking extracts text from Word XML but does not inspect Word layout or styles.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.

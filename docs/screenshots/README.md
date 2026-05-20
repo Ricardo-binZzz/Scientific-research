@@ -10,4 +10,9 @@ Recommended captures:
 4. `simulation-summary.png` - simulation inspection or summary cards.
 5. `figure-result.png` - figure generation result cards with SVG/JSON paths.
 
+Current GitHub-friendly preview assets:
+
+- `web-workbench-preview.svg` - stylized workbench overview for README use.
+- `project-check-preview.svg` - stylized project health card preview.
+
 Keep screenshots generic. Do not include private file paths, unpublished paper content, private data, or identifiable personal information.

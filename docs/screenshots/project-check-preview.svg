@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Project check preview</title>
+  <desc id="desc">A stylized preview of project health cards for literature, simulation, manuscript, and assets.</desc>
+  <rect width="1280" height="720" fill="#f4f6f8"/>
+  <rect x="64" y="56" width="1152" height="608" rx="10" fill="#ffffff" stroke="#d8dee6"/>
+  <text x="104" y="112" fill="#18212b" font-family="Segoe UI, Arial" font-size="28" font-weight="700">Project Check</text>
+  <text x="104" y="142" fill="#667382" font-family="Segoe UI, Arial" font-size="14">A single report across literature, simulation exports, manuscript structure, and project assets.</text>
+
+  <g font-family="Segoe UI, Arial">
+    <rect x="104" y="190" width="250" height="168" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+    <text x="128" y="228" fill="#18212b" font-size="18" font-weight="700">Literature</text>
+    <text x="128" y="260" fill="#215968" font-size="34" font-weight="700">12</text>
+    <text x="178" y="260" fill="#667382" font-size="13">entries indexed</text>
+    <text x="128" y="300" fill="#46515f" font-size="13">Missing PDFs: 2</text>
+    <text x="128" y="326" fill="#46515f" font-size="13">Missing notes: 1</text>
+
+    <rect x="386" y="190" width="250" height="168" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+    <text x="410" y="228" fill="#18212b" font-size="18" font-weight="700">Simulation</text>
+    <text x="410" y="260" fill="#215968" font-size="34" font-weight="700">3</text>
+    <text x="456" y="260" fill="#667382" font-size="13">exports scanned</text>
+    <text x="410" y="300" fill="#46515f" font-size="13">Numeric columns: OK</text>
+    <text x="410" y="326" fill="#46515f" font-size="13">Range warnings: 1</text>
+
+    <rect x="668" y="190" width="250" height="168" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+    <text x="692" y="228" fill="#18212b" font-size="18" font-weight="700">Manuscript</text>
+    <text x="692" y="260" fill="#215968" font-size="34" font-weight="700">5</text>
+    <text x="738" y="260" fill="#667382" font-size="13">checks complete</text>
+    <text x="692" y="300" fill="#46515f" font-size="13">Citations: tracked</text>
+    <text x="692" y="326" fill="#46515f" font-size="13">Figure sequence: review</text>
+
+    <rect x="950" y="190" width="226" height="168" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+    <text x="974" y="228" fill="#18212b" font-size="18" font-weight="700">Assets</text>
+    <text x="974" y="260" fill="#215968" font-size="34" font-weight="700">8</text>
+    <text x="1020" y="260" fill="#667382" font-size="13">files ready</text>
+    <text x="974" y="300" fill="#46515f" font-size="13">Figures: SVG + JSON</text>
+    <text x="974" y="326" fill="#46515f" font-size="13">Reports: writable</text>
+  </g>
+
+  <rect x="104" y="410" width="1072" height="172" rx="8" fill="#ffffff" stroke="#d8dee6"/>
+  <text x="128" y="450" fill="#18212b" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Priority issues</text>
+  <line x1="128" y1="474" x2="1152" y2="474" stroke="#d8dee6"/>
+  <text x="128" y="510" fill="#9a3412" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Review</text>
+  <text x="220" y="510" fill="#46515f" font-family="Segoe UI, Arial" font-size="14">One simulation value is outside the configured stress range.</text>
+  <text x="128" y="548" fill="#9a3412" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Review</text>
+  <text x="220" y="548" fill="#46515f" font-family="Segoe UI, Arial" font-size="14">A cited manuscript draft has no References heading.</text>
+</svg>

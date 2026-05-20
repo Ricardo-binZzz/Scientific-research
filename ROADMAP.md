@@ -4,26 +4,26 @@ This roadmap keeps the project focused on practical, local-first research workfl
 
 ## Near Term
 
-- Improve the first-run experience for the local web UI.
-- Add more guided examples around `examples/demo-project`.
-- Keep expanding beginner documentation for common literature, simulation, figure, and manuscript workflows.
-- Strengthen privacy checks before commits and releases.
-- Make GitHub project metadata, templates, and automation clearer for contributors.
+- [x] Improve GitHub-facing README positioning and first-run demo path.
+- [x] Add GitHub metadata, contribution templates, citation metadata, and CI privacy scanning.
+- [ ] Add real browser screenshots for the local web UI.
+- [ ] Add more guided examples around `examples/demo-project`.
+- [ ] Keep expanding beginner documentation for common literature, simulation, figure, and manuscript workflows.
 
 ## Workflow Improvements
 
-- Add more simulation export adapters when real ANSYS, Abaqus, COMSOL, or other solver exports expose additional field names, units, or multi-table structures.
-- Add optional interpolation or smoothing for sparse 2D contour-like data while keeping the current strict rectangular-grid path.
-- Improve library import support for richer Scopus, Web of Science, Zotero, and Crossref metadata.
-- Add more manuscript checks for Word-oriented academic writing workflows without requiring Microsoft Office.
-- Improve report outputs so users can move from project health checks to the next concrete action faster.
+- [ ] Add more simulation export adapters when real ANSYS, Abaqus, COMSOL, or other solver exports expose additional field names, units, or multi-table structures.
+- [ ] Add optional interpolation or smoothing for sparse 2D contour-like data while keeping the current strict rectangular-grid path.
+- [ ] Improve library import support for richer Scopus, Web of Science, Zotero, and Crossref metadata.
+- [ ] Add more manuscript checks for Word-oriented academic writing workflows without requiring Microsoft Office.
+- [ ] Improve report outputs so users can move from project health checks to the next concrete action faster.
 
 ## Web UI Improvements
 
-- Consider persisting recent successful actions to localStorage if users need history after refreshing the page.
-- Consider cancellation support if long-running actions become common.
-- Add file-picker helpers if the local browser environment can support a reliable path workflow.
-- Continue improving result cards so users can understand outcomes before reading raw text reports.
+- [ ] Consider persisting recent successful actions to localStorage if users need history after refreshing the page.
+- [ ] Consider cancellation support if long-running actions become common.
+- [ ] Add file-picker helpers if the local browser environment can support a reliable path workflow.
+- [ ] Continue improving result cards so users can understand outcomes before reading raw text reports.
 
 ## Out of Scope for Now
 

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Research Workflow Workbench preview</title>
+  <desc id="desc">A stylized preview of the local web UI with navigation, action groups, and result cards.</desc>
+  <rect width="1280" height="760" fill="#f4f6f8"/>
+  <rect x="0" y="0" width="1280" height="68" fill="#ffffff"/>
+  <line x1="0" y1="68" x2="1280" y2="68" stroke="#d8dee6"/>
+  <text x="32" y="28" fill="#5b6673" font-family="Segoe UI, Arial" font-size="12" font-weight="700">LOCAL WORKBENCH</text>
+  <text x="32" y="52" fill="#18212b" font-family="Segoe UI, Arial" font-size="22" font-weight="700">Research Workflow Workbench</text>
+  <rect x="1124" y="20" width="92" height="28" rx="14" fill="#e9f3f5" stroke="#b9c3cf"/>
+  <text x="1152" y="39" fill="#215968" font-family="Segoe UI, Arial" font-size="12" font-weight="700">Ready</text>
+
+  <rect x="24" y="92" width="318" height="620" rx="8" fill="#ffffff" stroke="#d8dee6"/>
+  <text x="48" y="128" fill="#18212b" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Project root</text>
+  <rect x="48" y="152" width="270" height="38" rx="6" fill="#f9fafb" stroke="#d8dee6"/>
+  <text x="62" y="176" fill="#667382" font-family="Segoe UI, Arial" font-size="12">examples/demo-project</text>
+  <rect x="48" y="214" width="126" height="36" rx="6" fill="#215968"/>
+  <text x="73" y="237" fill="#ffffff" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Project Check</text>
+  <rect x="184" y="214" width="134" height="36" rx="6" fill="#ffffff" stroke="#b9c3cf"/>
+  <text x="205" y="237" fill="#215968" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Workflow Status</text>
+  <rect x="48" y="268" width="270" height="1" fill="#d8dee6"/>
+  <text x="48" y="304" fill="#18212b" font-family="Segoe UI, Arial" font-size="16" font-weight="700">Recommended order</text>
+  <g font-family="Segoe UI, Arial" font-size="13" fill="#46515f">
+    <text x="64" y="338">1 Project overview</text>
+    <text x="64" y="368">2 Literature library</text>
+    <text x="64" y="398">3 Notes and search logs</text>
+    <text x="64" y="428">4 Simulation data</text>
+    <text x="64" y="458">5 Figure generation</text>
+    <text x="64" y="488">6 Manuscript QA</text>
+  </g>
+
+  <rect x="370" y="92" width="886" height="620" rx="8" fill="#ffffff" stroke="#d8dee6"/>
+  <text x="400" y="132" fill="#18212b" font-family="Segoe UI, Arial" font-size="22" font-weight="700">Workflow status</text>
+  <text x="400" y="158" fill="#667382" font-family="Segoe UI, Arial" font-size="13">Guided research actions with visual result cards and raw report output.</text>
+  <rect x="400" y="190" width="190" height="92" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+  <text x="420" y="224" fill="#215968" font-family="Segoe UI, Arial" font-size="28" font-weight="700">6</text>
+  <text x="420" y="252" fill="#46515f" font-family="Segoe UI, Arial" font-size="14">ready workflow areas</text>
+  <rect x="612" y="190" width="190" height="92" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+  <text x="632" y="224" fill="#215968" font-family="Segoe UI, Arial" font-size="28" font-weight="700">2</text>
+  <text x="632" y="252" fill="#46515f" font-family="Segoe UI, Arial" font-size="14">current gaps</text>
+  <rect x="824" y="190" width="190" height="92" rx="8" fill="#f9fafb" stroke="#d8dee6"/>
+  <text x="844" y="224" fill="#215968" font-family="Segoe UI, Arial" font-size="28" font-weight="700">152</text>
+  <text x="844" y="252" fill="#46515f" font-family="Segoe UI, Arial" font-size="14">tests in CI baseline</text>
+
+  <rect x="400" y="318" width="816" height="74" rx="8" fill="#e9f3f5" stroke="#b9c3cf"/>
+  <text x="424" y="348" fill="#18212b" font-family="Segoe UI, Arial" font-size="16" font-weight="700">Next recommended action</text>
+  <text x="424" y="372" fill="#46515f" font-family="Segoe UI, Arial" font-size="13">Run project check, then inspect missing literature notes, simulation range issues, and manuscript warnings.</text>
+
+  <g font-family="Segoe UI, Arial">
+    <rect x="400" y="430" width="250" height="150" rx="8" fill="#ffffff" stroke="#d8dee6"/>
+    <text x="424" y="462" fill="#18212b" font-size="16" font-weight="700">Literature</text>
+    <text x="424" y="490" fill="#667382" font-size="13">PDFs, notes, metadata, keywords</text>
+    <rect x="424" y="520" width="86" height="24" rx="12" fill="#e9f3f5"/>
+    <text x="444" y="537" fill="#215968" font-size="12" font-weight="700">Ready</text>
+    <rect x="684" y="430" width="250" height="150" rx="8" fill="#ffffff" stroke="#d8dee6"/>
+    <text x="708" y="462" fill="#18212b" font-size="16" font-weight="700">Simulation</text>
+    <text x="708" y="490" fill="#667382" font-size="13">Columns, units, ranges, samples</text>
+    <rect x="708" y="520" width="86" height="24" rx="12" fill="#e9f3f5"/>
+    <text x="728" y="537" fill="#215968" font-size="12" font-weight="700">Ready</text>
+    <rect x="968" y="430" width="248" height="150" rx="8" fill="#ffffff" stroke="#d8dee6"/>
+    <text x="992" y="462" fill="#18212b" font-size="16" font-weight="700">Manuscript</text>
+    <text x="992" y="490" fill="#667382" font-size="13">Citations, headings, figures</text>
+    <rect x="992" y="520" width="96" height="24" rx="12" fill="#fff7ed"/>
+    <text x="1012" y="537" fill="#9a3412" font-size="12" font-weight="700">Review</text>
+  </g>
+</svg>

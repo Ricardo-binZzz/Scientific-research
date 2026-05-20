@@ -9,6 +9,8 @@ All notable changes to this project are summarized here.
 - Professional GitHub landing pages in English and Chinese.
 - Real GitHub Actions badge and a 3-minute demo path in both README entry points.
 - Screenshot capture guidance in `docs/screenshots`.
+- Generic SVG preview assets for the web workbench and project-check output.
+- `docs/releases/v0.1.0.md` release notes for creating the first GitHub release.
 - Portable `start_web.bat` launcher that discovers `.venv`, `py`, or `python`.
 - Dedicated project metadata files: `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, and this changelog.
 - GitHub Actions test workflow for the Python unittest suite.
@@ -21,6 +23,8 @@ All notable changes to this project are summarized here.
 - Sanitized tracked documentation examples to avoid user-specific local paths.
 - Repositioned the README around the local-first research workbench value proposition, web-first onboarding, demo project, core capabilities, differentiators, and documentation entry points.
 - Clarified target users, expected outputs, and current non-goals in the README entry points.
+- Added project maturity and comparison sections to the README entry points.
+- Converted near-term roadmap items into checklist form.
 
 ## 2026-05-20
 

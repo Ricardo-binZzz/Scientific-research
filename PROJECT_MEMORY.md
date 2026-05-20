@@ -13,6 +13,7 @@
 - `CITATION.cff` and `ROADMAP.md` were added on 2026-05-20 so GitHub can expose citation metadata and readers can understand near-term project direction.
 - GitHub Actions now includes a privacy scan for user-specific paths, the known GitHub account string, OpenAI-style keys, and secret/password assignments, excluding documentation that intentionally describes privacy checks.
 - README GitHub-star positioning was improved after web review on 2026-05-20: real Actions badge, 3-minute demo, target-user section, output list, screenshot capture guide, and clearer non-goals were added; the CI privacy scan no longer treats the public GitHub repository path as sensitive.
+- P1/P2/P3 GitHub presentation work on 2026-05-20 added README maturity/comparison/non-goal sections, checklist roadmap formatting, generic SVG preview assets under `docs/screenshots`, and `docs/releases/v0.1.0.md` release notes; `gh` is not installed, so the actual GitHub release must be created through the web UI or another available tool.
 
 ## Working Rules
 
