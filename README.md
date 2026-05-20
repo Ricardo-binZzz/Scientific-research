@@ -4,14 +4,14 @@ Language: English | [中文](README.zh-CN.md)
 
 This repository contains a semi-automated research workflow for mechanical and manufacturing research. It focuses on literature intake, structured notes, manuscript checks, simulation data validation, and figure generation.
 
-For a beginner-friendly walkthrough, read [USER_GUIDE.en.md](USER_GUIDE.en.md). For the Chinese walkthrough, read [USER_GUIDE.md](USER_GUIDE.md).
+For a beginner-friendly walkthrough, read [USER_GUIDE.en.md](USER_GUIDE.en.md). For the Chinese walkthrough, read [USER_GUIDE.md](USER_GUIDE.md). The local web UI has its own Chinese operating guide: [WEB_GUIDE.md](WEB_GUIDE.md).
 
 ## Quick Start
 
 Use the bundled Python runtime in this environment:
 
 ```powershell
-$PY='C:\Users\22676\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$PY='C:\path\to\python.exe'
 & $PY -m workflow.cli init C:\path\to\workspace --slug demo-project --name "Demo Project"
 ```
 

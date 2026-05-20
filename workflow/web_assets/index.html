@@ -23,7 +23,7 @@
         <p class="description">当前会话的工作目录，所有操作都会围绕它执行。</p>
         <div class="field">
           <label class="required-field" for="projectRoot">项目根目录</label>
-          <input id="projectRoot" value="__DEFAULT_PROJECT_ROOT__" placeholder="例如 C:\Users\22676\Documents\fixture-study">
+          <input id="projectRoot" value="__DEFAULT_PROJECT_ROOT__" placeholder="例如 C:\Users\YourName\Documents\fixture-study">
         </div>
         <div class="quick-actions">
           <button class="primary" data-action="project_check">项目体检</button>
@@ -54,7 +54,7 @@
         <div class="panel-title"><h2>新建课题</h2></div>
         <p class="description">生成标准目录、默认配置和追踪模板。</p>
         <div class="field-grid single">
-          <div class="field"><label for="baseDir">保存到哪个文件夹</label><input id="baseDir" placeholder="例如 C:\Users\22676\Documents"></div>
+          <div class="field"><label for="baseDir">保存到哪个文件夹</label><input id="baseDir" placeholder="例如 C:\Users\YourName\Documents"></div>
           <div class="field"><label for="projectSlug">课题文件夹名</label><input id="projectSlug" placeholder="fixture-study"></div>
           <div class="field"><label for="projectName">课题显示名称</label><input id="projectName" placeholder="夹具优化研究"></div>
         </div>
@@ -99,7 +99,7 @@
             <div class="field"><label for="libraryQuery">搜索关键词</label><input id="libraryQuery" placeholder="题名、作者、期刊或 DOI"></div>
             <div class="field"><label for="sinceYear">只看某年之后</label><input id="sinceYear" placeholder="2020"></div>
             <div class="field"><label for="sourceQuery">来源关键词</label><input id="sourceQuery" placeholder="Manufacturing"></div>
-            <div class="field"><label class="required-field" for="csvPath">CSV 元数据文件路径</label><input id="csvPath" placeholder="例如 C:\Users\22676\Documents\fixture-study\papers.csv"></div>
+            <div class="field"><label class="required-field" for="csvPath">CSV 元数据文件路径</label><input id="csvPath" placeholder="例如 C:\Users\YourName\Documents\fixture-study\papers.csv"></div>
           </div>
           <div class="button-row">
             <button class="primary" data-action="library_search">搜索文献</button>
@@ -183,7 +183,7 @@
         <summary><div class="summary-copy"><h2>仿真数据</h2><p>预览、汇总和校验 CSV/JSON 数据列。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
-            <div class="field"><label class="required-field" for="dataPath">CSV/JSON 数据文件路径</label><input id="dataPath" placeholder="例如 C:\Users\22676\Documents\fixture-study\simulation\result.csv"></div>
+            <div class="field"><label class="required-field" for="dataPath">CSV/JSON 数据文件路径</label><input id="dataPath" placeholder="例如 C:\Users\YourName\Documents\fixture-study\simulation\result.csv"></div>
             <div class="field"><label for="requiredColumns">必须存在的列，多个用逗号隔开</label><input id="requiredColumns" placeholder="time,stress"></div>
             <div class="field"><label for="numericColumns">必须是数字的列，多个用逗号隔开</label><input id="numericColumns" placeholder="time,stress"></div>
           </div>
@@ -199,8 +199,8 @@
         <summary><div class="summary-copy"><h2>生成图</h2><p>从 CSV/JSON 生成基础 SVG 图和可复现 JSON 参数。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
-            <div class="field"><label class="required-field" for="figureDataPath">数据文件路径</label><input id="figureDataPath" placeholder="例如 C:\Users\22676\Documents\fixture-study\simulation\result.csv"></div>
-            <div class="field"><label class="required-field" for="figureOutDir">输出文件夹</label><input id="figureOutDir" placeholder="例如 C:\Users\22676\Documents\fixture-study\figures"></div>
+            <div class="field"><label class="required-field" for="figureDataPath">数据文件路径</label><input id="figureDataPath" placeholder="例如 C:\Users\YourName\Documents\fixture-study\simulation\result.csv"></div>
+            <div class="field"><label class="required-field" for="figureOutDir">输出文件夹</label><input id="figureOutDir" placeholder="例如 C:\Users\YourName\Documents\fixture-study\figures"></div>
             <div class="field"><label class="required-field" for="figureStem">文件名前缀</label><input id="figureStem" placeholder="stress-response"></div>
             <div class="field"><label for="figureTitle">图题</label><input id="figureTitle" placeholder="Stress response"></div>
             <div class="field">
@@ -250,7 +250,7 @@
         <summary><div class="summary-copy"><h2>稿件检查</h2><p>检查章节、图号、引用和本地文献库覆盖情况。</p></div><span class="chevron">›</span></summary>
         <div class="group-body">
           <div class="field-grid">
-            <div class="field"><label class="required-field" for="manuscriptPath">稿件路径</label><input id="manuscriptPath" placeholder="例如 C:\Users\22676\Documents\fixture-study\manuscript\chapter.md"></div>
+            <div class="field"><label class="required-field" for="manuscriptPath">稿件路径</label><input id="manuscriptPath" placeholder="例如 C:\Users\YourName\Documents\fixture-study\manuscript\chapter.md"></div>
             <div class="field"><label for="requiredSections">必需章节，多个用逗号隔开</label><input id="requiredSections" placeholder="Introduction,Method,Results"></div>
             <div class="field"><label for="expectedFigures">预期图号，多个用逗号隔开</label><input id="expectedFigures" placeholder="Figure 1,Figure 2"></div>
           </div>

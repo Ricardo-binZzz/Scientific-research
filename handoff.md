@@ -79,7 +79,7 @@
 - Workflow expansion on 2026-05-19: manuscript required-section checks now recognize common Chinese section aliases.
 - Workflow expansion on 2026-05-19: manuscript checks now report skipped Chinese figure numbers.
 - Workflow expansion on 2026-05-19: manuscript citation extraction now supports grouped Markdown/Pandoc citations.
-- Git setup on 2026-05-19: the repository now has a first local commit and tracks GitHub remote `origin` at `https://github.com/Ricardo-binZzz/Scientific-research.git`.
+- Git setup on 2026-05-19: the repository now has a first local commit and tracks a GitHub remote named `origin`.
 - GitHub push status on 2026-05-19: local branch `main` was pushed to `origin/main`; the existing remote README-only initial commit was merged without replacing the local project README.
 - README language switch on 2026-05-19: `README.md` now links to `README.zh-CN.md`, and the Chinese README links back to the English entry point while keeping `USER_GUIDE.md` as the detailed beginner tutorial.
 - Usage guide language switch on 2026-05-19: `USER_GUIDE.en.md` was added as the English beginner guide, `USER_GUIDE.md` links to it, and both README entry pages now point to the appropriate usage guides.
@@ -140,6 +140,9 @@
 - Web success history on 2026-05-20: the result header now keeps the latest three successful web actions in memory, showing earlier successes as compact tags under the newest one; `USER_GUIDE.md` was updated in the main tutorial.
 - Web rerun affordance on 2026-05-20: the result action bar now includes a disabled-by-default "重跑上次" button that reruns the latest action after the user edits fields or paths; `USER_GUIDE.md` was updated in the main tutorial.
 - Web result reset cleanup on 2026-05-20: result reset behavior is centralized in `clearResultState`, so clearing output also clears loading, success history, and rerun state together.
+- Web rerun busy-state fix on 2026-05-20: the rerun button is disabled while any web action is running and is restored only when a previous runnable action exists; focused frontend asset coverage and the full test suite passed.
+- Tutorial polish on 2026-05-20: `USER_GUIDE.md` was reviewed for beginner logic, the web section was rewritten around a clear first-use path, duplicate section numbering was fixed, and the daily workflow now adds/imports library entries before generating the literature table.
+- Web guide split on 2026-05-20: `WEB_GUIDE.md` was created as the dedicated Chinese operating guide for the local browser UI; `USER_GUIDE.md` now positions itself as the overall workflow guide and links to `WEB_GUIDE.md`, and both README entry points link to the new web guide.
 - Web disabled-button styling on 2026-05-20: disabled buttons now use explicit muted colors and disabled hover styling so unavailable actions are visually clear; `USER_GUIDE.md` was updated in the main tutorial.
 - Web rerun label clarity on 2026-05-20: the rerun button now shows `重跑：<operation label>` after an action starts, then resets to `重跑上次` when output is cleared; `USER_GUIDE.md` was updated in the main tutorial.
 

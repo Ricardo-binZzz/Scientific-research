@@ -4,14 +4,14 @@
 
 这个仓库是一个面向机械/制造方向科研的半自动化工作流工具，覆盖文献整理、结构化阅读笔记、论文草稿检查、仿真数据校验和科研图表生成。
 
-如果你想看更适合新手的完整中文教程，请阅读 [USER_GUIDE.md](USER_GUIDE.md)。英文版使用指引见 [USER_GUIDE.en.md](USER_GUIDE.en.md)。
+如果你想看更适合新手的完整中文教程，请阅读 [USER_GUIDE.md](USER_GUIDE.md)。如果你主要使用本地网页界面，请阅读网页操作主教程 [WEB_GUIDE.md](WEB_GUIDE.md)。英文版使用指引见 [USER_GUIDE.en.md](USER_GUIDE.en.md)。
 
 ## 快速开始
 
 在当前环境中建议使用项目记录的 bundled Python：
 
 ```powershell
-$PY='C:\Users\22676\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$PY='C:\path\to\python.exe'
 & $PY -m workflow.cli init C:\path\to\workspace --slug demo-project --name "Demo Project"
 ```
 

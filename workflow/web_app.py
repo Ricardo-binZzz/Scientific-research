@@ -59,7 +59,11 @@ ContentResponse = tuple[int, str, str]
 def render_home_page(default_project_root: str = "") -> str:
     index_path = Path(__file__).with_name("web_assets") / "index.html"
     content = index_path.read_text(encoding="utf-8")
-    return content.replace("__DEFAULT_PROJECT_ROOT__", html.escape(default_project_root, quote=True))
+    demo_project_root = Path(__file__).resolve().parent.parent / "examples" / "demo-project"
+    return (
+        content.replace("__DEFAULT_PROJECT_ROOT__", html.escape(default_project_root, quote=True))
+        .replace("__DEMO_PROJECT_ROOT__", html.escape(str(demo_project_root), quote=True))
+    )
 
 
 def handle_web_action(payload: dict[str, str]) -> ContentResponse:

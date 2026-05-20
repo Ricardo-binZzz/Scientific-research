@@ -65,7 +65,7 @@
 - `library recent --since YEAR` lists literature entries published in or after the given year.
 - `library source QUERY` lists literature entries whose source/journal/conference contains the query.
 - `USER_GUIDE.md` is the beginner-facing Chinese usage tutorial. Future user-facing features, command changes, workflow changes, or assumption changes should be reflected there.
-- The repository remote is `https://github.com/Ricardo-binZzz/Scientific-research.git`; local branch `main` tracks `origin/main`.
+- The repository has a GitHub `origin` remote configured; local branch `main` tracks `origin/main`.
 - GitHub landing documentation uses `README.md` as the English entry point and `README.zh-CN.md` as the Chinese entry point, linked from the top of each file.
 - Beginner usage guidance now exists in both `USER_GUIDE.md` (Chinese) and `USER_GUIDE.en.md` (English), with language links at the top of each guide.
 - The browser UI remembers the last project root in localStorage, provides result copy/download controls, toast feedback, in-page workflow navigation, and a standard report save action for writing pack, writing dashboard, literature table, literature map, and literature tracker.
@@ -110,5 +110,8 @@
 - The browser result header keeps an in-memory history of the three latest successful actions, shown as compact tags under the newest success.
 - The browser result actions include a disabled-by-default `rerunLastAction` button, which reruns the most recent web action after the user has changed fields or paths.
 - Browser result reset behavior is centralized in `clearResultState`, which clears loading state, recent success history, and rerun state together.
+- The web rerun button is disabled while an action is running, then re-enabled only when a previous runnable action exists.
+- `USER_GUIDE.md` was revised to make the beginner path clearer: web usage now starts with project root, workflow status, file scan, guided actions, and project check; section numbering is continuous and the daily workflow adds library entries before generating literature tables.
+- `WEB_GUIDE.md` is now the dedicated Chinese operating guide for the local browser UI. `USER_GUIDE.md` remains the overall workflow and CLI-oriented beginner guide, while web-specific buttons, forms, result cards, and interactions should be documented first in `WEB_GUIDE.md`.
 - Disabled web buttons now use explicit muted background, border, and text colors, including a disabled hover state, instead of relying only on opacity.
 - The web rerun button text updates to `重跑：<operation label>` after an action starts, then resets to `重跑上次` when output is cleared.

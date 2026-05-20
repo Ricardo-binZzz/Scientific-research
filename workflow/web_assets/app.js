@@ -8,7 +8,7 @@ const resultPanel = document.getElementById("resultPanel");
 const rerunLastAction = document.getElementById("rerunLastAction");
 const actionButtons = Array.from(document.querySelectorAll("button[data-action]"));
 const storageKey = "researchWorkflow.projectRoot";
-const demoProjectRoot = String.raw`C:\Users\22676\Documents\科研\examples\demo-project`;
+const demoProjectRoot = String.raw`__DEMO_PROJECT_ROOT__`;
 const successHistory = [];
 let lastRunnableAction = null;
 
@@ -27,6 +27,7 @@ function setBusy(button, busy) {
     item.disabled = busy;
   });
   if (button) button.disabled = busy;
+  setRerunBusyState(busy);
   statusText.textContent = busy ? "运行中" : "就绪";
 }
 
@@ -164,9 +165,7 @@ async function runAction(action, button) {
     showToast("请求失败");
   } finally {
     setResultLoading(false);
-    actionButtons.forEach((item) => {
-      item.disabled = false;
-    });
+    setBusy(button, false);
   }
 }
 
@@ -270,6 +269,11 @@ function updateRerunButton(label) {
   if (!rerunLastAction) return;
   rerunLastAction.disabled = !label;
   rerunLastAction.textContent = label ? `重跑：${label}` : "重跑上次";
+}
+
+function setRerunBusyState(busy) {
+  if (!rerunLastAction) return;
+  rerunLastAction.disabled = busy || !lastRunnableAction;
 }
 
 document.getElementById("copyOutput").addEventListener("click", async () => {

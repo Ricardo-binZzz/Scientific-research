@@ -103,6 +103,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("rerunLastAction", js)
         self.assertIn("lastRunnableAction", js)
         self.assertIn("updateRerunButton", js)
+        self.assertIn("setRerunBusyState", js)
+        self.assertIn("setRerunBusyState(busy)", js)
         self.assertIn("clearResultState", js)
         self.assertIn("insight-card", css)
         self.assertIn("keyword-pill", css)
