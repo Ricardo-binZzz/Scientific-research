@@ -29,9 +29,12 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("id=\"valueColumn\"", html)
         self.assertIn("加载示例课题", html)
         self.assertIn("填充常用路径", html)
+        self.assertIn("扫描可用文件", html)
         self.assertIn("流程状态", html)
         self.assertIn("id=\"figureWidthMm\"", html)
         self.assertIn("id=\"figureHeightMm\"", html)
+        self.assertIn("id=\"xMin\"", html)
+        self.assertIn("id=\"yMax\"", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
 
@@ -59,6 +62,20 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("Literature library", body)
         self.assertIn("Simulation data", body)
         self.assertIn("Next recommended action", body)
+
+    def test_handle_scan_project_files_lists_common_inputs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            (project / "simulation" / "result.csv").write_text("time,stress\n0,10\n", encoding="utf-8")
+            (project / "manuscript" / "chapter.md").write_text("# Introduction\n", encoding="utf-8")
+
+            status, content_type, body = handle_web_action({"action": "scan_project_files", "project_root": str(project)})
+
+        self.assertEqual(status, 200)
+        self.assertEqual(content_type, "text/plain; charset=utf-8")
+        self.assertIn("# Available Project Files", body)
+        self.assertIn("simulation/result.csv", body)
+        self.assertIn("manuscript/chapter.md", body)
 
     def test_handle_writing_pack_action_returns_enriched_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -411,15 +428,22 @@ class WebAppTests(unittest.TestCase):
                     "y_columns": "stress",
                     "x_label": "Time (s)",
                     "y_label": "Stress (MPa)",
+                    "x_min": "0",
+                    "x_max": "2",
+                    "y_min": "0",
+                    "y_max": "30",
                 }
             )
             svg_exists = (out_dir / "stress-response.svg").exists()
             json_exists = (out_dir / "stress-response.json").exists()
+            payload = (out_dir / "stress-response.json").read_text(encoding="utf-8")
 
         self.assertEqual(status, 200)
         self.assertIn("stress-response.svg", body)
         self.assertTrue(svg_exists)
         self.assertTrue(json_exists)
+        self.assertIn('"x_min": 0.0', payload)
+        self.assertIn('"y_max": 30.0', payload)
 
     def test_handle_figure_from_data_action_writes_heatmap_bundle(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

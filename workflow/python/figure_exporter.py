@@ -36,6 +36,10 @@ def build_spec_from_dataset(
     width_mm: int = 180,
     height_mm: int = 120,
     dpi: int = 300,
+    x_min: float | None = None,
+    x_max: float | None = None,
+    y_min: float | None = None,
+    y_max: float | None = None,
 ) -> FigureSpec:
     series = dataset_to_plot_series(dataset, x_column=x_column, y_columns=y_columns)
     if y_error_columns:
@@ -59,6 +63,10 @@ def build_spec_from_dataset(
         width_mm=width_mm,
         height_mm=height_mm,
         dpi=dpi,
+        x_min=x_min,
+        x_max=x_max,
+        y_min=y_min,
+        y_max=y_max,
     )
 
 
@@ -74,6 +82,10 @@ def build_heatmap_spec_from_dataset(
     width_mm: int = 180,
     height_mm: int = 120,
     dpi: int = 300,
+    x_min: float | None = None,
+    x_max: float | None = None,
+    y_min: float | None = None,
+    y_max: float | None = None,
 ) -> FigureSpec:
     points = [
         HeatmapPoint(
@@ -92,6 +104,10 @@ def build_heatmap_spec_from_dataset(
         width_mm=width_mm,
         height_mm=height_mm,
         dpi=dpi,
+        x_min=x_min,
+        x_max=x_max,
+        y_min=y_min,
+        y_max=y_max,
     )
 
 
@@ -107,6 +123,10 @@ def build_contour_spec_from_dataset(
     width_mm: int = 180,
     height_mm: int = 120,
     dpi: int = 300,
+    x_min: float | None = None,
+    x_max: float | None = None,
+    y_min: float | None = None,
+    y_max: float | None = None,
 ) -> FigureSpec:
     points = [
         HeatmapPoint(
@@ -134,6 +154,10 @@ def build_contour_spec_from_dataset(
         width_mm=width_mm,
         height_mm=height_mm,
         dpi=dpi,
+        x_min=x_min,
+        x_max=x_max,
+        y_min=y_min,
+        y_max=y_max,
     )
 
 
@@ -169,8 +193,8 @@ def render_svg_line_plot(spec: FigureSpec) -> str:
     plot_height = max(10, height - margin_top - margin_bottom)
     x_values = [value for item in spec.series for value in item.x]
     y_values = [value for item in spec.series for value in item.y]
-    min_x, max_x = _range(x_values)
-    min_y, max_y = _range(y_values)
+    min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
+    min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
     colors = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"]
 
     lines = [
@@ -214,7 +238,7 @@ def render_svg_bar_chart(spec: FigureSpec) -> str:
     plot_width = max(10, width - margin_left - margin_right)
     plot_height = max(10, height - margin_top - margin_bottom)
     y_values = [value for item in spec.series for value in item.y]
-    min_y, max_y = _range([0.0] + y_values)
+    min_y, max_y = _spec_range(spec.y_min, spec.y_max, [0.0] + y_values)
     colors = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"]
     first_series = spec.series[0] if spec.series else None
     category_count = len(first_series.x) if first_series else 0
@@ -272,8 +296,8 @@ def render_svg_errorbar_plot(spec: FigureSpec) -> str:
             y_values.extend([value - error for value, error in zip(item.y, item.y_error)])
         else:
             y_values.extend(item.y)
-    min_x, max_x = _range(x_values)
-    min_y, max_y = _range(y_values)
+    min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
+    min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
     colors = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e"]
 
     lines = [
@@ -327,8 +351,8 @@ def render_svg_heatmap_plot(spec: FigureSpec) -> str:
     x_values = [point["x"] for point in points]
     y_values = [point["y"] for point in points]
     values = [point["value"] for point in points]
-    min_x, max_x = _range(x_values)
-    min_y, max_y = _range(y_values)
+    min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
+    min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
     min_v, max_v = _range(values)
 
     lines = [
@@ -372,8 +396,8 @@ def render_svg_contour_plot(spec: FigureSpec) -> str:
     x_values = [point["x"] for point in points]
     y_values = [point["y"] for point in points]
     values = [point["value"] for point in points]
-    min_x, max_x = _range(x_values)
-    min_y, max_y = _range(y_values)
+    min_x, max_x = _spec_range(spec.x_min, spec.x_max, x_values)
+    min_y, max_y = _spec_range(spec.y_min, spec.y_max, y_values)
     min_v, max_v = _range(values)
     grid = {(point["x"], point["y"]): point["value"] for point in points}
     x_levels = sorted(set(x_values))
@@ -420,6 +444,11 @@ def _range(values: list[float]) -> tuple[float, float]:
     if low == high:
         return low - 0.5, high + 0.5
     return low, high
+
+
+def _spec_range(low_override: float | None, high_override: float | None, values: list[float]) -> tuple[float, float]:
+    low, high = _range(values)
+    return (low if low_override is None else low_override, high if high_override is None else high_override)
 
 
 def _scale(value: float, low: float, high: float, out_low: float, out_high: float) -> float:

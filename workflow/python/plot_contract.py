@@ -25,6 +25,10 @@ class FigureSpec:
     width_mm: int = 180
     height_mm: int = 120
     dpi: int = 300
+    x_min: float | None = None
+    x_max: float | None = None
+    y_min: float | None = None
+    y_max: float | None = None
 
 
 def build_figure_spec(
@@ -37,6 +41,10 @@ def build_figure_spec(
     width_mm: int = 180,
     height_mm: int = 120,
     dpi: int = 300,
+    x_min: float | None = None,
+    x_max: float | None = None,
+    y_min: float | None = None,
+    y_max: float | None = None,
 ) -> FigureSpec:
     return FigureSpec(
         title=title,
@@ -47,6 +55,10 @@ def build_figure_spec(
         width_mm=width_mm,
         height_mm=height_mm,
         dpi=dpi,
+        x_min=x_min,
+        x_max=x_max,
+        y_min=y_min,
+        y_max=y_max,
     )
 
 
@@ -78,4 +90,12 @@ def figure_spec_from_dict(payload: dict[str, Any]) -> FigureSpec:
         width_mm=int(payload.get("width_mm", 180)),
         height_mm=int(payload.get("height_mm", 120)),
         dpi=int(payload.get("dpi", 300)),
+        x_min=_optional_float(payload.get("x_min")),
+        x_max=_optional_float(payload.get("x_max")),
+        y_min=_optional_float(payload.get("y_min")),
+        y_max=_optional_float(payload.get("y_max")),
     )
+
+
+def _optional_float(value: Any) -> float | None:
+    return None if value is None else float(value)

@@ -84,7 +84,14 @@ class EndToEndWorkflowTests(unittest.TestCase):
             )
 
             draft = manuscript / "chapter.md"
-            draft.write_text("# Introduction\n\nText [@zhang2024adaptive].\n\nFigure 1 shows the result.\n", encoding="utf-8")
+            draft.write_text(
+                "# Introduction\n\n"
+                "Text [@zhang2024adaptive].\n\n"
+                "Figure 1 shows the result.\n\n"
+                "# References\n\n"
+                "- Zhang, 2024.\n",
+                encoding="utf-8",
+            )
             output = StringIO()
             with redirect_stdout(output):
                 self.assertEqual(

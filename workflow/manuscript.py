@@ -17,6 +17,8 @@ SECTION_ALIASES = {
     "conclusion": ["Conclusion", "Conclusions", "结论", "总结"],
 }
 
+REFERENCE_HEADINGS = {"references", "reference", "bibliography", "参考文献", "参考资料"}
+
 
 @dataclass(frozen=True)
 class ManuscriptIssue:
@@ -73,6 +75,8 @@ def inspect_manuscript(
         for citation in uncited_library_keys
     )
     issues.extend(_inspect_heading_quality(text))
+    if citations and not _has_references_section(headings):
+        issues.append(ManuscriptIssue(level="warning", message="Citation markers found but no References section"))
     if not citations:
         issues.append(ManuscriptIssue(level="warning", message="No citation markers found"))
     return ManuscriptReport(
@@ -211,6 +215,11 @@ def _has_required_section(required: str, headings: list[str]) -> bool:
     heading_keys = {_normalize_heading(heading) for heading in headings}
     aliases = SECTION_ALIASES.get(_normalize_heading(required), [required])
     return any(_normalize_heading(alias) in heading_keys for alias in aliases)
+
+
+def _has_references_section(headings: list[str]) -> bool:
+    heading_keys = {_normalize_heading(heading) for heading in headings}
+    return any(_normalize_heading(heading) in REFERENCE_HEADINGS for heading in heading_keys)
 
 
 def _normalize_heading(value: str) -> str:

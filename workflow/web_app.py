@@ -79,6 +79,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
             return _text(render_project_check(build_project_check(project_root)))
         if action == "workflow_status":
             return _text(_render_workflow_status(project_root))
+        if action == "scan_project_files":
+            return _text(_render_project_file_scan(project_root))
         if action == "project_report":
             return _text(render_project_report(build_project_report(project_root)))
         if action == "writing_pack":
@@ -197,6 +199,10 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     width_mm=_int_or_default(payload.get("figure_width_mm", ""), 180),
                     height_mm=_int_or_default(payload.get("figure_height_mm", ""), 120),
                     dpi=300,
+                    x_min=_optional_float(payload.get("x_min", "")),
+                    x_max=_optional_float(payload.get("x_max", "")),
+                    y_min=_optional_float(payload.get("y_min", "")),
+                    y_max=_optional_float(payload.get("y_max", "")),
                 )
             elif figure_type == "contour":
                 spec = build_contour_spec_from_dataset(
@@ -210,6 +216,10 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     width_mm=_int_or_default(payload.get("figure_width_mm", ""), 180),
                     height_mm=_int_or_default(payload.get("figure_height_mm", ""), 120),
                     dpi=300,
+                    x_min=_optional_float(payload.get("x_min", "")),
+                    x_max=_optional_float(payload.get("x_max", "")),
+                    y_min=_optional_float(payload.get("y_min", "")),
+                    y_max=_optional_float(payload.get("y_max", "")),
                 )
             else:
                 spec = build_spec_from_dataset(
@@ -224,6 +234,10 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
                     width_mm=_int_or_default(payload.get("figure_width_mm", ""), 180),
                     height_mm=_int_or_default(payload.get("figure_height_mm", ""), 120),
                     dpi=300,
+                    x_min=_optional_float(payload.get("x_min", "")),
+                    x_max=_optional_float(payload.get("x_max", "")),
+                    y_min=_optional_float(payload.get("y_min", "")),
+                    y_max=_optional_float(payload.get("y_max", "")),
                 )
             export_figure_bundle(spec, out_dir, stem=stem)
             return _text(f"已生成：{out_dir / f'{stem}.svg'}\n已生成：{out_dir / f'{stem}.json'}")
@@ -348,6 +362,35 @@ def _render_workflow_status(project_root: Path) -> str:
     return "\n".join(lines)
 
 
+def _render_project_file_scan(project_root: Path) -> str:
+    groups = {
+        "Simulation CSV/JSON": _relative_files(project_root, project_root / "simulation", {".csv", ".json"}),
+        "Manuscripts": _relative_files(project_root, project_root / "manuscript", {".md", ".txt", ".docx"}),
+        "Literature metadata CSV": _relative_child_files(project_root, project_root, {".csv"}),
+        "Figures": _relative_files(project_root, project_root / "figures", {".svg", ".json"}),
+    }
+    lines = ["# Available Project Files", "", f"- Root: {project_root}", ""]
+    for title, files in groups.items():
+        lines.append(f"## {title}")
+        lines.extend([f"- {path}" for path in files] or ["- None"])
+        lines.append("")
+    return "\n".join(lines)
+
+
+def _relative_files(project_root: Path, root: Path, suffixes: set[str]) -> list[str]:
+    if not root.exists():
+        return []
+    files = [path for path in root.rglob("*") if path.is_file() and path.suffix.lower() in suffixes]
+    return [path.relative_to(project_root).as_posix() for path in sorted(files)]
+
+
+def _relative_child_files(project_root: Path, root: Path, suffixes: set[str]) -> list[str]:
+    if not root.exists():
+        return []
+    files = [path for path in root.iterdir() if path.is_file() and path.suffix.lower() in suffixes]
+    return [path.relative_to(project_root).as_posix() for path in sorted(files)]
+
+
 def _make_handler(default_project_root: str):
     class WorkflowRequestHandler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
@@ -433,6 +476,11 @@ def _int_or_default(value: str, default: int) -> int:
     if parsed <= 0:
         raise ValueError("figure size must be greater than 0")
     return parsed
+
+
+def _optional_float(value: str) -> float | None:
+    text = value.strip()
+    return None if not text else float(text)
 
 
 if __name__ == "__main__":

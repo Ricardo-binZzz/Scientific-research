@@ -104,6 +104,9 @@
 - Web workflow guidance on 2026-05-19: the browser now has quick actions to load `examples/demo-project`, fill common paths from the current project root, and render a workflow status report with next-step guidance.
 - Figure options on 2026-05-19: web figure generation accepts optional width/height values in millimeters.
 - Manuscript quality check on 2026-05-19: Markdown heading-level skips are now reported, such as jumping from H1 to H3.
+- Web file discovery on 2026-05-20: the browser can scan a project and list common simulation, manuscript, metadata, and figure files for easier path filling.
+- Figure axis options on 2026-05-20: web figure generation accepts optional x/y axis min/max overrides and records them in the FigureSpec JSON.
+- Manuscript references check on 2026-05-20: citation markers now trigger a warning when no `References`, `Bibliography`, or `参考文献` heading is present.
 
 ## Next Steps
 

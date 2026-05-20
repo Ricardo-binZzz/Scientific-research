@@ -75,3 +75,6 @@
 - The browser UI has quick actions for loading `examples/demo-project`, filling common project paths, and rendering a workflow status report with step readiness and a next recommended action.
 - Web figure generation accepts optional width/height fields in millimeters; defaults remain `180 x 120 mm`.
 - Manuscript checks now flag skipped Markdown heading levels, such as jumping from `#` directly to `###`.
+- The browser UI can scan a project for common input/output files under `simulation`, `manuscript`, and `figures`, returning a text list for users who forgot exact file names.
+- Web figure generation accepts optional x/y axis range overrides and stores them in the FigureSpec JSON.
+- Manuscript checks now warn when citation markers are present but no `References`, `Bibliography`, or `参考文献` heading exists.
