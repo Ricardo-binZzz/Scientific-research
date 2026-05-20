@@ -39,6 +39,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("id=\"showGrid\"", html)
         self.assertIn("id=\"palette\"", html)
         self.assertIn("id=\"tickCount\"", html)
+        self.assertIn("literature_insights", html)
         self.assertIn(r"C:\Research\demo", html)
         self.assertNotIn("return f\"\"\"<!doctype html>", html)
 
@@ -410,6 +411,55 @@ class WebAppTests(unittest.TestCase):
         self.assertEqual(search_status, 200)
         self.assertIn("Adaptive clamping fixture", search_body)
         self.assertIn("Citation count: 12", search_body)
+
+    def test_handle_literature_insights_action_returns_rich_metadata_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            handle_web_action(
+                {
+                    "action": "library_add",
+                    "project_root": str(project),
+                    "title": "Highly cited fixture review",
+                    "authors": "Zhang",
+                    "year": "2024",
+                    "source": "Journal A",
+                    "doi": "10.1000/rich-a",
+                    "pdf_name": "a.pdf",
+                    "note_path": "notes/a.md",
+                    "abstract": "Reviews adaptive fixture methods.",
+                    "keywords": "fixture; adaptive",
+                    "database_source": "Scopus",
+                    "citation_count": "42",
+                }
+            )
+            handle_web_action(
+                {
+                    "action": "library_add",
+                    "project_root": str(project),
+                    "title": "Fixture case study",
+                    "authors": "Li",
+                    "year": "2023",
+                    "source": "Journal B",
+                    "doi": "10.1000/rich-b",
+                    "pdf_name": "b.pdf",
+                    "note_path": "notes/b.md",
+                    "keywords": "fixture",
+                    "database_source": "Web of Science",
+                    "citation_count": "7",
+                }
+            )
+
+            status, content_type, body = handle_web_action({"action": "literature_insights", "project_root": str(project)})
+
+        self.assertEqual(status, 200)
+        self.assertEqual(content_type, "text/plain; charset=utf-8")
+        self.assertIn("# Literature Insights", body)
+        self.assertIn("- Total entries: 2", body)
+        self.assertIn("- Abstract-ready entries: 1", body)
+        self.assertIn("- High-citation candidates: 2", body)
+        self.assertIn("- fixture: 2", body)
+        self.assertIn("- Scopus: 1", body)
+        self.assertIn("- Highly cited fixture review (42 citations)", body)
 
     def test_handle_simulation_actions_return_reports(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

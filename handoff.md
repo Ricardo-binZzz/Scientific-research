@@ -113,6 +113,7 @@
 - Web path workflow on 2026-05-20: `scan_project_files` now emits suggested absolute form paths, and the browser auto-fills data, figure, manuscript, and literature CSV fields after a successful scan; `USER_GUIDE.md` was updated in the main tutorial.
 - Literature metadata expansion on 2026-05-20: library entries now store abstract, keywords, URL, database source, and citation count; CSV import maps common rich metadata columns, search covers the new text fields, and the browser add-literature form exposes the fields.
 - Literature report expansion on 2026-05-20: writing pack, writing dashboard, and literature map now surface rich literature metadata through high-citation literature, keyword coverage, abstract coverage, top keywords, and database-source summaries.
+- Web literature insight expansion on 2026-05-20: the browser now has "文献洞察" buttons backed by a `literature_insights` action, showing a compact summary of abstract coverage, missing assets, high-citation literature, keywords, and database sources.
 
 ## Next Steps
 

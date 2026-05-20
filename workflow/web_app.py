@@ -110,6 +110,8 @@ def handle_web_action(payload: dict[str, str]) -> ContentResponse:
         if action == "library_source":
             index = load_index(literature_root)
             return _text(render_search_results(filter_library_by_source(index, payload.get("source_query", ""))))
+        if action == "literature_insights":
+            return _text(_render_literature_insights(literature_root))
         if action == "library_import_csv":
             imported = import_csv_metadata(Path(payload.get("csv_path", "").strip()).read_text(encoding="utf-8-sig"))
             combined = LibraryIndex(entries=[])
@@ -387,6 +389,35 @@ def _render_project_file_scan(project_root: Path) -> str:
     suggestions = _suggest_form_paths(project_root, groups)
     lines.append("## Suggested Form Paths")
     lines.extend([f"- {name}: {path}" for name, path in suggestions.items()] or ["- None"])
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _render_literature_insights(literature_root: Path) -> str:
+    index = load_index(literature_root)
+    stats = inspect_library_stats(literature_root, index)
+    literature_map = build_literature_map(literature_root)
+    abstract_ready = sorted(entry.title for entry in index.entries if entry.abstract.strip())
+    top_cited = literature_map.top_cited_titles
+    lines = ["# Literature Insights", "", f"- Library root: {literature_root}", ""]
+    lines.append("## Coverage")
+    lines.append(f"- Total entries: {stats.total_entries}")
+    lines.append(f"- Abstract-ready entries: {len(abstract_ready)}")
+    lines.append(f"- Missing PDFs: {stats.missing_pdf_count}")
+    lines.append(f"- Missing notes: {stats.missing_note_count}")
+    lines.append(f"- High-citation candidates: {len(top_cited)}")
+    lines.append("")
+    lines.append("## Top Keywords")
+    lines.extend([f"- {keyword}: {count}" for keyword, count in list(literature_map.keyword_counts.items())[:8]] or ["- None"])
+    lines.append("")
+    lines.append("## Databases")
+    lines.extend([f"- {database}: {count}" for database, count in literature_map.database_counts.items()] or ["- None"])
+    lines.append("")
+    lines.append("## High Citation Literature")
+    lines.extend([f"- {title}" for title in top_cited] or ["- None"])
+    lines.append("")
+    lines.append("## Abstract-ready Literature")
+    lines.extend([f"- {title}" for title in abstract_ready[:8]] or ["- None"])
     lines.append("")
     return "\n".join(lines)
 
