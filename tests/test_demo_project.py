@@ -36,6 +36,9 @@ class DemoProjectTests(unittest.TestCase):
         self.assertIn("stress", summarize_dataset(dataset).numeric_columns)
         self.assertEqual(manuscript.missing_sections, [])
         self.assertGreaterEqual(check.summary.library_entries, 2)
+        self.assertEqual(check.missing_pdf_names, [])
+        self.assertEqual(check.missing_note_paths, [])
+        self.assertEqual(check.manuscript_issues, [])
 
 
 if __name__ == "__main__":

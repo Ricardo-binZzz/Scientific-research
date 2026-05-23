@@ -2,6 +2,7 @@
 
 ## Status
 
+- Demo project cleanup on 2026-05-23: `examples/demo-project` now includes placeholder PDFs, cites both indexed papers, has a References section, and `project check` reports no literature, simulation, or manuscript issues.
 - Full project check on 2026-05-20: full unittest and Python compile checks passed, core CLI demo commands ran, and the CI privacy scan pattern was generalized from a hard-coded local account path to a generic Windows user-directory pattern while allowing documented placeholder examples.
 - Sequential shortfall pass on 2026-05-20: added real Playwright browser screenshots, Windows one-click setup, Crossref open metadata discovery plus direct/open PDF download, deeper DOCX style/layout/reference-field QA, external solver command logging, and web expand/collapse controls.
 - Web success-history persistence on 2026-05-20: the browser stores the three latest successful actions in localStorage, restores them after refresh, and clears them when the user clears output; `WEB_GUIDE.md`, `USER_GUIDE.md`, and frontend asset coverage were updated.

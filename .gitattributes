@@ -1,5 +1,6 @@
 * text=auto
 
+.gitattributes text eol=lf
 *.md text eol=lf
 *.py text eol=lf
 *.json text eol=lf
@@ -11,5 +12,6 @@
 *.js text eol=lf
 *.svg text eol=lf
 *.csv text eol=lf
+*.pdf binary
 
 *.bat text eol=crlf

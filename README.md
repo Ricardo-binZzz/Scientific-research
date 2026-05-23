@@ -30,7 +30,7 @@ Then in the local web UI:
 4. Run `Project Check`.
 5. Try one literature, simulation, figure, or manuscript action.
 
-The demo project includes sample literature, notes, simulation data, a manuscript draft, and project-check settings, so you can evaluate the workflow before using it on real research data.
+The demo project includes sample literature, placeholder PDFs, notes, simulation data, a manuscript draft, and project-check settings. Its health check starts clean, so you can evaluate the workflow before using it on real research data.
 
 ## Why This Project?
 
@@ -141,6 +141,7 @@ Full beginner guide: [USER_GUIDE.en.md](USER_GUIDE.en.md)
 A runnable example workspace lives in [examples/demo-project](examples/demo-project). It includes:
 
 - a small literature index
+- placeholder PDF files for the indexed papers
 - paper-summary notes
 - a simulation CSV
 - a manuscript draft

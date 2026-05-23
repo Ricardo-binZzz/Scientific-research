@@ -150,7 +150,7 @@ $PY='C:\path\to\python.exe'
 C:\Users\YourName\Documents\科研\examples\demo-project
 ```
 
-它里面已经放了示例文献库、论文摘要卡、仿真 CSV、稿件草稿、`project-check.json` 和 `literature-tracker.json`。在网页里把“项目根目录”填成这个路径后，可以按顺序点击“流程状态”“扫描可用文件”“项目体检”“文献库统计”“生成文献对比表”“预览数据”“生成 SVG 图”“检查稿件”“保存常用报告”，快速看完整流程。
+它里面已经放了示例文献库、占位 PDF、论文摘要卡、仿真 CSV、稿件草稿、`project-check.json` 和 `literature-tracker.json`，项目体检从零警告开始。在网页里把“项目根目录”填成这个路径后，可以按顺序点击“流程状态”“扫描可用文件”“项目体检”“文献库统计”“生成文献对比表”“预览数据”“生成 SVG 图”“检查稿件”“保存常用报告”，快速看完整流程。
 
 ## 6. 创建一个新课题
 

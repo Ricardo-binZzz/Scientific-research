@@ -21,6 +21,7 @@
 - Simulation automation now includes `simulation run-command`, which launches an installed solver CLI command from a working directory and captures stdout/stderr to a log without trying to control commercial solver GUIs.
 - The web UI has app-level section controls for expanding or collapsing all workflow modules.
 - CI privacy scanning uses a generic Windows user-directory pattern rather than a hard-coded local account name, while allowing documented placeholder examples.
+- `examples/demo-project` is intended to be a clean first-run demo: its project check should report no missing PDFs, no missing notes, no simulation issues, and no manuscript issues.
 
 ## Working Rules
 
