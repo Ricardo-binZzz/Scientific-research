@@ -4,11 +4,15 @@ All notable changes to this project are summarized here.
 
 ## Unreleased
 
+No unreleased changes yet.
+
+## v0.1.0 - 2026-05-23
+
 ### Added
 
 - Professional GitHub landing pages in English and Chinese.
 - Real GitHub Actions badge and a 3-minute demo path in both README entry points.
-- Screenshot capture guidance in `docs/screenshots`.
+- Real browser screenshots and screenshot capture guidance in `docs/screenshots`.
 - Generic SVG preview assets for the web workbench and project-check output.
 - `docs/releases/v0.1.0.md` release notes for creating the first GitHub release.
 - Portable `start_web.bat` launcher that discovers `.venv`, `py`, or `python`.
@@ -17,6 +21,10 @@ All notable changes to this project are summarized here.
 - Citation metadata in `CITATION.cff`.
 - Project direction notes in `ROADMAP.md`.
 - CI privacy scan for obvious local paths and secret-like assignments.
+- Windows one-click setup through `install_windows.bat`.
+- Crossref open metadata discovery and direct/open PDF URL download helpers.
+- DOCX package-level QA checks for styles, page margins, and Word citation/bibliography field signals.
+- External solver CLI command logging through `simulation run-command`.
 
 ### Changed
 
@@ -25,6 +33,7 @@ All notable changes to this project are summarized here.
 - Clarified target users, expected outputs, and current non-goals in the README entry points.
 - Added project maturity and comparison sections to the README entry points.
 - Converted near-term roadmap items into checklist form.
+- Made `examples/demo-project` a clean first-run demo with placeholder PDFs, complete citations, and a zero-issue project check.
 
 ## 2026-05-20
 

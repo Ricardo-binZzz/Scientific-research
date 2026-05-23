@@ -218,18 +218,18 @@ Before opening a pull request, run the test suite and check that no private path
 
 ## Citation
 
-If this workbench helps your research workflow, cite it as software using [CITATION.cff](CITATION.cff). The citation file is intentionally contributor-based until the project has a formal release and named maintainers.
+If this workbench helps your research workflow, cite it as software using [CITATION.cff](CITATION.cff). The citation file is contributor-based for v0.1.0 and can be refined as maintainership becomes more formal.
 
 ## What This Is Not
 
-- Literature search and paper downloads are still manual or handled by external tools.
+- Literature discovery is limited to open Crossref metadata and user-provided direct/open PDF URLs; it does not bypass publisher permissions, institutional login, or paywalls.
 - It does not replace Zotero, Word, or human paper review.
-- It does not directly control ANSYS, Abaqus, COMSOL, or other simulation software.
+- It does not directly control ANSYS, Abaqus, COMSOL, or other commercial solver GUIs, licenses, or model setup.
 - It does not automatically write a thesis or paper.
 
 ## Current Limits
 
-- DOCX checking extracts text from Word XML but does not inspect Word layout or styles.
+- DOCX checking inspects text and package-level signals, but does not render Word pages or validate full institution-specific formatting.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.
 

@@ -219,18 +219,18 @@ literature-tracker.json
 
 ## 引用
 
-如果这个工作台对你的科研流程有帮助，可以使用 [CITATION.cff](CITATION.cff) 将它作为软件引用。当前引用文件先采用 contributors 形式；等项目有正式版本和明确维护者后，再补充更完整的发布信息。
+如果这个工作台对你的科研流程有帮助，可以使用 [CITATION.cff](CITATION.cff) 将它作为软件引用。v0.1.0 的引用文件先采用 contributors 形式；后续维护者信息更稳定后再继续细化。
 
 ## 这个项目不做什么
 
-- 文献检索和论文下载仍然依赖人工或外部工具。
+- 文献发现仅使用 Crossref 开放元数据和用户提供的直链/开放 PDF，不绕过出版社权限、学校登录或付费墙。
 - 不替代 Zotero、Word 或人工阅读判断。
-- 不直接控制 ANSYS、Abaqus、COMSOL 等仿真软件。
+- 不直接控制 ANSYS、Abaqus、COMSOL 等商业求解器 GUI、许可证或模型设置。
 - 不自动生成整篇论文或学位论文。
 
 ## 当前限制
 
-- DOCX 检查会从 Word XML 中提取文本，但还不检查 Word 样式和版式。
+- DOCX 检查会检查文本和包级信号，但不渲染 Word 页面，也不完整校验学校模板格式。
 - 等值线图输入必须是完整矩形网格。
 - BibTeX 解析重点支持常见 article 字段。
 
