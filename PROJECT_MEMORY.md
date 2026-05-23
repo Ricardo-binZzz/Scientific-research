@@ -20,6 +20,7 @@
 - DOCX manuscript QA now checks package-level style/layout/reference-field signals such as missing `styles.xml`, missing page margins, undefined paragraph styles, and missing Word citation/bibliography fields.
 - Simulation automation now includes `simulation run-command`, which launches an installed solver CLI command from a working directory and captures stdout/stderr to a log without trying to control commercial solver GUIs.
 - The web UI has app-level section controls for expanding or collapsing all workflow modules.
+- CI privacy scanning uses a generic Windows user-directory pattern rather than a hard-coded local account name, while allowing documented placeholder examples.
 
 ## Working Rules
 
