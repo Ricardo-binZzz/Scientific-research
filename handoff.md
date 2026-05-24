@@ -2,6 +2,7 @@
 
 ## Status
 
+- Web frontend refactor on 2026-05-24: `workflow/web_assets/renderers.js` now owns result companion cards and report parsing helpers, while `workflow/web_assets/app.js` keeps state, inputs, action calls, persistence, and event wiring; web tests verify the renderer asset is referenced and served.
 - Web backend refactor on 2026-05-24: `workflow.web_actions` now owns browser action dispatch and action helpers, while `workflow.web_app` is limited to page rendering, HTTP serving, static assets, and port binding; web action tests cover the compatibility import.
 - Packaging metadata on 2026-05-24: `pyproject.toml` now declares project metadata, package data, and editable-install entry points `research-workflow` and `research-workflow-web`; README and both user guides mention the optional `pip install -e . --no-build-isolation` path for restricted local environments.
 - Web project-check guidance on 2026-05-24: the project-check companion now renders `Next Actions` as a dedicated next-step card above the raw report.

@@ -15,6 +15,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes to match the current 162-test baseline.
 - Split web action dispatch and action helpers into `workflow.web_actions`, leaving `workflow.web_app` focused on page rendering and HTTP serving.
 - Updated README maturity notes again after the web action boundary test brought the baseline to 163 tests.
+- Split result companion renderers into `workflow/web_assets/renderers.js`, leaving `app.js` focused on state, inputs, and event wiring.
 
 ## v0.1.0 - 2026-05-23
 
