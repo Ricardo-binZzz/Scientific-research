@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "research-workflow-workbench"
+version = "0.1.0"
+description = "Local-first research workflow workbench for literature notes, simulation checks, figures, and manuscript QA."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Research Workflow contributors" }
+]
+keywords = [
+  "research-workflow",
+  "literature-review",
+  "manuscript",
+  "simulation-data",
+  "scientific-figures",
+  "local-first"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering"
+]
+dependencies = []
+
+[project.scripts]
+research-workflow = "workflow.cli:main"
+research-workflow-web = "workflow.web_app:main"
+
+[project.urls]
+Homepage = "https://github.com/Ricardo-binZzz/Scientific-research"
+Documentation = "https://github.com/Ricardo-binZzz/Scientific-research#readme"
+Issues = "https://github.com/Ricardo-binZzz/Scientific-research/issues"
+
+[tool.setuptools.packages.find]
+include = ["workflow*"]
+
+[tool.setuptools.package-data]
+workflow = [
+  "*.md",
+  "templates/*.md",
+  "templates/*.json",
+  "web_assets/*.html",
+  "web_assets/*.css",
+  "web_assets/*.js",
+  "web_assets/*.svg"
+]

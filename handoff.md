@@ -2,6 +2,7 @@
 
 ## Status
 
+- Packaging metadata on 2026-05-24: `pyproject.toml` now declares project metadata, package data, and editable-install entry points `research-workflow` and `research-workflow-web`; README and both user guides mention the optional `pip install -e . --no-build-isolation` path for restricted local environments.
 - Web project-check guidance on 2026-05-24: the project-check companion now renders `Next Actions` as a dedicated next-step card above the raw report.
 - Project check guidance on 2026-05-24: `project check` now includes a `Next Actions` section, with clean demos reporting no immediate fixes and issue-bearing projects listing concrete follow-up commands or directions.
 - Demo project cleanup on 2026-05-23: `examples/demo-project` now includes placeholder PDFs, cites both indexed papers, has a References section, and `project check` reports no literature, simulation, or manuscript issues.

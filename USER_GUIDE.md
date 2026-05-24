@@ -107,6 +107,14 @@ $PY='C:\path\to\python.exe'
 
 后面所有命令都默认你已经设置了 `$PY`。
 
+可选：如果你想用命令入口而不是每次输入 `-m workflow.cli`，可以在工具仓库目录运行：
+
+```powershell
+& $PY -m pip install -e . --no-build-isolation
+```
+
+安装后可以使用 `research-workflow` 运行 CLI，或使用 `research-workflow-web` 启动本地网页；不安装也可以继续使用下面的 `$PY -m workflow.cli ...` 命令。
+
 ## 5. 10 分钟快速试跑
 
 第一次使用时，先用仓库自带的 `examples` 快速确认工具能跑起来。

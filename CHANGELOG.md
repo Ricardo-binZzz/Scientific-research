@@ -8,6 +8,11 @@ All notable changes to this project are summarized here.
 
 - `project check` now ends with `Next Actions`, turning project gaps into concrete follow-up steps.
 - The web project-check companion now surfaces those `Next Actions` as a dedicated next-step card.
+- Added `pyproject.toml` with project metadata, package data, and local CLI/web console-script entry points.
+
+### Changed
+
+- Updated README maturity notes to match the current 162-test baseline.
 
 ## v0.1.0 - 2026-05-23
 

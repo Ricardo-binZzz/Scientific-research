@@ -117,6 +117,12 @@ $PY='C:\path\to\python.exe'
 & $PY -m workflow.cli init C:\path\to\workspace --slug demo-project --name "Demo Project"
 ```
 
+可选：仓库现在包含 `pyproject.toml`，开发者可以用可编辑安装获得 `research-workflow` 和 `research-workflow-web` 命令入口：
+
+```powershell
+& $PY -m pip install -e . --no-build-isolation
+```
+
 生成项目体检报告：
 
 ```powershell
@@ -165,7 +171,7 @@ $PY='C:\path\to\python.exe'
 
 ## 项目成熟度
 
-这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块和网页 action 的 161 个 unittest。
+这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块和网页 action 的 162 个 unittest。
 
 ## 项目结构
 

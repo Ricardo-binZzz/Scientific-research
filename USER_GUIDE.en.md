@@ -55,6 +55,14 @@ $PY='C:\path\to\python.exe'
 
 All later commands assume that `$PY` has already been set.
 
+Optional: if you want command entry points instead of typing `-m workflow.cli`, run this from the tool repository:
+
+```powershell
+& $PY -m pip install -e . --no-build-isolation
+```
+
+After that, use `research-workflow` for the CLI or `research-workflow-web` for the local web UI. You can also skip installation and keep using the `$PY -m workflow.cli ...` commands below.
+
 ## 4. Ten-Minute Quick Check
 
 Before creating your own workspace, use the built-in examples to confirm that the tool can run.
