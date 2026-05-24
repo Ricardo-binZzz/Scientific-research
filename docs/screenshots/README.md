@@ -21,6 +21,8 @@ node tools/capture_web_screenshots.js
 
 The script starts `workflow.web_app`, loads `examples/demo-project`, drives the browser with Playwright, redacts visible local absolute paths, and writes PNG files back into this folder.
 
+Current PNG screenshots are captured at a fixed `1440 x 980` viewport. Keep this size stable unless the README screenshots are intentionally refreshed for a new layout.
+
 Before regenerating screenshots after editing web JavaScript, run:
 
 ```powershell

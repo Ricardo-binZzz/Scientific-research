@@ -16,6 +16,7 @@
 - P1/P2/P3 GitHub presentation work on 2026-05-20 added README maturity/comparison/non-goal sections, checklist roadmap formatting, generic SVG preview assets under `docs/screenshots`, and `docs/releases/v0.1.0.md` release notes; `gh` is not installed, so the actual GitHub release must be created through the web UI or another available tool.
 - Real browser screenshots were added on 2026-05-20 under `docs/screenshots/*.png`, with `tools/capture_web_screenshots.js` using Playwright against the local web UI and redacting visible absolute paths.
 - `tools/capture_web_screenshots.js` resolves Codex bundled Node module paths, pnpm Playwright dependencies, and bundled Python automatically before launching the local web UI.
+- Screenshot tests validate that tracked PNG captures have a PNG signature, readable IHDR dimensions, and the expected `1440 x 980` viewport size.
 - JavaScript syntax checking for web assets and the screenshot driver is available through `tools/check_js_syntax.py`, which locates Node from `NODE`, the bundled Codex runtime, or PATH and runs `node --check`.
 - Windows one-click setup was added on 2026-05-20 through `install_windows.bat`, which creates `.venv`, verifies `workflow.web_app`, and generates a `Research Workflow Web.bat` launcher in the project folder and Desktop when available.
 - Literature discovery and PDF intake were expanded on 2026-05-20 with `library discover` for Crossref open metadata and `library download-pdf` for direct/open PDF URLs only; the workflow does not bypass paywalls or institutional login.

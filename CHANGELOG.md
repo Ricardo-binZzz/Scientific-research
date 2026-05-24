@@ -20,6 +20,7 @@ All notable changes to this project are summarized here.
 - Split web action payload and preflight validation helpers into `workflow/web_assets/actions.js`, and fixed malformed frontend status/toast strings caught by `node --check`.
 - Updated README maturity notes after the JavaScript syntax-check regression brought the baseline to 164 tests.
 - Made `tools/capture_web_screenshots.js` resolve bundled Codex Playwright and Python paths automatically, then refreshed the real browser screenshots.
+- Documented the screenshot viewport and expanded screenshot tests to validate PNG headers and `1440 x 980` dimensions.
 
 ## v0.1.0 - 2026-05-23
 
