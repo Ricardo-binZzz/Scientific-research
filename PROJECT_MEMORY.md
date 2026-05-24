@@ -15,6 +15,7 @@
 - README GitHub-star positioning was improved after web review on 2026-05-20: real Actions badge, 3-minute demo, target-user section, output list, screenshot capture guide, and clearer non-goals were added; the CI privacy scan no longer treats the public GitHub repository path as sensitive.
 - P1/P2/P3 GitHub presentation work on 2026-05-20 added README maturity/comparison/non-goal sections, checklist roadmap formatting, generic SVG preview assets under `docs/screenshots`, and `docs/releases/v0.1.0.md` release notes; `gh` is not installed, so the actual GitHub release must be created through the web UI or another available tool.
 - Real browser screenshots were added on 2026-05-20 under `docs/screenshots/*.png`, with `tools/capture_web_screenshots.js` using Playwright against the local web UI and redacting visible absolute paths.
+- JavaScript syntax checking for web assets and the screenshot driver is available through `tools/check_js_syntax.py`, which locates Node from `NODE`, the bundled Codex runtime, or PATH and runs `node --check`.
 - Windows one-click setup was added on 2026-05-20 through `install_windows.bat`, which creates `.venv`, verifies `workflow.web_app`, and generates a `Research Workflow Web.bat` launcher in the project folder and Desktop when available.
 - Literature discovery and PDF intake were expanded on 2026-05-20 with `library discover` for Crossref open metadata and `library download-pdf` for direct/open PDF URLs only; the workflow does not bypass paywalls or institutional login.
 - DOCX manuscript QA now checks package-level style/layout/reference-field signals such as missing `styles.xml`, missing page margins, undefined paragraph styles, and missing Word citation/bibliography fields.
@@ -35,7 +36,7 @@
 - The browser result header persists the three most recent successful actions in localStorage and restores them after refresh; clearing output also clears the stored success history.
 - Treat simulation software output as an upstream data source, not a place to fully automate control in v1.
 - Prefer reusable templates and compact contracts over broad automation.
-- For web asset refactors, run the bundled Node syntax check from `load_workspace_dependencies` with `node --check` against changed `.js` files because Python asset tests do not parse browser JavaScript.
+- For web asset refactors, run `python tools/check_js_syntax.py` because Python asset tests do not parse browser JavaScript.
 - The CLI currently supports workspace initialization, note creation, simulation runbook/export listing, and literature library indexing.
 - The literature library stores entries in `literature/library-index.json` and de-duplicates by DOI first, then normalized title.
 - The figure pipeline now converts CSV/JSON tabular data into a FigureSpec JSON plus SVG line plot bundle.

@@ -1,3 +1,5 @@
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -25,6 +27,21 @@ class ScreenshotAssetTests(unittest.TestCase):
             self.assertIn(name, readme)
             self.assertIn(name, readme_zh)
             self.assertIn(name, screenshot_readme)
+
+    def test_javascript_assets_pass_syntax_check(self) -> None:
+        command = [
+            sys.executable,
+            "tools/check_js_syntax.py",
+            "workflow/web_assets/actions.js",
+            "workflow/web_assets/app.js",
+            "workflow/web_assets/renderers.js",
+            "tools/capture_web_screenshots.js",
+        ]
+
+        result = subprocess.run(command, text=True, capture_output=True)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("capture_web_screenshots.js", result.stdout)
 
 
 if __name__ == "__main__":

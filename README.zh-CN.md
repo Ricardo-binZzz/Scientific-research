@@ -167,11 +167,11 @@ $PY='C:\path\to\python.exe'
 - [流程状态卡片](docs/screenshots/workflow-status.png)
 - [项目体检卡片](docs/screenshots/project-check.png)
 
-安装 Playwright 的 Chromium 浏览器后，可以用 `node tools/capture_web_screenshots.js` 重新采集。
+重新采集前先运行 `python tools/check_js_syntax.py` 检查前端脚本语法；安装 Playwright 的 Chromium 浏览器后，可以用 `node tools/capture_web_screenshots.js` 重新采集。
 
 ## 项目成熟度
 
-这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块和网页 action 的 163 个 unittest。
+这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块、网页 action 和 JavaScript 语法检查工具的 164 个 unittest。
 
 ## 项目结构
 

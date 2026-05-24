@@ -166,11 +166,11 @@ Real browser screenshots captured from `examples/demo-project` live in [docs/scr
 - [Workflow status cards](docs/screenshots/workflow-status.png)
 - [Project check cards](docs/screenshots/project-check.png)
 
-The screenshots can be regenerated with `node tools/capture_web_screenshots.js` after installing Playwright's Chromium browser.
+Run `python tools/check_js_syntax.py` before regenerating screenshots, then use `node tools/capture_web_screenshots.js` after installing Playwright's Chromium browser.
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 163 unittest cases covering the main workflow modules and web action handlers.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 164 unittest cases covering the main workflow modules, web action handlers, and JavaScript syntax check tooling.
 
 ## Project Layout
 

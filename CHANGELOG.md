@@ -9,6 +9,7 @@ All notable changes to this project are summarized here.
 - `project check` now ends with `Next Actions`, turning project gaps into concrete follow-up steps.
 - The web project-check companion now surfaces those `Next Actions` as a dedicated next-step card.
 - Added `pyproject.toml` with project metadata, package data, and local CLI/web console-script entry points.
+- Added `tools/check_js_syntax.py` to run `node --check` against web assets and the screenshot driver before regenerating real browser screenshots.
 
 ### Changed
 
@@ -17,6 +18,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes again after the web action boundary test brought the baseline to 163 tests.
 - Split result companion renderers into `workflow/web_assets/renderers.js`, leaving `app.js` focused on state, inputs, and event wiring.
 - Split web action payload and preflight validation helpers into `workflow/web_assets/actions.js`, and fixed malformed frontend status/toast strings caught by `node --check`.
+- Updated README maturity notes after the JavaScript syntax-check regression brought the baseline to 164 tests.
 
 ## v0.1.0 - 2026-05-23
 

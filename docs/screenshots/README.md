@@ -21,6 +21,14 @@ node tools/capture_web_screenshots.js
 
 The script starts `workflow.web_app`, loads `examples/demo-project`, drives the browser with Playwright, redacts visible local absolute paths, and writes PNG files back into this folder.
 
+Before regenerating screenshots after editing web JavaScript, run:
+
+```powershell
+python tools/check_js_syntax.py
+```
+
+This checks the browser assets and screenshot driver with `node --check` so syntax failures are caught before opening Playwright.
+
 Additional generic preview assets:
 
 - `web-workbench-preview.svg` - stylized workbench overview for README use.
