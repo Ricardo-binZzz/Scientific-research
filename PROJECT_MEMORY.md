@@ -21,6 +21,7 @@
 - Windows one-click setup was added on 2026-05-20 through `install_windows.bat`, which creates `.venv`, verifies `workflow.web_app`, and generates a `Research Workflow Web.bat` launcher in the project folder and Desktop when available.
 - Literature discovery and PDF intake were expanded on 2026-05-20 with `library discover` for Crossref open metadata and `library download-pdf` for direct/open PDF URLs only; the workflow does not bypass paywalls or institutional login.
 - DOCX manuscript QA now checks package-level style/layout/reference-field signals such as missing `styles.xml`, missing page margins, undefined paragraph styles, and missing Word citation/bibliography fields.
+- DOCX manuscript QA also flags Word images and drawing objects whose `wp:docPr` metadata lacks both `descr` and `title` alternative text.
 - Simulation automation now includes `simulation run-command`, which launches an installed solver CLI command from a working directory and captures stdout/stderr to a log without trying to control commercial solver GUIs.
 - The web UI has app-level section controls for expanding or collapsing all workflow modules.
 - CI privacy scanning uses a generic Windows user-directory pattern rather than a hard-coded local account name, while allowing documented placeholder examples.

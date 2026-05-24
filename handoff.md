@@ -2,6 +2,7 @@
 
 ## Status
 
+- DOCX manuscript QA on 2026-05-25: Word images and drawing objects now report `DOCX image/drawing missing alt text` when `wp:docPr` lacks both `descr` and `title`; focused manuscript tests and the full 166-test suite pass.
 - Screenshot asset QA on 2026-05-24: screenshot tests now parse PNG headers and assert the tracked web screenshots are valid `1440 x 980` captures; `docs/screenshots/README.md` documents the fixed viewport.
 - Real screenshot recapture on 2026-05-24: `tools/capture_web_screenshots.js` now resolves bundled Codex Playwright/Python paths, the script was run successfully with headless Chromium, and `docs/screenshots/*.png` were refreshed from the live local web UI.
 - Web screenshot verification on 2026-05-24: `tools/check_js_syntax.py` now runs `node --check` on web assets plus `tools/capture_web_screenshots.js`; screenshot docs and README entry points tell maintainers to run it before Playwright recaptures, and the test baseline is 164.

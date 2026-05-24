@@ -414,6 +414,7 @@ The check reports:
 - Whether the library contains entries that are not cited.
 - Whether English figure markers are duplicated, such as repeated `Figure 1`.
 - Whether English figure numbers are skipped, such as `Figure 1` and `Figure 3` with no `Figure 2`.
+- Whether `.docx` images or drawing objects are missing alternative text in Word `descr` or `title` metadata.
 
 ## 15. View Project Status and Run a Health Check
 
@@ -499,5 +500,5 @@ The first version does not directly control ANSYS, Abaqus, or COMSOL. Model, sol
 
 ### Can It Automatically Check Word Layout?
 
-Currently it can read `.docx` text and run basic manuscript checks. It does not yet inspect Word styles, margins, headers, footers, captions, or reference fields.
+Currently it can read `.docx` text and inspect several package-level Word signals: missing `styles.xml`, missing page margins, undefined paragraph styles, missing citation/reference fields, missing bibliography fields, and images or drawing objects without alternative text. It still does not render Word pages or replace final template review in Word.
 

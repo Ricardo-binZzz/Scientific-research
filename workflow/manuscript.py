@@ -334,6 +334,20 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         issues.append(ManuscriptIssue(level="warning", message="No Word citation/reference fields detected"))
     if _has_references_section(headings) and "BIBLIOGRAPHY" not in field_text.upper():
         issues.append(ManuscriptIssue(level="warning", message="References section found but no Word bibliography field detected"))
+    issues.extend(_inspect_docx_drawing_alt_text(root))
+    return issues
+
+
+def _inspect_docx_drawing_alt_text(root: ElementTree.Element) -> list[ManuscriptIssue]:
+    namespace = {"wp": "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"}
+    issues: list[ManuscriptIssue] = []
+    for index, docpr in enumerate(root.findall(".//wp:docPr", namespace), start=1):
+        description = docpr.attrib.get("descr", "").strip()
+        title = docpr.attrib.get("title", "").strip()
+        if description or title:
+            continue
+        name = docpr.attrib.get("name", "").strip() or f"drawing {index}"
+        issues.append(ManuscriptIssue(level="warning", message=f"DOCX image/drawing missing alt text: {name}"))
     return issues
 
 

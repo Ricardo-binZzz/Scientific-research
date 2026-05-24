@@ -319,6 +319,26 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("No Word citation/reference fields detected", messages)
         self.assertIn("References section found but no Word bibliography field detected", messages)
 
+    def test_inspect_manuscript_flags_docx_images_missing_alt_text(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_image_docpr(path, name="Stress plot", descr="")
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX image/drawing missing alt text: Stress plot", messages)
+
+    def test_inspect_manuscript_accepts_docx_images_with_alt_text(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_image_docpr(path, name="Stress plot", descr="", title="Stress distribution under load")
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertNotIn("DOCX image/drawing missing alt text: Stress plot", messages)
+
     def test_inspect_manuscript_flags_citations_missing_from_library(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"
@@ -387,6 +407,24 @@ def _write_minimal_docx(path: Path, paragraphs: list[str]) -> None:
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
         f"<w:body>{body}</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_image_docpr(path: Path, *, name: str, descr: str, title: str = "") -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        "<w:p><w:r><w:drawing><wp:inline>"
+        f'<wp:docPr id="1" name="{name}" descr="{descr}" title="{title}"/>'
+        "</wp:inline></w:drawing></w:r></w:p>"
+        "</w:body>"
         "</w:document>"
     )
     with zipfile.ZipFile(path, "w") as package:
