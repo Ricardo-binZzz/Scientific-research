@@ -78,7 +78,7 @@ def _make_handler(default_project_root: str):
             self.wfile.write(data)
 
         def _send_asset(self, name: str) -> None:
-            if name not in {"styles.css", "app.js", "renderers.js"}:
+            if name not in {"styles.css", "actions.js", "app.js", "renderers.js"}:
                 self._send(404, "text/plain; charset=utf-8", "Not Found")
                 return
             path = Path(__file__).with_name("web_assets") / name

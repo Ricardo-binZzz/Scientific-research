@@ -27,7 +27,7 @@
 - The web project-check companion renders the raw report's `Next Actions` as a dedicated next-step card above the raw output.
 - `pyproject.toml` now defines project metadata, package data, and editable-install console scripts: `research-workflow` for the CLI and `research-workflow-web` for the local browser UI. In the restricted local environment, document `pip install -e . --no-build-isolation` so pip does not try to fetch build dependencies.
 - Web backend responsibilities are split: `workflow.web_app` owns page rendering, HTTP serving, assets, and port binding; `workflow.web_actions` owns web action dispatch and action-specific helper functions.
-- Web frontend responsibilities are split: `workflow/web_assets/app.js` owns state, inputs, validation, action calls, persistence, and event wiring; `workflow/web_assets/renderers.js` owns result companion cards and Markdown/text parsing helpers.
+- Web frontend responsibilities are split: `workflow/web_assets/actions.js` owns action payload collection and preflight validation; `workflow/web_assets/app.js` owns state, action calls, persistence, DOM updates, and event wiring; `workflow/web_assets/renderers.js` owns result companion cards and Markdown/text parsing helpers.
 
 ## Working Rules
 
@@ -35,6 +35,7 @@
 - The browser result header persists the three most recent successful actions in localStorage and restores them after refresh; clearing output also clears the stored success history.
 - Treat simulation software output as an upstream data source, not a place to fully automate control in v1.
 - Prefer reusable templates and compact contracts over broad automation.
+- For web asset refactors, run the bundled Node syntax check from `load_workspace_dependencies` with `node --check` against changed `.js` files because Python asset tests do not parse browser JavaScript.
 - The CLI currently supports workspace initialization, note creation, simulation runbook/export listing, and literature library indexing.
 - The literature library stores entries in `literature/library-index.json` and de-duplicates by DOI first, then normalized title.
 - The figure pipeline now converts CSV/JSON tabular data into a FigureSpec JSON plus SVG line plot bundle.

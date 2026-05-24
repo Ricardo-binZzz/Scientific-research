@@ -59,17 +59,34 @@ class WebAppTests(unittest.TestCase):
 
     def test_frontend_assets_include_literature_insight_renderer(self) -> None:
         js_path = Path("workflow") / "web_assets" / "app.js"
+        actions_path = Path("workflow") / "web_assets" / "actions.js"
         renderers_path = Path("workflow") / "web_assets" / "renderers.js"
         css_path = Path("workflow") / "web_assets" / "styles.css"
         html_path = Path("workflow") / "web_assets" / "index.html"
         js = js_path.read_text(encoding="utf-8")
+        actions_js = actions_path.read_text(encoding="utf-8")
         renderers_js = renderers_path.read_text(encoding="utf-8")
         css = css_path.read_text(encoding="utf-8")
         html = html_path.read_text(encoding="utf-8")
 
+        self.assertIn('<script src="/assets/actions.js"></script>', html)
         self.assertIn('<script src="/assets/app.js"></script>', html)
         self.assertIn('<script src="/assets/renderers.js"></script>', html)
+        self.assertLess(html.index("/assets/actions.js"), html.index("/assets/app.js"))
         self.assertLess(html.index("/assets/app.js"), html.index("/assets/renderers.js"))
+        self.assertIn("collectActionPayload", actions_js)
+        self.assertIn("validateActionPayload", actions_js)
+        self.assertIn("actionNeedsProjectRoot", actions_js)
+        self.assertIn("actionPrimaryPath", actions_js)
+        self.assertIn("actionSecondaryRequiredField", actions_js)
+        self.assertIn("focusMissingField", actions_js)
+        self.assertIn("fieldLabelForId", actions_js)
+        self.assertNotIn("function validateActionPayload", js)
+        self.assertNotIn("function actionNeedsProjectRoot", js)
+        self.assertNotIn("function actionPrimaryPath", js)
+        self.assertNotIn("function actionSecondaryRequiredField", js)
+        self.assertNotIn("function focusMissingField", js)
+        self.assertNotIn("function fieldLabelForId", js)
         self.assertIn("renderResultCompanion", renderers_js)
         self.assertIn("renderLiteratureInsights", renderers_js)
         self.assertIn("parseMarkdownListSection", renderers_js)
@@ -110,12 +127,6 @@ class WebAppTests(unittest.TestCase):
         self.assertNotIn("function renderProjectCheck", js)
         self.assertIn("highlightTargetSection", js)
         self.assertIn("section-highlight", js)
-        self.assertIn("validateActionPayload", js)
-        self.assertIn("actionNeedsProjectRoot", js)
-        self.assertIn("actionPrimaryPath", js)
-        self.assertIn("actionSecondaryRequiredField", js)
-        self.assertIn("focusMissingField", js)
-        self.assertIn("fieldLabelForId", js)
         self.assertIn("lastSuccessSummary", js)
         self.assertIn("updateLastSuccess", js)
         self.assertIn("successHistory", js)
@@ -170,6 +181,9 @@ class WebAppTests(unittest.TestCase):
             url = f"http://127.0.0.1:{server.server_address[1]}/assets/app.js"
             with urllib.request.urlopen(url, timeout=5) as response:
                 js = response.read().decode("utf-8")
+            actions_url = f"http://127.0.0.1:{server.server_address[1]}/assets/actions.js"
+            with urllib.request.urlopen(actions_url, timeout=5) as response:
+                actions_js = response.read().decode("utf-8")
             renderers_url = f"http://127.0.0.1:{server.server_address[1]}/assets/renderers.js"
             with urllib.request.urlopen(renderers_url, timeout=5) as response:
                 renderers_js = response.read().decode("utf-8")
@@ -181,6 +195,7 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("examples", js)
         self.assertIn("demo-project", js)
         self.assertNotIn("__DEMO_PROJECT_ROOT__", js)
+        self.assertIn("collectActionPayload", actions_js)
         self.assertIn("renderResultCompanion", renderers_js)
 
     def test_handle_project_check_action_returns_report(self) -> None:
