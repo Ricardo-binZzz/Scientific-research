@@ -4,7 +4,9 @@ All notable changes to this project are summarized here.
 
 ## Unreleased
 
-No unreleased changes yet.
+### Added
+
+- `project check` now ends with `Next Actions`, turning project gaps into concrete follow-up steps.
 
 ## v0.1.0 - 2026-05-23
 

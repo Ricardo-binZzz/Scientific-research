@@ -23,6 +23,7 @@
 - CI privacy scanning uses a generic Windows user-directory pattern rather than a hard-coded local account name, while allowing documented placeholder examples.
 - `examples/demo-project` is intended to be a clean first-run demo: its project check should report no missing PDFs, no missing notes, no simulation issues, and no manuscript issues.
 - v0.1.0 release materials were aligned on 2026-05-23: release notes, changelog, roadmap, status, citation metadata, and README limits should describe Crossref/open-PDF helpers, DOCX package checks, solver CLI logging, real screenshots, and the clean demo baseline.
+- `project check` reports now end with `Next Actions`, converting missing PDFs, missing notes, simulation issues, and manuscript issues into concrete follow-up commands or directions.
 
 ## Working Rules
 

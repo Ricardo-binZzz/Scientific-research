@@ -101,7 +101,25 @@ def render_project_check(check: ProjectCheck) -> str:
     lines.append(f"- Simulation exports: {check.summary.simulation_exports}")
     lines.append(f"- Manuscript files: {check.summary.manuscript_files}")
     lines.append("")
+    lines.append("## Next Actions")
+    lines.extend(f"- {action}" for action in _project_check_next_actions(check))
+    lines.append("")
     return "\n".join(lines)
+
+
+def _project_check_next_actions(check: ProjectCheck) -> list[str]:
+    actions: list[str] = []
+    if check.missing_pdf_names:
+        actions.append("Run `library check-pdfs` and add the missing PDF files to the literature folder.")
+    if check.missing_note_paths:
+        actions.append("Run `library check-notes` and create paper-summary notes for missing note paths.")
+    if check.simulation_issues:
+        actions.append("Review simulation issues, then run `simulation inspect-data`, `simulation validate-data`, or `simulation check-ranges` on the affected files.")
+    if check.manuscript_issues:
+        actions.append("Review manuscript issues, then run `manuscript check` after fixing citations, sections, figures, captions, or references.")
+    if not actions:
+        actions.append("No immediate fixes needed; continue with writing packs, dashboards, figures, or the next review cycle.")
+    return actions
 
 
 def _load_project_check_config(root: Path) -> dict:

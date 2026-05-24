@@ -122,6 +122,8 @@ Create a project health report:
 & $PY -m workflow.cli project check C:\path\to\workspace
 ```
 
+The report ends with `Next Actions`, turning missing PDFs, missing notes, simulation findings, and manuscript findings into concrete follow-up steps.
+
 Generate a writing pack:
 
 ```powershell

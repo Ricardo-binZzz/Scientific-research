@@ -2,6 +2,7 @@
 
 ## Status
 
+- Project check guidance on 2026-05-24: `project check` now includes a `Next Actions` section, with clean demos reporting no immediate fixes and issue-bearing projects listing concrete follow-up commands or directions.
 - Demo project cleanup on 2026-05-23: `examples/demo-project` now includes placeholder PDFs, cites both indexed papers, has a References section, and `project check` reports no literature, simulation, or manuscript issues.
 - v0.1.0 release prep on 2026-05-23: release notes, changelog, roadmap, status, citation metadata, and README limits were updated to match the current implemented workflow and 161-test baseline.
 - Release tag note on 2026-05-23: local tag `v0.1.0` already exists but points to old commit `5fe260d`, not the current release-prep commit `f3cb1f2`; move or recreate the tag only after explicit confirmation.

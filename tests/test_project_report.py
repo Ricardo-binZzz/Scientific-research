@@ -113,6 +113,19 @@ class ProjectReportTests(unittest.TestCase):
         self.assertIn("Missing notes: notes/summary.md", text)
         self.assertTrue(any("stress" in issue for issue in check.simulation_issues))
         self.assertTrue(any("No citation markers found" in issue for issue in check.manuscript_issues))
+        self.assertIn("## Next Actions", text)
+        self.assertIn("Run `library check-pdfs`", text)
+        self.assertIn("Run `library check-notes`", text)
+        self.assertIn("Review simulation issues", text)
+        self.assertIn("Review manuscript issues", text)
+
+    def test_render_project_check_reports_clean_next_action(self) -> None:
+        project = Path("examples/demo-project")
+
+        text = render_project_check(build_project_check(project))
+
+        self.assertIn("## Next Actions", text)
+        self.assertIn("No immediate fixes needed", text)
 
     def test_build_project_check_reports_simulation_range_issues(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

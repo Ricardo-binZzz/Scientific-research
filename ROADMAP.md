@@ -16,7 +16,7 @@ This roadmap keeps the project focused on practical, local-first research workfl
 - [ ] Add optional interpolation or smoothing for sparse 2D contour-like data while keeping the current strict rectangular-grid path.
 - [ ] Improve library import support for richer Zotero exports and additional database metadata variants.
 - [ ] Add more manuscript checks for institution-specific Word formatting without requiring Microsoft Office.
-- [ ] Improve report outputs so users can move from project health checks to the next concrete action faster.
+- [x] Improve report outputs so users can move from project health checks to the next concrete action faster.
 
 ## Web UI Improvements
 

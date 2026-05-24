@@ -123,6 +123,8 @@ $PY='C:\path\to\python.exe'
 & $PY -m workflow.cli project check C:\path\to\workspace
 ```
 
+报告末尾会包含 `Next Actions`，把缺 PDF、缺笔记、仿真问题和稿件问题转换成更具体的下一步处理建议。
+
 生成写作资料包：
 
 ```powershell
