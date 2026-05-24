@@ -1,10 +1,35 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
-const { spawn } = require("child_process");
+const Module = require("module");
+const { spawn, spawnSync } = require("child_process");
+
+function appendNodeModulePath(candidate) {
+  if (!fs.existsSync(candidate)) return;
+  const existing = process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : [];
+  if (existing.includes(candidate)) return;
+  process.env.NODE_PATH = [...existing, candidate].join(path.delimiter);
+}
+
+function configureNodeModulePaths() {
+  const bundledRoot = path.join(
+    os.homedir(),
+    ".cache",
+    "codex-runtimes",
+    "codex-primary-runtime",
+    "dependencies",
+    "node",
+    "node_modules"
+  );
+  appendNodeModulePath(bundledRoot);
+  appendNodeModulePath(path.join(bundledRoot, ".pnpm", "node_modules"));
+  Module._initPaths();
+}
 
 function loadPlaywright() {
+  configureNodeModulePaths();
   try {
     return require("playwright");
   } catch (error) {
@@ -19,7 +44,28 @@ const { chromium } = loadPlaywright();
 const repoRoot = path.resolve(__dirname, "..");
 const outputDir = path.join(repoRoot, "docs", "screenshots");
 const demoProjectRoot = path.join(repoRoot, "examples", "demo-project");
-const pythonExecutable = process.env.PYTHON || "python";
+const pythonExecutable = findPythonExecutable();
+
+function commandWorks(command, args) {
+  const result = spawnSync(command, args, { stdio: "ignore" });
+  return result.status === 0;
+}
+
+function findPythonExecutable() {
+  if (process.env.PYTHON) return process.env.PYTHON;
+  const bundledPython = path.join(
+    os.homedir(),
+    ".cache",
+    "codex-runtimes",
+    "codex-primary-runtime",
+    "dependencies",
+    "python",
+    "python.exe"
+  );
+  if (fs.existsSync(bundledPython)) return bundledPython;
+  if (commandWorks("py", ["--version"])) return "py";
+  return "python";
+}
 
 function waitForServerUrl(server) {
   return new Promise((resolve, reject) => {

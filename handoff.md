@@ -2,6 +2,7 @@
 
 ## Status
 
+- Real screenshot recapture on 2026-05-24: `tools/capture_web_screenshots.js` now resolves bundled Codex Playwright/Python paths, the script was run successfully with headless Chromium, and `docs/screenshots/*.png` were refreshed from the live local web UI.
 - Web screenshot verification on 2026-05-24: `tools/check_js_syntax.py` now runs `node --check` on web assets plus `tools/capture_web_screenshots.js`; screenshot docs and README entry points tell maintainers to run it before Playwright recaptures, and the test baseline is 164.
 - Web action-asset refactor on 2026-05-24: `workflow/web_assets/actions.js` now owns action payload collection and preflight validation, `app.js` keeps state/DOM/event wiring, and malformed frontend status/toast strings were repaired after bundled `node --check` exposed syntax failures.
 - Web frontend refactor on 2026-05-24: `workflow/web_assets/renderers.js` now owns result companion cards and report parsing helpers, while `workflow/web_assets/app.js` keeps state, inputs, action calls, persistence, and event wiring; web tests verify the renderer asset is referenced and served.

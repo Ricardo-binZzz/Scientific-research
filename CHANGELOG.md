@@ -19,6 +19,7 @@ All notable changes to this project are summarized here.
 - Split result companion renderers into `workflow/web_assets/renderers.js`, leaving `app.js` focused on state, inputs, and event wiring.
 - Split web action payload and preflight validation helpers into `workflow/web_assets/actions.js`, and fixed malformed frontend status/toast strings caught by `node --check`.
 - Updated README maturity notes after the JavaScript syntax-check regression brought the baseline to 164 tests.
+- Made `tools/capture_web_screenshots.js` resolve bundled Codex Playwright and Python paths automatically, then refreshed the real browser screenshots.
 
 ## v0.1.0 - 2026-05-23
 
