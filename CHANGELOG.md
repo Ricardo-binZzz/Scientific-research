@@ -11,6 +11,7 @@ All notable changes to this project are summarized here.
 - Added `pyproject.toml` with project metadata, package data, and local CLI/web console-script entry points.
 - Added `tools/check_js_syntax.py` to run `node --check` against web assets and the screenshot driver before regenerating real browser screenshots.
 - DOCX manuscript QA now flags Word images and drawing objects that lack `descr` or `title` alternative text metadata.
+- DOCX manuscript QA now flags leftover Word tracked changes and comment markers.
 
 ### Changed
 
@@ -23,6 +24,7 @@ All notable changes to this project are summarized here.
 - Made `tools/capture_web_screenshots.js` resolve bundled Codex Playwright and Python paths automatically, then refreshed the real browser screenshots.
 - Documented the screenshot viewport and expanded screenshot tests to validate PNG headers and `1440 x 980` dimensions.
 - Updated README maturity notes after DOCX alt-text coverage brought the baseline to 166 tests.
+- Updated README maturity notes after DOCX review-mark coverage brought the baseline to 167 tests.
 
 ## v0.1.0 - 2026-05-23
 

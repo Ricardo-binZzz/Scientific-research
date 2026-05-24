@@ -339,6 +339,17 @@ class ManuscriptTests(unittest.TestCase):
         messages = [issue.message for issue in report.issues]
         self.assertNotIn("DOCX image/drawing missing alt text: Stress plot", messages)
 
+    def test_inspect_manuscript_flags_docx_review_marks(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_review_marks(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX tracked changes detected: insertions=1, deletions=1", messages)
+        self.assertIn("DOCX comments detected: 1 comment marker", messages)
+
     def test_inspect_manuscript_flags_citations_missing_from_library(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"
@@ -412,6 +423,24 @@ def _write_minimal_docx(path: Path, paragraphs: list[str]) -> None:
     with zipfile.ZipFile(path, "w") as package:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_review_marks(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        "<w:p><w:ins><w:r><w:t>Inserted text</w:t></w:r></w:ins></w:p>"
+        "<w:p><w:del><w:r><w:delText>Deleted text</w:delText></w:r></w:del></w:p>"
+        '<w:p><w:commentRangeStart w:id="0"/><w:r><w:t>Needs review</w:t></w:r><w:commentReference w:id="0"/></w:p>'
+        "</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+        package.writestr("word/comments.xml", "<w:comments xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"/>")
 
 
 def _write_docx_with_image_docpr(path: Path, *, name: str, descr: str, title: str = "") -> None:

@@ -637,6 +637,7 @@ C:\Users\YourName\Documents\fixture-study\manuscript
 - Markdown 表格附近是否缺少表题，例如表格前后没有 `Table 1` 或 `表 1`。
 - 参考文献章节是否明显过短，目前少于 3 条参考文献会提示。
 - `.docx` 图片或绘图对象是否缺少替代文本，优先检查 Word 的 `descr` 或 `title` 属性。
+- `.docx` 是否残留 Word 修订痕迹或批注标记，提交前建议在 Word 里接受/拒绝修订并清理批注。
 
 如果你用网页点击“检查稿件”，右侧会先显示可视化问题概览。新手建议先看上方卡片：优先处理警告数量最多、和引用/图表/章节有关的问题；确认后再看下方完整报告逐条修改。
 
@@ -806,4 +807,4 @@ Get-Content C:\Users\YourName\Documents\科研\USER_GUIDE.md -Encoding UTF8
 
 ### Word 排版能不能自动检查
 
-现在 `.docx` 除了读取正文文本，还会检查一部分 Word 包结构问题，例如缺少 `styles.xml`、页面边距设置缺失、正文使用了未定义段落样式、没有检测到 Word 引用/参考文献域、参考文献章节存在但没有 bibliography 域，以及图片或绘图对象缺少替代文本。它仍然不能替代 Word 模板审阅或 Zotero 字段人工核对；最终排版仍需在 Word 里确认。
+现在 `.docx` 除了读取正文文本，还会检查一部分 Word 包结构问题，例如缺少 `styles.xml`、页面边距设置缺失、正文使用了未定义段落样式、没有检测到 Word 引用/参考文献域、参考文献章节存在但没有 bibliography 域、图片或绘图对象缺少替代文本，以及残留修订痕迹或批注标记。它仍然不能替代 Word 模板审阅或 Zotero 字段人工核对；最终排版仍需在 Word 里确认。

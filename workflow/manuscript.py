@@ -335,6 +335,7 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
     if _has_references_section(headings) and "BIBLIOGRAPHY" not in field_text.upper():
         issues.append(ManuscriptIssue(level="warning", message="References section found but no Word bibliography field detected"))
     issues.extend(_inspect_docx_drawing_alt_text(root))
+    issues.extend(_inspect_docx_review_marks(root, names))
     return issues
 
 
@@ -348,6 +349,28 @@ def _inspect_docx_drawing_alt_text(root: ElementTree.Element) -> list[Manuscript
             continue
         name = docpr.attrib.get("name", "").strip() or f"drawing {index}"
         issues.append(ManuscriptIssue(level="warning", message=f"DOCX image/drawing missing alt text: {name}"))
+    return issues
+
+
+def _inspect_docx_review_marks(root: ElementTree.Element, package_names: set[str]) -> list[ManuscriptIssue]:
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    insertions = len(root.findall(".//w:ins", namespace))
+    deletions = len(root.findall(".//w:del", namespace))
+    comment_markers = len(root.findall(".//w:commentRangeStart", namespace))
+    if not comment_markers and "word/comments.xml" in package_names:
+        comment_markers = len(root.findall(".//w:commentReference", namespace))
+
+    issues: list[ManuscriptIssue] = []
+    if insertions or deletions:
+        issues.append(
+            ManuscriptIssue(
+                level="warning",
+                message=f"DOCX tracked changes detected: insertions={insertions}, deletions={deletions}",
+            )
+        )
+    if comment_markers:
+        suffix = "marker" if comment_markers == 1 else "markers"
+        issues.append(ManuscriptIssue(level="warning", message=f"DOCX comments detected: {comment_markers} comment {suffix}"))
     return issues
 
 

@@ -53,7 +53,7 @@ It does not try to replace expert judgment, Zotero, Word, simulation software, o
 | Writing preparation | Build writing packs, literature comparison tables, writing dashboards, literature maps, and search trackers |
 | Simulation data | Run installed solver CLI commands with logs, inspect normalized columns, summarize numeric ranges, validate required columns, check units, and flag out-of-range values |
 | Figure generation | Create SVG/JSON figure bundles from CSV/JSON data, including trend, bar, error-bar, heatmap, and contour plots |
-| Manuscript QA | Check Markdown/plain text/DOCX drafts for citations, headings, figure markers, captions, tables, DOCX style/layout gaps, image alt-text gaps, and Word reference-field issues |
+| Manuscript QA | Check Markdown/plain text/DOCX drafts for citations, headings, figure markers, captions, tables, DOCX style/layout gaps, image alt-text gaps, review marks, and Word reference-field issues |
 | Local web UI | Use common workflows from a browser without typing Python commands |
 
 ![Project check screenshot](docs/screenshots/project-check.png)
@@ -170,7 +170,7 @@ Run `python tools/check_js_syntax.py` before regenerating screenshots, then use 
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 166 unittest cases covering the main workflow modules, web action handlers, and JavaScript syntax check tooling.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 167 unittest cases covering the main workflow modules, web action handlers, and JavaScript syntax check tooling.
 
 ## Project Layout
 
@@ -237,7 +237,7 @@ If this workbench helps your research workflow, cite it as software using [CITAT
 
 ## Current Limits
 
-- DOCX checking inspects text and package-level signals, including image alt-text metadata, but does not render Word pages or validate full institution-specific formatting.
+- DOCX checking inspects text and package-level signals, including image alt-text metadata and review marks, but does not render Word pages or validate full institution-specific formatting.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.
 
