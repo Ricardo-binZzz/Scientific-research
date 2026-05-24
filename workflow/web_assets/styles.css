@@ -816,6 +816,38 @@ details[open] .chevron {
   overflow-wrap: anywhere;
 }
 
+.project-next-actions-card {
+  background: #fff;
+  border: 1px solid #cfe1e6;
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px;
+}
+
+.project-next-actions-card h4 {
+  color: #18212b;
+  font-size: 13px;
+  margin: 0;
+}
+
+.project-next-actions-card ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.project-next-actions-card li {
+  color: #344250;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .manuscript-summary-grid {
   display: grid;
   gap: 8px;

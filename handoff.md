@@ -2,6 +2,7 @@
 
 ## Status
 
+- Web project-check guidance on 2026-05-24: the project-check companion now renders `Next Actions` as a dedicated next-step card above the raw report.
 - Project check guidance on 2026-05-24: `project check` now includes a `Next Actions` section, with clean demos reporting no immediate fixes and issue-bearing projects listing concrete follow-up commands or directions.
 - Demo project cleanup on 2026-05-23: `examples/demo-project` now includes placeholder PDFs, cites both indexed papers, has a References section, and `project check` reports no literature, simulation, or manuscript issues.
 - v0.1.0 release prep on 2026-05-23: release notes, changelog, roadmap, status, citation metadata, and README limits were updated to match the current implemented workflow and 161-test baseline.

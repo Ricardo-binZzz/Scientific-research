@@ -67,6 +67,8 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("workflow-jump-button", js)
         self.assertIn("renderProjectCheck", js)
         self.assertIn("parseProjectCheckCards", js)
+        self.assertIn("renderProjectNextActions", js)
+        self.assertIn("project-next-actions-card", css)
         self.assertIn("renderManuscriptCheck", js)
         self.assertIn("parseManuscriptIssues", js)
         self.assertIn("renderSimulationReport", js)

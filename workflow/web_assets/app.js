@@ -1191,6 +1191,7 @@ function manuscriptIssueCategory(message) {
 function renderProjectCheck(text) {
   if (!insightPanel) return;
   const cards = parseProjectCheckCards(text);
+  const nextActions = parseMarkdownListSection(text, "Next Actions");
   insightPanel.innerHTML = `
     <div class="insight-title">
       <div>
@@ -1201,6 +1202,7 @@ function renderProjectCheck(text) {
     <div class="health-grid">
       ${cards.map((card) => renderHealthCard(card)).join("")}
     </div>
+    ${renderProjectNextActions(nextActions)}
   `;
   insightPanel.hidden = false;
 }
@@ -1246,6 +1248,16 @@ function renderHealthCard(card) {
         <span>${card.status === "ready" ? "就绪" : "需处理"}</span>
       </div>
       <ul>${card.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+    </section>
+  `;
+}
+
+function renderProjectNextActions(actions) {
+  const items = actions.length ? actions : ["查看下方完整报告，再决定是否生成写作素材包或继续下一轮检查。"];
+  return `
+    <section class="project-next-actions-card">
+      <h4>下一步建议</h4>
+      <ul>${items.slice(0, 5).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
     </section>
   `;
 }

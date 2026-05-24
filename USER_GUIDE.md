@@ -657,7 +657,7 @@ C:\Users\YourName\Documents\fixture-study\manuscript
 - 仿真 CSV/JSON 是否可读、必要列是否存在、数值列是否真是数字、单位元数据是否完整、数值是否超出 `project-check.json` 里设置的合理范围。
 - 稿件是否缺章节、缺图号、缺引用、引用是否能在本地文献库找到、图号是否重复或跳号。
 - 当前项目的笔记、图、仿真导出、稿件数量。
-- `Next Actions` 会把当前缺口转换成下一步建议，例如先检查缺失 PDF、补摘要卡、复查仿真数据，或重新运行稿件检查。示例课题如果已经干净，会显示 `No immediate fixes needed`。
+- `Next Actions` 会把当前缺口转换成下一步建议，例如先检查缺失 PDF、补摘要卡、复查仿真数据，或重新运行稿件检查。网页里的“项目体检”也会把这些建议单独显示成“下一步建议”卡片；示例课题如果已经干净，会显示 `No immediate fixes needed`。
 
 ## 17. 生成写作素材包
 
