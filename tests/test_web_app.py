@@ -1,6 +1,7 @@
 import tempfile
 import threading
 import unittest
+import importlib
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler
 
@@ -9,6 +10,13 @@ from workflow.web_app import _create_server, _make_handler, handle_web_action, r
 
 
 class WebAppTests(unittest.TestCase):
+    def test_web_action_handlers_live_outside_server_module(self) -> None:
+        web_actions = importlib.import_module("workflow.web_actions")
+        web_app = importlib.import_module("workflow.web_app")
+
+        self.assertIs(web_app.handle_web_action, web_actions.handle_web_action)
+        self.assertFalse(hasattr(web_app, "_render_workflow_status"))
+
     def test_render_home_page_contains_core_controls(self) -> None:
         html = render_home_page(default_project_root=r"C:\Research\demo")
 

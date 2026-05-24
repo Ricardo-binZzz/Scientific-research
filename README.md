@@ -170,7 +170,7 @@ The screenshots can be regenerated with `node tools/capture_web_screenshots.js` 
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 162 unittest cases covering the main workflow modules and web action handlers.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 163 unittest cases covering the main workflow modules and web action handlers.
 
 ## Project Layout
 

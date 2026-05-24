@@ -26,6 +26,7 @@
 - `project check` reports now end with `Next Actions`, converting missing PDFs, missing notes, simulation issues, and manuscript issues into concrete follow-up commands or directions.
 - The web project-check companion renders the raw report's `Next Actions` as a dedicated next-step card above the raw output.
 - `pyproject.toml` now defines project metadata, package data, and editable-install console scripts: `research-workflow` for the CLI and `research-workflow-web` for the local browser UI. In the restricted local environment, document `pip install -e . --no-build-isolation` so pip does not try to fetch build dependencies.
+- Web backend responsibilities are split: `workflow.web_app` owns page rendering, HTTP serving, assets, and port binding; `workflow.web_actions` owns web action dispatch and action-specific helper functions.
 
 ## Working Rules
 
