@@ -17,6 +17,7 @@ All notable changes to this project are summarized here.
 - DOCX manuscript QA now reports unresolved or missing DOCX header/footer target parts.
 - DOCX manuscript QA now reports unresolved or missing embedded image target parts.
 - DOCX manuscript QA now reports missing footnote and endnote target definitions.
+- DOCX manuscript QA now reports unresolved or empty hyperlink relationships.
 
 ### Changed
 
@@ -34,6 +35,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes after DOCX header/footer reference coverage brought the baseline to 169 tests.
 - Updated README maturity notes after DOCX embedded-image target coverage brought the baseline to 170 tests.
 - Updated README maturity notes after DOCX note-reference coverage brought the baseline to 172 tests.
+- Updated README maturity notes after DOCX hyperlink relationship coverage brought the baseline to 173 tests.
 
 ## v0.1.0 - 2026-05-23
 

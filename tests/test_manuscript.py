@@ -370,6 +370,16 @@ class ManuscriptTests(unittest.TestCase):
         messages = [issue.message for issue in report.issues]
         self.assertIn("DOCX endnote target missing: 3", messages)
 
+    def test_inspect_manuscript_flags_unresolved_docx_hyperlink_relationships(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_unresolved_hyperlink(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX hyperlink relationship unresolved: rIdLink1", messages)
+
     def test_inspect_manuscript_flags_docx_images_missing_alt_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -575,6 +585,27 @@ def _write_docx_with_missing_endnote_target(path: Path) -> None:
     with zipfile.ZipFile(path, "w") as package:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_unresolved_hyperlink(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        '<w:p><w:hyperlink r:id="rIdLink1"><w:r><w:t>source link</w:t></w:r></w:hyperlink></w:p>'
+        "</w:body>"
+        "</w:document>"
+    )
+    relationships_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>'
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+        package.writestr("word/_rels/document.xml.rels", relationships_xml)
 
 
 def _write_docx_with_review_marks(path: Path) -> None:

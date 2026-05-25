@@ -348,6 +348,26 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
     issues.extend(_inspect_docx_review_marks(root, names))
     issues.extend(_inspect_docx_header_footer_references(root, names, relationships_xml))
     issues.extend(_inspect_docx_note_references(root, footnotes_xml, endnotes_xml))
+    issues.extend(_inspect_docx_hyperlink_references(root, relationships_xml))
+    return issues
+
+
+def _inspect_docx_hyperlink_references(root: ElementTree.Element, relationships_xml: bytes) -> list[ManuscriptIssue]:
+    namespace = {
+        "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    }
+    relationships = _docx_relationship_targets(relationships_xml)
+    issues: list[ManuscriptIssue] = []
+    for hyperlink in root.findall(".//w:hyperlink", namespace):
+        relationship_id = hyperlink.attrib.get(f"{{{namespace['r']}}}id", "")
+        if not relationship_id:
+            continue
+        target = relationships.get(relationship_id)
+        if target is None:
+            issues.append(ManuscriptIssue(level="warning", message=f"DOCX hyperlink relationship unresolved: {relationship_id}"))
+        elif not target.strip():
+            issues.append(ManuscriptIssue(level="warning", message=f"DOCX hyperlink target missing: {relationship_id}"))
     return issues
 
 

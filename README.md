@@ -170,7 +170,7 @@ Run `python tools/check_js_syntax.py` before regenerating screenshots, then use 
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 172 unittest cases covering the main workflow modules, web action handlers, and JavaScript syntax check tooling.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 173 unittest cases covering the main workflow modules, web action handlers, and JavaScript syntax check tooling.
 
 ## Project Layout
 
@@ -237,7 +237,7 @@ If this workbench helps your research workflow, cite it as software using [CITAT
 
 ## Current Limits
 
-- DOCX checking inspects text and package-level signals, including page size presence and dimensions, header/footer part references, embedded image targets, footnote/endnote targets, image alt-text metadata, and review marks, but does not render Word pages or validate full institution-specific formatting.
+- DOCX checking inspects text and package-level signals, including page size presence and dimensions, header/footer part references, embedded image targets, footnote/endnote targets, hyperlink relationships, image alt-text metadata, and review marks, but does not render Word pages or validate full institution-specific formatting.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.
 
