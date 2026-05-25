@@ -342,8 +342,34 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
     if _has_references_section(headings) and "BIBLIOGRAPHY" not in field_text.upper():
         issues.append(ManuscriptIssue(level="warning", message="References section found but no Word bibliography field detected"))
     issues.extend(_inspect_docx_drawing_alt_text(root))
+    issues.extend(_inspect_docx_image_targets(root, names, relationships_xml))
     issues.extend(_inspect_docx_review_marks(root, names))
     issues.extend(_inspect_docx_header_footer_references(root, names, relationships_xml))
+    return issues
+
+
+def _inspect_docx_image_targets(
+    root: ElementTree.Element,
+    package_names: set[str],
+    relationships_xml: bytes,
+) -> list[ManuscriptIssue]:
+    namespace = {
+        "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
+        "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    }
+    relationships = _docx_relationship_targets(relationships_xml)
+    issues: list[ManuscriptIssue] = []
+    for blip in root.findall(".//a:blip", namespace):
+        relationship_id = blip.attrib.get(f"{{{namespace['r']}}}embed", "")
+        if not relationship_id:
+            continue
+        target = relationships.get(relationship_id)
+        if not target:
+            issues.append(ManuscriptIssue(level="warning", message=f"DOCX image relationship unresolved: {relationship_id}"))
+            continue
+        target_part = posixpath.normpath(posixpath.join("word", target))
+        if target_part not in package_names:
+            issues.append(ManuscriptIssue(level="warning", message=f"DOCX image target missing: {target_part}"))
     return issues
 
 

@@ -2,6 +2,7 @@
 
 ## Status
 
+- DOCX embedded-image target QA on 2026-05-25: manuscript checks now report unresolved embedded image relationships and missing image target parts in `.docx`; the full test baseline is 170 tests.
 - DOCX header/footer reference QA on 2026-05-25: manuscript checks now report unresolved header/footer relationships and missing header/footer target parts in `.docx`; the full test baseline is 169 tests.
 - DOCX page-size dimension QA on 2026-05-25: manuscript checks now report incomplete DOCX page size width/height attributes; the full test baseline is 168 tests.
 - DOCX page setup QA on 2026-05-25: manuscript checks now report missing DOCX page size settings in addition to missing page margins; the full test baseline remains 167 tests.

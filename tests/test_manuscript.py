@@ -340,6 +340,16 @@ class ManuscriptTests(unittest.TestCase):
         messages = [issue.message for issue in report.issues]
         self.assertIn("DOCX header/footer target missing: word/header1.xml", messages)
 
+    def test_inspect_manuscript_flags_missing_docx_image_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_missing_image_target(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX image target missing: word/media/image1.png", messages)
+
     def test_inspect_manuscript_flags_docx_images_missing_alt_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -479,6 +489,36 @@ def _write_docx_with_missing_header_target(path: Path) -> None:
         '<Relationship Id="rIdHeader1" '
         'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" '
         'Target="header1.xml"/>'
+        "</Relationships>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+        package.writestr("word/_rels/document.xml.rels", relationships_xml)
+
+
+def _write_docx_with_missing_image_target(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" '
+        'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        "<w:p><w:r><w:drawing><wp:inline>"
+        '<wp:docPr id="1" name="Stress plot" descr="Stress distribution"/>'
+        '<a:graphic><a:graphicData><a:blip r:embed="rIdImage1"/></a:graphicData></a:graphic>'
+        "</wp:inline></w:drawing></w:r></w:p>"
+        "</w:body>"
+        "</w:document>"
+    )
+    relationships_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rIdImage1" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
+        'Target="media/image1.png"/>'
         "</Relationships>"
     )
     with zipfile.ZipFile(path, "w") as package:

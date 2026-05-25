@@ -15,6 +15,7 @@ All notable changes to this project are summarized here.
 - DOCX manuscript QA now reports missing page size settings alongside missing page margins.
 - DOCX manuscript QA now reports incomplete page size width/height attributes.
 - DOCX manuscript QA now reports unresolved or missing DOCX header/footer target parts.
+- DOCX manuscript QA now reports unresolved or missing embedded image target parts.
 
 ### Changed
 
@@ -30,6 +31,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes after DOCX review-mark coverage brought the baseline to 167 tests.
 - Updated README maturity notes after DOCX page-size dimension coverage brought the baseline to 168 tests.
 - Updated README maturity notes after DOCX header/footer reference coverage brought the baseline to 169 tests.
+- Updated README maturity notes after DOCX embedded-image target coverage brought the baseline to 170 tests.
 
 ## v0.1.0 - 2026-05-23
 
