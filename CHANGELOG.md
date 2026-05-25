@@ -13,6 +13,7 @@ All notable changes to this project are summarized here.
 - DOCX manuscript QA now flags Word images and drawing objects that lack `descr` or `title` alternative text metadata.
 - DOCX manuscript QA now flags leftover Word tracked changes and comment markers.
 - DOCX manuscript QA now reports missing page size settings alongside missing page margins.
+- DOCX manuscript QA now reports incomplete page size width/height attributes.
 
 ### Changed
 
@@ -26,6 +27,7 @@ All notable changes to this project are summarized here.
 - Documented the screenshot viewport and expanded screenshot tests to validate PNG headers and `1440 x 980` dimensions.
 - Updated README maturity notes after DOCX alt-text coverage brought the baseline to 166 tests.
 - Updated README maturity notes after DOCX review-mark coverage brought the baseline to 167 tests.
+- Updated README maturity notes after DOCX page-size dimension coverage brought the baseline to 168 tests.
 
 ## v0.1.0 - 2026-05-23
 

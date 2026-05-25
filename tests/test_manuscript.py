@@ -320,6 +320,16 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("No Word citation/reference fields detected", messages)
         self.assertIn("References section found but no Word bibliography field detected", messages)
 
+    def test_inspect_manuscript_flags_incomplete_docx_page_size_dimensions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_section_properties(path, '<w:pgSz w:w="11906"/><w:pgMar w:top="1440"/>')
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX page size dimensions incomplete", messages)
+
     def test_inspect_manuscript_flags_docx_images_missing_alt_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -419,6 +429,21 @@ def _write_minimal_docx(path: Path, paragraphs: list[str]) -> None:
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
         f"<w:body>{body}</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_section_properties(path: Path, section_xml: str) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        f"<w:sectPr>{section_xml}</w:sectPr>"
+        "</w:body>"
         "</w:document>"
     )
     with zipfile.ZipFile(path, "w") as package:
