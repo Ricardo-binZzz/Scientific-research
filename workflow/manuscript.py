@@ -322,6 +322,8 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         document_xml = package.read("word/document.xml")
         styles_xml = package.read("word/styles.xml") if "word/styles.xml" in names else b""
         relationships_xml = package.read("word/_rels/document.xml.rels") if "word/_rels/document.xml.rels" in names else b""
+        footnotes_xml = package.read("word/footnotes.xml") if "word/footnotes.xml" in names else b""
+        endnotes_xml = package.read("word/endnotes.xml") if "word/endnotes.xml" in names else b""
     if not styles_xml:
         issues.append(ManuscriptIssue(level="warning", message="DOCX styles.xml missing; cannot verify Word style definitions"))
     else:
@@ -345,7 +347,52 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
     issues.extend(_inspect_docx_image_targets(root, names, relationships_xml))
     issues.extend(_inspect_docx_review_marks(root, names))
     issues.extend(_inspect_docx_header_footer_references(root, names, relationships_xml))
+    issues.extend(_inspect_docx_note_references(root, footnotes_xml, endnotes_xml))
     return issues
+
+
+def _inspect_docx_note_references(
+    root: ElementTree.Element,
+    footnotes_xml: bytes,
+    endnotes_xml: bytes,
+) -> list[ManuscriptIssue]:
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    issues: list[ManuscriptIssue] = []
+    issues.extend(_inspect_docx_note_kind(root, footnotes_xml, "footnote", "footnoteReference", "footnote", namespace))
+    issues.extend(_inspect_docx_note_kind(root, endnotes_xml, "endnote", "endnoteReference", "endnote", namespace))
+    return issues
+
+
+def _inspect_docx_note_kind(
+    document_root: ElementTree.Element,
+    notes_xml: bytes,
+    note_label: str,
+    reference_tag: str,
+    target_tag: str,
+    namespace: dict[str, str],
+) -> list[ManuscriptIssue]:
+    references = [
+        node.attrib.get(f"{{{namespace['w']}}}id", "")
+        for node in document_root.findall(f".//w:{reference_tag}", namespace)
+    ]
+    references = [note_id for note_id in references if note_id not in {"", "-1", "0"}]
+    if not references:
+        return []
+    if not notes_xml:
+        return [
+            ManuscriptIssue(level="warning", message=f"DOCX {note_label} target missing: {note_id}")
+            for note_id in sorted(set(references), key=int)
+        ]
+    notes_root = ElementTree.fromstring(notes_xml)
+    target_ids = {
+        node.attrib.get(f"{{{namespace['w']}}}id", "")
+        for node in notes_root.findall(f".//w:{target_tag}", namespace)
+    }
+    return [
+        ManuscriptIssue(level="warning", message=f"DOCX {note_label} target missing: {note_id}")
+        for note_id in sorted(set(references), key=int)
+        if note_id not in target_ids
+    ]
 
 
 def _inspect_docx_image_targets(

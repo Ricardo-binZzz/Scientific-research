@@ -501,5 +501,5 @@ The first version does not directly control ANSYS, Abaqus, or COMSOL. Model, sol
 
 ### Can It Automatically Check Word Layout?
 
-Currently it can read `.docx` text and inspect several package-level Word signals: missing `styles.xml`, missing page margins or page size settings, incomplete page width/height attributes, missing header/footer target parts, missing embedded image targets, undefined paragraph styles, missing citation/reference fields, missing bibliography fields, images or drawing objects without alternative text, and leftover tracked changes or comments. It still does not render Word pages or replace final template review in Word.
+Currently it can read `.docx` text and inspect several package-level Word signals: missing `styles.xml`, missing page margins or page size settings, incomplete page width/height attributes, missing header/footer target parts, missing embedded image targets, missing footnote/endnote targets, undefined paragraph styles, missing citation/reference fields, missing bibliography fields, images or drawing objects without alternative text, and leftover tracked changes or comments. It still does not render Word pages or replace final template review in Word.
 

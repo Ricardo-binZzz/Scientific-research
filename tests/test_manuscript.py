@@ -350,6 +350,26 @@ class ManuscriptTests(unittest.TestCase):
         messages = [issue.message for issue in report.issues]
         self.assertIn("DOCX image target missing: word/media/image1.png", messages)
 
+    def test_inspect_manuscript_flags_missing_docx_footnote_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_missing_footnote_target(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX footnote target missing: 2", messages)
+
+    def test_inspect_manuscript_flags_missing_docx_endnote_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_missing_endnote_target(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX endnote target missing: 3", messages)
+
     def test_inspect_manuscript_flags_docx_images_missing_alt_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -525,6 +545,36 @@ def _write_docx_with_missing_image_target(path: Path) -> None:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document_xml)
         package.writestr("word/_rels/document.xml.rels", relationships_xml)
+
+
+def _write_docx_with_missing_footnote_target(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        '<w:p><w:r><w:t>Claim with note</w:t><w:footnoteReference w:id="2"/></w:r></w:p>'
+        "</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_missing_endnote_target(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        '<w:p><w:r><w:t>Claim with endnote</w:t><w:endnoteReference w:id="3"/></w:r></w:p>'
+        "</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
 
 
 def _write_docx_with_review_marks(path: Path) -> None:
