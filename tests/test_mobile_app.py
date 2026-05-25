@@ -1,10 +1,18 @@
 import json
 import tempfile
+import threading
 import unittest
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 from workflow.bootstrap import bootstrap_workspace
-from workflow.mobile_app import MobileCompanionState, dispatch_mobile_request
+from workflow.mobile_app import (
+    MobileCompanionState,
+    _create_mobile_server,
+    _make_mobile_handler,
+    dispatch_mobile_request,
+)
 
 
 class MobileAppDispatchTests(unittest.TestCase):
@@ -98,6 +106,70 @@ class MobileAppDispatchTests(unittest.TestCase):
         encoded = json.dumps(response, ensure_ascii=False)
 
         self.assertIn("token", encoded)
+
+
+class MobileAppHttpServerTests(unittest.TestCase):
+    def test_http_server_pairs_then_accepts_dashboard_with_bearer_token(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = bootstrap_workspace(Path(tmpdir), project_slug="demo", project_name="Demo")
+            state = MobileCompanionState(allowed_roots=[project], pairing_pin="123456")
+            server = _create_mobile_server("127.0.0.1", 0, _make_mobile_handler(state))
+            thread = self._serve_in_thread(server)
+            try:
+                base_url = f"http://127.0.0.1:{server.server_address[1]}"
+                pair = self._post_json(base_url, "/api/pair", {"pin": "123456"})
+                dashboard = self._post_json(
+                    base_url,
+                    "/api/dashboard",
+                    {"project_root": str(project)},
+                    token=pair["token"],
+                )
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join(timeout=5)
+
+        self.assertTrue(pair["ok"])
+        self.assertTrue(dashboard["ok"])
+        self.assertEqual(dashboard["action"], "dashboard")
+        self.assertEqual(dashboard["project"]["name"], "demo")
+
+    def test_http_server_rejects_missing_token_with_json_401(self) -> None:
+        state = MobileCompanionState(allowed_roots=[], pairing_pin="123456")
+        server = _create_mobile_server("127.0.0.1", 0, _make_mobile_handler(state))
+        thread = self._serve_in_thread(server)
+        try:
+            base_url = f"http://127.0.0.1:{server.server_address[1]}"
+            with self.assertRaises(urllib.error.HTTPError) as raised:
+                self._post_json(base_url, "/api/dashboard", {"project_root": ""})
+            body = json.loads(raised.exception.read().decode("utf-8"))
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
+        self.assertEqual(raised.exception.code, 401)
+        self.assertFalse(body["ok"])
+        self.assertEqual(body["status"], 401)
+        self.assertEqual(body["action"], "auth")
+
+    def _post_json(self, base_url: str, path: str, payload: dict[str, str], token: str = "") -> dict[str, object]:
+        headers = {"Content-Type": "application/json"}
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        request = urllib.request.Request(
+            f"{base_url}{path}",
+            data=json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=5) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    def _serve_in_thread(self, server) -> threading.Thread:
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        return thread
 
 
 if __name__ == "__main__":

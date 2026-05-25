@@ -36,6 +36,7 @@ dependencies = []
 [project.scripts]
 research-workflow = "workflow.cli:main"
 research-workflow-web = "workflow.web_app:main"
+research-workflow-mobile = "workflow.mobile_app:main"
 
 [project.urls]
 Homepage = "https://github.com/Ricardo-binZzz/Scientific-research"
