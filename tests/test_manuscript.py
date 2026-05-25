@@ -331,6 +331,16 @@ class ManuscriptTests(unittest.TestCase):
         self.assertNotIn("No Word citation/reference fields detected", messages)
         self.assertNotIn("References section found but no Word bibliography field detected", messages)
 
+    def test_inspect_manuscript_flags_unbalanced_docx_complex_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_unbalanced_complex_field(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX complex field characters unbalanced: begin=1, end=0", messages)
+
     def test_inspect_manuscript_flags_incomplete_docx_page_size_dimensions(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -432,6 +442,16 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("DOCX tracked changes detected: insertions=1, deletions=1", messages)
         self.assertIn("DOCX comments detected: 1 comment marker", messages)
 
+    def test_inspect_manuscript_flags_missing_docx_comment_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_missing_comment_target(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX comment target missing: 2", messages)
+
     def test_inspect_manuscript_flags_citations_missing_from_library(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.md"
@@ -532,6 +552,25 @@ def _write_docx_with_simple_bibliography_field(path: Path) -> None:
         '<w:p><w:fldSimple w:instr="BIBLIOGRAPHY \\l 1033">'
         "<w:r><w:t>[1] Zhang. Adaptive fixture design.</w:t></w:r>"
         "</w:fldSimple></w:p>"
+        '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440"/></w:sectPr>'
+        "</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_unbalanced_complex_field(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        "<w:p><w:r><w:t>References</w:t></w:r></w:p>"
+        '<w:p><w:r><w:fldChar w:fldCharType="begin"/></w:r>'
+        "<w:r><w:instrText>BIBLIOGRAPHY \\l 1033</w:instrText></w:r>"
+        "<w:r><w:t>[1] Zhang. Adaptive fixture design.</w:t></w:r></w:p>"
         '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440"/></w:sectPr>'
         "</w:body>"
         "</w:document>"
@@ -681,6 +720,29 @@ def _write_docx_with_review_marks(path: Path) -> None:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document_xml)
         package.writestr("word/comments.xml", "<w:comments xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"/>")
+
+
+def _write_docx_with_missing_comment_target(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        '<w:p><w:commentRangeStart w:id="2"/><w:r><w:t>Needs review</w:t></w:r>'
+        '<w:commentReference w:id="2"/></w:p>'
+        "</w:body>"
+        "</w:document>"
+    )
+    comments_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:comments xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        '<w:comment w:id="1"><w:p><w:r><w:t>Different comment</w:t></w:r></w:p></w:comment>'
+        "</w:comments>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+        package.writestr("word/comments.xml", comments_xml)
 
 
 def _write_docx_with_image_docpr(path: Path, *, name: str, descr: str, title: str = "") -> None:

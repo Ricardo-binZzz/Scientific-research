@@ -324,6 +324,7 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         relationships_xml = package.read("word/_rels/document.xml.rels") if "word/_rels/document.xml.rels" in names else b""
         footnotes_xml = package.read("word/footnotes.xml") if "word/footnotes.xml" in names else b""
         endnotes_xml = package.read("word/endnotes.xml") if "word/endnotes.xml" in names else b""
+        comments_xml = package.read("word/comments.xml") if "word/comments.xml" in names else b""
     if not styles_xml:
         issues.append(ManuscriptIssue(level="warning", message="DOCX styles.xml missing; cannot verify Word style definitions"))
     else:
@@ -343,9 +344,11 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         issues.append(ManuscriptIssue(level="warning", message="No Word citation/reference fields detected"))
     if _has_references_section(headings) and "BIBLIOGRAPHY" not in field_text.upper():
         issues.append(ManuscriptIssue(level="warning", message="References section found but no Word bibliography field detected"))
+    issues.extend(_inspect_docx_complex_fields(root))
     issues.extend(_inspect_docx_drawing_alt_text(root))
     issues.extend(_inspect_docx_image_targets(root, names, relationships_xml))
     issues.extend(_inspect_docx_review_marks(root, names))
+    issues.extend(_inspect_docx_comment_references(root, comments_xml))
     issues.extend(_inspect_docx_header_footer_references(root, names, relationships_xml))
     issues.extend(_inspect_docx_note_references(root, footnotes_xml, endnotes_xml))
     issues.extend(_inspect_docx_hyperlink_references(root, relationships_xml))
@@ -360,6 +363,29 @@ def _docx_field_instruction_text(root: ElementTree.Element) -> str:
         for node in root.findall(".//w:fldSimple", namespace)
     )
     return " ".join(instruction for instruction in instructions if instruction)
+
+
+def _inspect_docx_complex_fields(root: ElementTree.Element) -> list[ManuscriptIssue]:
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    field_characters = root.findall(".//w:fldChar", namespace)
+    begin_count = sum(
+        1
+        for node in field_characters
+        if node.attrib.get(f"{{{namespace['w']}}}fldCharType", "") == "begin"
+    )
+    end_count = sum(
+        1
+        for node in field_characters
+        if node.attrib.get(f"{{{namespace['w']}}}fldCharType", "") == "end"
+    )
+    if begin_count != end_count:
+        return [
+            ManuscriptIssue(
+                level="warning",
+                message=f"DOCX complex field characters unbalanced: begin={begin_count}, end={end_count}",
+            )
+        ]
+    return []
 
 
 def _inspect_docx_hyperlink_references(root: ElementTree.Element, relationships_xml: bytes) -> list[ManuscriptIssue]:
@@ -530,6 +556,34 @@ def _inspect_docx_review_marks(root: ElementTree.Element, package_names: set[str
         suffix = "marker" if comment_markers == 1 else "markers"
         issues.append(ManuscriptIssue(level="warning", message=f"DOCX comments detected: {comment_markers} comment {suffix}"))
     return issues
+
+
+def _inspect_docx_comment_references(root: ElementTree.Element, comments_xml: bytes) -> list[ManuscriptIssue]:
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    references = {
+        node.attrib.get(f"{{{namespace['w']}}}id", "")
+        for node in root.findall(".//w:commentRangeStart", namespace) + root.findall(".//w:commentReference", namespace)
+    }
+    references.discard("")
+    if not references:
+        return []
+    if not comments_xml:
+        target_ids: set[str] = set()
+    else:
+        comments_root = ElementTree.fromstring(comments_xml)
+        target_ids = {
+            node.attrib.get(f"{{{namespace['w']}}}id", "")
+            for node in comments_root.findall(".//w:comment", namespace)
+        }
+    missing = sorted(references - target_ids, key=_docx_id_sort_key)
+    return [
+        ManuscriptIssue(level="warning", message=f"DOCX comment target missing: {comment_id}")
+        for comment_id in missing
+    ]
+
+
+def _docx_id_sort_key(value: str) -> tuple[int, int | str]:
+    return (0, int(value)) if value.lstrip("-").isdigit() else (1, value)
 
 
 def _inspect_docx_styles(document_xml: bytes, styles_xml: bytes) -> list[ManuscriptIssue]:

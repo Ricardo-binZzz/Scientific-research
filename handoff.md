@@ -2,6 +2,8 @@
 
 ## Status
 
+- DOCX comment-target QA on 2026-05-25: manuscript checks now report `.docx` comment references whose id is missing from `word/comments.xml`; the full test baseline is 177 tests.
+- DOCX complex-field QA on 2026-05-25: manuscript checks now report unbalanced `w:fldChar` begin/end markers in `.docx` complex Word fields; the full test baseline is 176 tests.
 - DOCX simple-field QA on 2026-05-25: manuscript checks now recognize bibliography instructions stored in `w:fldSimple/@w:instr`, avoiding false missing-field warnings; the full test baseline is 175 tests.
 - DOCX hyperlink bookmark QA on 2026-05-25: manuscript checks now report internal `.docx` hyperlinks whose `w:anchor` target has no matching `w:bookmarkStart`; the full test baseline is 174 tests.
 - DOCX hyperlink QA on 2026-05-25: manuscript checks now report unresolved or empty `w:hyperlink` relationships in `.docx` body XML; the full test baseline is 173 tests.
