@@ -63,6 +63,15 @@ Optional: if you want command entry points instead of typing `-m workflow.cli`, 
 
 After that, use `research-workflow` for the CLI or `research-workflow-web` for the local web UI. You can also skip installation and keep using the `$PY -m workflow.cli ...` commands below.
 
+If you maintain a copy for another Windows user, build and check a release zip from the tool repository:
+
+```powershell
+& $PY tools/build_windows_release.py
+& $PY tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
+```
+
+Send the zip, not your working `.venv` or generated local launcher. The recipient extracts it, runs `install_windows.bat`, then opens `Research Workflow Web.bat`.
+
 ## 4. Ten-Minute Quick Check
 
 Before creating your own workspace, use the built-in examples to confirm that the tool can run.

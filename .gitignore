@@ -3,4 +3,5 @@ __pycache__/
 .venv/
 Research Workflow Web.bat
 examples/output/
+dist/
 *.tmp

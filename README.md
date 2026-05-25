@@ -86,6 +86,15 @@ On Windows, double-click `install_windows.bat` or run:
 
 It creates a local `.venv`, verifies the web app module, and creates `Research Workflow Web.bat` in the project folder and on the Desktop when possible. After that, double-click the launcher to open the browser workbench.
 
+Maintainers can also build a distributable Windows zip and check it before uploading:
+
+```powershell
+python tools/build_windows_release.py
+python tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
+```
+
+The zip contains the project source, demo workspace, screenshots, installer, launcher, and a `RELEASE_MANIFEST.txt` file. It does not bundle Python; users still need Python 3.10+ available through `.venv`, `py`, or `python`.
+
 ### Option A: Local Web UI
 
 For beginners or daily use, start with the browser interface:
@@ -170,7 +179,7 @@ Run `python tools/check_js_syntax.py` before regenerating screenshots, then use 
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, and 178 unittest cases covering the main workflow modules, web action handlers, and JavaScript syntax check tooling.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, release-package checks, and 181 unittest cases covering the main workflow modules, web action handlers, release tooling, and JavaScript syntax check tooling.
 
 ## Project Layout
 
@@ -217,6 +226,7 @@ literature-tracker.json
 - [Security policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
+- Release tools: `tools/build_windows_release.py` and `tools/check_release_package.py`
 
 ## Contributing
 
@@ -238,6 +248,7 @@ If this workbench helps your research workflow, cite it as software using [CITAT
 ## Current Limits
 
 - DOCX checking inspects text and package-level signals, including undefined paragraph and character styles, page size presence and dimensions, header/footer part references, embedded image targets, footnote/endnote targets, comment target definitions, hyperlink relationships and bookmark anchors, Word reference fields including simple fields and unbalanced complex-field characters, image alt-text metadata, and review marks, but does not render Word pages or validate full institution-specific formatting.
+- The Windows release zip packages the local workbench but does not include a Python runtime or install commercial solver, Word, Zotero, or browser dependencies.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.
 

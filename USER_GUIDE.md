@@ -65,6 +65,15 @@ http://127.0.0.1:8000
 
 如果想减少手动配置，可以先双击工具目录里的 `install_windows.bat`。它会创建本地 `.venv`，检查网页模块，并生成 `Research Workflow Web.bat` 启动器；之后日常使用时双击这个启动器即可。
 
+如果你要把工具发给另一台 Windows 电脑使用，可以先在工具目录生成并检查发布 zip：
+
+```powershell
+python tools/build_windows_release.py
+python tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
+```
+
+发送 zip，不要发送你本机的 `.venv` 或已经生成的本地启动器。对方解压后运行 `install_windows.bat`，再打开 `Research Workflow Web.bat`。
+
 网页里先填写你的课题目录，例如：
 
 ```text

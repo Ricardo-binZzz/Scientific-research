@@ -87,6 +87,15 @@
 
 它会创建本地 `.venv`，验证网页模块能启动，并在项目文件夹和桌面生成 `Research Workflow Web.bat` 启动器。之后双击这个启动器即可打开网页工作台。
 
+维护者也可以生成可分发的 Windows zip，并在上传前自检：
+
+```powershell
+python tools/build_windows_release.py
+python tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
+```
+
+这个 zip 会包含项目源码、示例课题、截图、安装脚本、启动器和 `RELEASE_MANIFEST.txt`。它不内置 Python；用户机器上仍然需要能通过 `.venv`、`py` 或 `python` 找到 Python 3.10+。
+
 ### 方式 A：本地网页界面
 
 如果你不熟悉命令行，优先用网页：
@@ -171,7 +180,7 @@ $PY='C:\path\to\python.exe'
 
 ## 项目成熟度
 
-这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据，以及覆盖主要工作流模块、网页 action 和 JavaScript 语法检查工具的 178 个 unittest。
+这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据、发布包检查，以及覆盖主要工作流模块、网页 action、发布工具和 JavaScript 语法检查工具的 181 个 unittest。
 
 ## 项目结构
 
@@ -239,6 +248,7 @@ literature-tracker.json
 ## 当前限制
 
 - DOCX 检查会检查文本和包级信号，包括未定义段落/字符样式、页面大小是否存在、页面宽高是否完整、页眉/页脚部件引用、嵌入图片目标、脚注/尾注目标、批注目标定义、超链接关系和内部书签锚点、Word 参考文献域、普通域和复杂域起止标记是否配平、图片替代文本元数据和修订/批注痕迹，但不渲染 Word 页面，也不完整校验学校模板格式。
+- Windows 发布 zip 会打包本地工作台，但不内置 Python 运行时，也不安装商业求解器、Word、Zotero 或浏览器依赖。
 - 等值线图输入必须是完整矩形网格。
 - BibTeX 解析重点支持常见 article 字段。
 
