@@ -320,6 +320,17 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("No Word citation/reference fields detected", messages)
         self.assertIn("References section found but no Word bibliography field detected", messages)
 
+    def test_inspect_manuscript_accepts_docx_simple_bibliography_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_simple_bibliography_field(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertNotIn("No Word citation/reference fields detected", messages)
+        self.assertNotIn("References section found but no Word bibliography field detected", messages)
+
     def test_inspect_manuscript_flags_incomplete_docx_page_size_dimensions(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -503,6 +514,25 @@ def _write_docx_with_section_properties(path: Path, section_xml: str) -> None:
         "<w:body>"
         "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
         f"<w:sectPr>{section_xml}</w:sectPr>"
+        "</w:body>"
+        "</w:document>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_simple_bibliography_field(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        "<w:p><w:r><w:t>References</w:t></w:r></w:p>"
+        '<w:p><w:fldSimple w:instr="BIBLIOGRAPHY \\l 1033">'
+        "<w:r><w:t>[1] Zhang. Adaptive fixture design.</w:t></w:r>"
+        "</w:fldSimple></w:p>"
+        '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440"/></w:sectPr>'
         "</w:body>"
         "</w:document>"
     )

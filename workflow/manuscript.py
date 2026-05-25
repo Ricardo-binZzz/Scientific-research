@@ -337,7 +337,7 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         issues.append(ManuscriptIssue(level="warning", message="DOCX page size settings missing"))
     elif not page_size.attrib.get(f"{{{namespace['w']}}}w") or not page_size.attrib.get(f"{{{namespace['w']}}}h"):
         issues.append(ManuscriptIssue(level="warning", message="DOCX page size dimensions incomplete"))
-    field_text = " ".join(node.text or "" for node in root.findall(".//w:instrText", namespace))
+    field_text = _docx_field_instruction_text(root)
     has_field_char = root.find(".//w:fldChar", namespace) is not None
     if not field_text and not has_field_char:
         issues.append(ManuscriptIssue(level="warning", message="No Word citation/reference fields detected"))
@@ -350,6 +350,16 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
     issues.extend(_inspect_docx_note_references(root, footnotes_xml, endnotes_xml))
     issues.extend(_inspect_docx_hyperlink_references(root, relationships_xml))
     return issues
+
+
+def _docx_field_instruction_text(root: ElementTree.Element) -> str:
+    namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    instructions = [node.text or "" for node in root.findall(".//w:instrText", namespace)]
+    instructions.extend(
+        node.attrib.get(f"{{{namespace['w']}}}instr", "")
+        for node in root.findall(".//w:fldSimple", namespace)
+    )
+    return " ".join(instruction for instruction in instructions if instruction)
 
 
 def _inspect_docx_hyperlink_references(root: ElementTree.Element, relationships_xml: bytes) -> list[ManuscriptIssue]:

@@ -19,6 +19,7 @@ All notable changes to this project are summarized here.
 - DOCX manuscript QA now reports missing footnote and endnote target definitions.
 - DOCX manuscript QA now reports unresolved or empty hyperlink relationships.
 - DOCX manuscript QA now reports internal hyperlinks that point to missing Word bookmarks.
+- DOCX manuscript QA now recognizes bibliography instructions stored in Word `w:fldSimple` simple fields.
 
 ### Changed
 
@@ -38,6 +39,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes after DOCX note-reference coverage brought the baseline to 172 tests.
 - Updated README maturity notes after DOCX hyperlink relationship coverage brought the baseline to 173 tests.
 - Updated README maturity notes after DOCX hyperlink bookmark-anchor coverage brought the baseline to 174 tests.
+- Updated README maturity notes after DOCX simple-field bibliography coverage brought the baseline to 175 tests.
 
 ## v0.1.0 - 2026-05-23
 
