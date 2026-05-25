@@ -5,3 +5,4 @@ Research Workflow Web.bat
 examples/output/
 dist/
 *.tmp
+.superpowers/
