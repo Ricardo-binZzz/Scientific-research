@@ -12,6 +12,7 @@ All notable changes to this project are summarized here.
 - Added `tools/check_js_syntax.py` to run `node --check` against web assets and the screenshot driver before regenerating real browser screenshots.
 - DOCX manuscript QA now flags Word images and drawing objects that lack `descr` or `title` alternative text metadata.
 - DOCX manuscript QA now flags leftover Word tracked changes and comment markers.
+- DOCX manuscript QA now reports missing page size settings alongside missing page margins.
 
 ### Changed
 

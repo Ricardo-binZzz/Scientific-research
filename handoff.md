@@ -2,6 +2,7 @@
 
 ## Status
 
+- DOCX page setup QA on 2026-05-25: manuscript checks now report missing DOCX page size settings in addition to missing page margins; the full test baseline remains 167 tests.
 - DOCX review-mark QA on 2026-05-25: manuscript checks now report leftover Word tracked changes and comment markers in `.docx` package XML; the full test baseline is 167 tests.
 - DOCX manuscript QA on 2026-05-25: Word images and drawing objects now report `DOCX image/drawing missing alt text` when `wp:docPr` lacks both `descr` and `title`; focused manuscript tests and the full 166-test suite pass.
 - Screenshot asset QA on 2026-05-24: screenshot tests now parse PNG headers and assert the tracked web screenshots are valid `1440 x 980` captures; `docs/screenshots/README.md` documents the fixed viewport.

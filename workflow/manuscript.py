@@ -328,6 +328,8 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
     namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
     if root.find(".//w:sectPr/w:pgMar", namespace) is None:
         issues.append(ManuscriptIssue(level="warning", message="DOCX page margin settings missing"))
+    if root.find(".//w:sectPr/w:pgSz", namespace) is None:
+        issues.append(ManuscriptIssue(level="warning", message="DOCX page size settings missing"))
     field_text = " ".join(node.text or "" for node in root.findall(".//w:instrText", namespace))
     has_field_char = root.find(".//w:fldChar", namespace) is not None
     if not field_text and not has_field_char:

@@ -237,7 +237,7 @@ If this workbench helps your research workflow, cite it as software using [CITAT
 
 ## Current Limits
 
-- DOCX checking inspects text and package-level signals, including image alt-text metadata and review marks, but does not render Word pages or validate full institution-specific formatting.
+- DOCX checking inspects text and package-level signals, including page size, image alt-text metadata, and review marks, but does not render Word pages or validate full institution-specific formatting.
 - Contour plots require a complete rectangular x/y/value grid.
 - BibTeX support focuses on common article fields.
 

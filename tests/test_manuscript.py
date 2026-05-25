@@ -316,6 +316,7 @@ class ManuscriptTests(unittest.TestCase):
         messages = [issue.message for issue in report.issues]
         self.assertIn("DOCX styles.xml missing; cannot verify Word style definitions", messages)
         self.assertIn("DOCX page margin settings missing", messages)
+        self.assertIn("DOCX page size settings missing", messages)
         self.assertIn("No Word citation/reference fields detected", messages)
         self.assertIn("References section found but no Word bibliography field detected", messages)
 
