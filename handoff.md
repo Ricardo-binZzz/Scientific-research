@@ -2,6 +2,7 @@
 
 ## Status
 
+- Windows release smoke testing on 2026-05-25: `tools/smoke_test_windows_release.py` now extracts the release zip, runs `install_windows.bat` with `RW_NO_PAUSE=1`, verifies the generated launcher, starts the local web app, and checks `examples/demo-project`; the full test baseline is 183 tests.
 - Windows release packaging on 2026-05-25: `tools/build_windows_release.py` now creates a distributable zip with source, examples, screenshots, installer, launcher, and `RELEASE_MANIFEST.txt`; `tools/check_release_package.py` validates required files and excludes local state; the full test baseline is 181 tests.
 - DOCX character-style QA on 2026-05-25: manuscript checks now report `.docx` run-level character styles whose `w:rStyle` id is missing from `word/styles.xml`; the full test baseline is 178 tests.
 - DOCX comment-target QA on 2026-05-25: manuscript checks now report `.docx` comment references whose id is missing from `word/comments.xml`; the full test baseline is 177 tests.

@@ -36,6 +36,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("examples/demo-project/project-check.json", names)
         self.assertIn("docs/screenshots/project-check.png", names)
         self.assertIn("tools/check_release_package.py", names)
+        self.assertIn("tools/smoke_test_windows_release.py", names)
 
         self.assertNotIn("Research Workflow Web.bat", names)
         self.assertFalse(any(name.startswith(".git/") for name in names))
@@ -69,6 +70,27 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("Version: 9.9.9-test", manifest)
         self.assertIn("install_windows.bat", manifest)
         self.assertNotIn(".venv", manifest)
+
+    def test_windows_installer_supports_noninteractive_release_smoke(self) -> None:
+        installer = Path("install_windows.bat").read_text(encoding="utf-8")
+
+        self.assertIn("RW_NO_PAUSE", installer)
+        self.assertIn("RW_BOOTSTRAP_PY", installer)
+        self.assertIn("Skipping pause because RW_NO_PAUSE=1", installer)
+
+    def test_release_smoke_script_runs_installer_and_demo_check(self) -> None:
+        script = Path("tools") / "smoke_test_windows_release.py"
+
+        self.assertTrue(script.exists())
+        source = script.read_text(encoding="utf-8")
+        self.assertIn("install_windows.bat", source)
+        self.assertIn("RW_NO_PAUSE", source)
+        self.assertIn("RW_BOOTSTRAP_PY", source)
+        self.assertIn("Research Workflow Web.bat", source)
+        self.assertIn("workflow.cli", source)
+        self.assertIn("projectRoot", source)
+        self.assertIn("project", source)
+        self.assertIn("check", source)
 
 
 if __name__ == "__main__":

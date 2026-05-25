@@ -11,6 +11,7 @@ All notable changes to this project are summarized here.
 - Added `pyproject.toml` with project metadata, package data, and local CLI/web console-script entry points.
 - Added `tools/check_js_syntax.py` to run `node --check` against web assets and the screenshot driver before regenerating real browser screenshots.
 - Added `tools/build_windows_release.py` and `tools/check_release_package.py` for creating and validating a distributable Windows zip package.
+- Added `tools/smoke_test_windows_release.py` and noninteractive installer mode for end-to-end Windows release zip smoke testing.
 - DOCX manuscript QA now flags Word images and drawing objects that lack `descr` or `title` alternative text metadata.
 - DOCX manuscript QA now flags leftover Word tracked changes and comment markers.
 - DOCX manuscript QA now reports missing page size settings alongside missing page margins.
@@ -47,7 +48,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes after DOCX complex-field balance coverage brought the baseline to 176 tests.
 - Updated README maturity notes after DOCX comment target coverage brought the baseline to 177 tests.
 - Updated README maturity notes after DOCX character-style coverage brought the baseline to 178 tests.
-- Updated README maturity notes after Windows release-package coverage brought the baseline to 181 tests.
+- Updated README maturity notes after Windows release smoke-test coverage brought the baseline to 183 tests.
 
 ## v0.1.0 - 2026-05-23
 

@@ -15,6 +15,8 @@ REQUIRED_SUFFIXES = {
     "workflow/cli.py",
     "examples/demo-project/project-check.json",
     "docs/screenshots/project-check.png",
+    "tools/check_release_package.py",
+    "tools/smoke_test_windows_release.py",
     "RELEASE_MANIFEST.txt",
 }
 FORBIDDEN_PARTS = {".git", ".venv", "__pycache__", ".pytest_cache", ".mypy_cache", "dist"}

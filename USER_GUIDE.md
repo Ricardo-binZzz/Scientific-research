@@ -70,9 +70,10 @@ http://127.0.0.1:8000
 ```powershell
 python tools/build_windows_release.py
 python tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
+python tools/smoke_test_windows_release.py dist/research-workflow-workbench-0.1.0-windows.zip
 ```
 
-发送 zip，不要发送你本机的 `.venv` 或已经生成的本地启动器。对方解压后运行 `install_windows.bat`，再打开 `Research Workflow Web.bat`。
+发送 zip，不要发送你本机的 `.venv` 或已经生成的本地启动器。冒烟测试会在临时解压目录里运行安装脚本、启动网页并检查示例课题；对方解压后运行 `install_windows.bat`，再打开 `Research Workflow Web.bat`。
 
 网页里先填写你的课题目录，例如：
 

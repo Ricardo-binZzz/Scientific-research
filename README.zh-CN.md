@@ -92,9 +92,10 @@
 ```powershell
 python tools/build_windows_release.py
 python tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
+python tools/smoke_test_windows_release.py dist/research-workflow-workbench-0.1.0-windows.zip
 ```
 
-这个 zip 会包含项目源码、示例课题、截图、安装脚本、启动器和 `RELEASE_MANIFEST.txt`。它不内置 Python；用户机器上仍然需要能通过 `.venv`、`py` 或 `python` 找到 Python 3.10+。
+这个 zip 会包含项目源码、示例课题、截图、安装脚本、启动器、发布检查工具和 `RELEASE_MANIFEST.txt`。冒烟测试会解压 zip，用非交互模式运行 `install_windows.bat`，启动本地网页应用，并运行示例课题体检。它不内置 Python；用户机器上仍然需要能通过 `.venv`、`py` 或 `python` 找到 Python 3.10+。
 
 ### 方式 A：本地网页界面
 
@@ -180,7 +181,7 @@ $PY='C:\path\to\python.exe'
 
 ## 项目成熟度
 
-这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据、发布包检查，以及覆盖主要工作流模块、网页 action、发布工具和 JavaScript 语法检查工具的 181 个 unittest。
+这是一个早期的本地优先工作台，不是成熟的软件生态。当前版本适合试用、评估流程和做小范围贡献；项目已经包含示例项目、网页界面、CLI、CI、隐私扫描、引用元数据、发布包检查，以及覆盖主要工作流模块、网页 action、发布工具和 JavaScript 语法检查工具的 183 个 unittest。
 
 ## 项目结构
 

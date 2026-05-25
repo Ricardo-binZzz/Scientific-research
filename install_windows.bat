@@ -6,13 +6,14 @@ echo Research Workflow Windows installer
 echo.
 
 set "BOOTSTRAP_PY="
+if defined RW_BOOTSTRAP_PY set "BOOTSTRAP_PY=%RW_BOOTSTRAP_PY%"
 if exist ".venv\Scripts\python.exe" set "BOOTSTRAP_PY=.venv\Scripts\python.exe"
 if not defined BOOTSTRAP_PY where py >nul 2>nul && set "BOOTSTRAP_PY=py"
 if not defined BOOTSTRAP_PY where python >nul 2>nul && set "BOOTSTRAP_PY=python"
 
 if not defined BOOTSTRAP_PY (
   echo Python was not found. Please install Python 3.10+ from https://www.python.org/downloads/windows/
-  pause
+  call :maybe_pause
   exit /b 1
 )
 
@@ -22,7 +23,7 @@ if not exist ".venv\Scripts\python.exe" (
   "%BOOTSTRAP_PY%" -m venv .venv
   if errorlevel 1 (
     echo Failed to create .venv.
-    pause
+    call :maybe_pause
     exit /b 1
   )
 )
@@ -32,7 +33,7 @@ echo Verifying local web app...
 "%APP_PY%" -c "import workflow.web_app"
 if errorlevel 1 (
   echo The workflow.web_app module could not be imported.
-  pause
+  call :maybe_pause
   exit /b 1
 )
 
@@ -53,4 +54,13 @@ if exist "%DESKTOP%" (
 
 echo.
 echo Installation finished. Double-click "Research Workflow Web.bat" to open the web workbench.
+call :maybe_pause
+exit /b 0
+
+:maybe_pause
+if "%RW_NO_PAUSE%"=="1" (
+  echo Skipping pause because RW_NO_PAUSE=1.
+  exit /b 0
+)
 pause
+exit /b 0
