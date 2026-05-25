@@ -2,6 +2,7 @@
 
 ## Status
 
+- WeChat local companion Task 2 on 2026-05-25: `workflow.mobile_app` now provides in-process mobile API dispatch with pairing tokens, authorized project-root checks, safe run actions, dashboard summaries, and standard report dispatch. Focused verification: `python -m unittest tests.test_mobile_app -v`.
 - WeChat mini program design on 2026-05-25: the approved V1 is a local-first WeChat mini program connected to a computer-side companion service. Scope is "project dashboard + report center" with a softer research-assistant UI; design spec is in `docs/superpowers/specs/2026-05-25-wechat-local-companion-design.md`. Next step is user review of the written spec, then an implementation plan.
 - WeChat mini program implementation plan on 2026-05-25: plan saved at `docs/superpowers/plans/2026-05-25-wechat-local-companion.md`. It breaks V1 into mobile response summaries, local mobile API dispatch, HTTP server/CLI, WeChat mini program shell, docs/release alignment, and manual WeChat Developer Tools verification. Next step is choosing subagent-driven or inline execution.
 - Windows release smoke testing on 2026-05-25: `tools/smoke_test_windows_release.py` now extracts the release zip, runs `install_windows.bat` with `RW_NO_PAUSE=1`, verifies the generated launcher, starts the local web app, and checks `examples/demo-project`; the full test baseline is 183 tests.
