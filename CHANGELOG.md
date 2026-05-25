@@ -22,6 +22,7 @@ All notable changes to this project are summarized here.
 - DOCX manuscript QA now recognizes bibliography instructions stored in Word `w:fldSimple` simple fields.
 - DOCX manuscript QA now reports unbalanced complex Word field characters.
 - DOCX manuscript QA now reports comment references without matching comment definitions.
+- DOCX manuscript QA now reports undefined character styles used by Word runs.
 
 ### Changed
 
@@ -44,6 +45,7 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes after DOCX simple-field bibliography coverage brought the baseline to 175 tests.
 - Updated README maturity notes after DOCX complex-field balance coverage brought the baseline to 176 tests.
 - Updated README maturity notes after DOCX comment target coverage brought the baseline to 177 tests.
+- Updated README maturity notes after DOCX character-style coverage brought the baseline to 178 tests.
 
 ## v0.1.0 - 2026-05-23
 

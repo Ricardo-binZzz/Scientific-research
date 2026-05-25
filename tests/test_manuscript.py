@@ -320,6 +320,16 @@ class ManuscriptTests(unittest.TestCase):
         self.assertIn("No Word citation/reference fields detected", messages)
         self.assertIn("References section found but no Word bibliography field detected", messages)
 
+    def test_inspect_manuscript_flags_undefined_docx_character_styles(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_missing_character_style(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX character style is used but not defined: MissingEmphasis", messages)
+
     def test_inspect_manuscript_accepts_docx_simple_bibliography_fields(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -540,6 +550,29 @@ def _write_docx_with_section_properties(path: Path, section_xml: str) -> None:
     with zipfile.ZipFile(path, "w") as package:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_missing_character_style(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        '<w:p><w:r><w:rPr><w:rStyle w:val="MissingEmphasis"/></w:rPr><w:t>styled text</w:t></w:r></w:p>'
+        '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440"/></w:sectPr>'
+        "</w:body>"
+        "</w:document>"
+    )
+    styles_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        '<w:style w:type="paragraph" w:styleId="Normal"/>'
+        "</w:styles>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+        package.writestr("word/styles.xml", styles_xml)
 
 
 def _write_docx_with_simple_bibliography_field(path: Path) -> None:

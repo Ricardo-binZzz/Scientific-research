@@ -599,7 +599,20 @@ def _inspect_docx_styles(document_xml: bytes, styles_xml: bytes) -> list[Manuscr
         for node in document_root.findall(".//w:pStyle", namespace)
     }
     missing = sorted(style for style in used_styles if style and style not in style_ids)
-    return [
+    issues = [
         ManuscriptIssue(level="warning", message=f"DOCX paragraph style is used but not defined: {style}")
         for style in missing
     ]
+    used_character_styles = {
+        node.attrib.get(f"{{{namespace['w']}}}val", "")
+        for node in document_root.findall(".//w:rStyle", namespace)
+    }
+    missing_character_styles = sorted(
+        style for style in used_character_styles
+        if style and style not in style_ids
+    )
+    issues.extend(
+        ManuscriptIssue(level="warning", message=f"DOCX character style is used but not defined: {style}")
+        for style in missing_character_styles
+    )
+    return issues
