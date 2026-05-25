@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import posixpath
 import re
 import zipfile
 from dataclasses import dataclass, field
@@ -320,6 +321,7 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         names = set(package.namelist())
         document_xml = package.read("word/document.xml")
         styles_xml = package.read("word/styles.xml") if "word/styles.xml" in names else b""
+        relationships_xml = package.read("word/_rels/document.xml.rels") if "word/_rels/document.xml.rels" in names else b""
     if not styles_xml:
         issues.append(ManuscriptIssue(level="warning", message="DOCX styles.xml missing; cannot verify Word style definitions"))
     else:
@@ -341,7 +343,48 @@ def _inspect_docx_package_quality(path: Path, headings: list[str]) -> list[Manus
         issues.append(ManuscriptIssue(level="warning", message="References section found but no Word bibliography field detected"))
     issues.extend(_inspect_docx_drawing_alt_text(root))
     issues.extend(_inspect_docx_review_marks(root, names))
+    issues.extend(_inspect_docx_header_footer_references(root, names, relationships_xml))
     return issues
+
+
+def _inspect_docx_header_footer_references(
+    root: ElementTree.Element,
+    package_names: set[str],
+    relationships_xml: bytes,
+) -> list[ManuscriptIssue]:
+    namespace = {
+        "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    }
+    references = root.findall(".//w:headerReference", namespace) + root.findall(".//w:footerReference", namespace)
+    if not references:
+        return []
+    relationships = _docx_relationship_targets(relationships_xml)
+    issues: list[ManuscriptIssue] = []
+    for reference in references:
+        relationship_id = reference.attrib.get(f"{{{namespace['r']}}}id", "")
+        if not relationship_id:
+            issues.append(ManuscriptIssue(level="warning", message="DOCX header/footer reference missing relationship id"))
+            continue
+        target = relationships.get(relationship_id)
+        if not target:
+            issues.append(ManuscriptIssue(level="warning", message=f"DOCX header/footer relationship unresolved: {relationship_id}"))
+            continue
+        target_part = posixpath.normpath(posixpath.join("word", target))
+        if target_part not in package_names:
+            issues.append(ManuscriptIssue(level="warning", message=f"DOCX header/footer target missing: {target_part}"))
+    return issues
+
+
+def _docx_relationship_targets(relationships_xml: bytes) -> dict[str, str]:
+    if not relationships_xml:
+        return {}
+    namespace = {"rel": "http://schemas.openxmlformats.org/package/2006/relationships"}
+    root = ElementTree.fromstring(relationships_xml)
+    return {
+        relationship.attrib.get("Id", ""): relationship.attrib.get("Target", "")
+        for relationship in root.findall(".//rel:Relationship", namespace)
+    }
 
 
 def _inspect_docx_drawing_alt_text(root: ElementTree.Element) -> list[ManuscriptIssue]:

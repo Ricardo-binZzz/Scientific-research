@@ -330,6 +330,16 @@ class ManuscriptTests(unittest.TestCase):
         messages = [issue.message for issue in report.issues]
         self.assertIn("DOCX page size dimensions incomplete", messages)
 
+    def test_inspect_manuscript_flags_missing_docx_header_footer_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "chapter.docx"
+            _write_docx_with_missing_header_target(path)
+
+            report = inspect_manuscript(path, required_sections=["Introduction"], expected_figures=[])
+
+        messages = [issue.message for issue in report.issues]
+        self.assertIn("DOCX header/footer target missing: word/header1.xml", messages)
+
     def test_inspect_manuscript_flags_docx_images_missing_alt_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "chapter.docx"
@@ -449,6 +459,32 @@ def _write_docx_with_section_properties(path: Path, section_xml: str) -> None:
     with zipfile.ZipFile(path, "w") as package:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document_xml)
+
+
+def _write_docx_with_missing_header_target(path: Path) -> None:
+    document_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        "<w:body>"
+        "<w:p><w:r><w:t>Introduction</w:t></w:r></w:p>"
+        '<w:sectPr><w:headerReference w:type="default" r:id="rIdHeader1"/>'
+        '<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440"/></w:sectPr>'
+        "</w:body>"
+        "</w:document>"
+    )
+    relationships_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rIdHeader1" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" '
+        'Target="header1.xml"/>'
+        "</Relationships>"
+    )
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
+        package.writestr("word/document.xml", document_xml)
+        package.writestr("word/_rels/document.xml.rels", relationships_xml)
 
 
 def _write_docx_with_review_marks(path: Path) -> None:
