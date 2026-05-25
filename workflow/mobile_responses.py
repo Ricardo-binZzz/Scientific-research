@@ -34,7 +34,7 @@ def build_mobile_summary(action: str, markdown: str) -> dict[str, str]:
     }
     return {
         "title": titles.get(action, "Workflow action complete"),
-        "primaryMessage": f"{total} items need attention" if total else "No urgent gaps found",
+        "primaryMessage": _attention_message(total),
         "nextAction": next_action,
     }
 
@@ -107,18 +107,61 @@ def _issue_message(count: int, singular_label: str) -> str:
     return f"{count} {singular_label}{suffix} found"
 
 
+def _attention_message(total: int) -> str:
+    if not total:
+        return "No urgent gaps found"
+    if total == 1:
+        return "1 item needs attention"
+    return f"{total} items need attention"
+
+
 def _issue_counts(markdown: str) -> dict[str, int]:
+    simulation_issues = _extract_count(markdown, "Simulation issues")
+    if simulation_issues is None:
+        simulation_issues = _section_bullet_count(markdown, "Simulation")
+
+    manuscript_issues = _extract_count(markdown, "Manuscript issues")
+    if manuscript_issues is None:
+        manuscript_issues = _section_bullet_count(markdown, "Manuscript")
+
     return {
-        "missing_pdfs": _extract_count(markdown, "Missing PDFs"),
-        "missing_notes": _extract_count(markdown, "Missing notes"),
-        "simulation_issues": _extract_count(markdown, "Simulation issues"),
-        "manuscript_issues": _extract_count(markdown, "Manuscript issues"),
+        "missing_pdfs": _extract_count(markdown, "Missing PDFs") or 0,
+        "missing_notes": _extract_count(markdown, "Missing notes") or 0,
+        "simulation_issues": simulation_issues,
+        "manuscript_issues": manuscript_issues,
     }
 
 
-def _extract_count(markdown: str, label: str) -> int:
-    match = re.search(rf"{re.escape(label)}:\s*(\d+)", markdown, flags=re.IGNORECASE)
-    return int(match.group(1)) if match else 0
+def _extract_count(markdown: str, label: str) -> int | None:
+    matches = re.findall(rf"^\s*-?\s*{re.escape(label)}:\s*(.+?)\s*$", markdown, flags=re.IGNORECASE | re.MULTILINE)
+    if not matches:
+        return None
+
+    total = 0
+    for value in matches:
+        digit_match = re.match(r"(\d+)\b", value)
+        if digit_match:
+            total += int(digit_match.group(1))
+        elif not re.match(r"(?i)none|no\b|n/a\b", value.strip()):
+            total += 1
+    return total
+
+
+def _section_bullet_count(markdown: str, heading: str) -> int:
+    count = 0
+    in_section = False
+    for line in markdown.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            in_section = stripped.lstrip("#").strip().lower() == heading.lower()
+            continue
+        if in_section and stripped.startswith("- ") and not _is_empty_bullet(stripped[2:].strip()):
+            count += 1
+    return count
+
+
+def _is_empty_bullet(text: str) -> bool:
+    return bool(re.match(r"(?i)none|no\b|n/a\b", text.strip()))
 
 
 def _first_bullet_after_heading(markdown: str, heading: str) -> str:

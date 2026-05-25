@@ -37,6 +37,35 @@ WORKFLOW_STATUS_MARKDOWN = """# Workflow Status
 """
 
 
+REALISH_PROJECT_CHECK_MARKDOWN = """# Project Check Report
+
+## Literature
+- Missing PDFs: missing.pdf
+- Missing PDFs: methods.pdf
+- Missing notes: baseline-study.md
+
+## Simulation
+- Missing reproducibility seed.
+- Simulation output is stale.
+
+## Manuscript
+- Abstract still has placeholder text.
+
+## Next Actions
+- Attach the missing literature assets.
+"""
+
+
+SINGULAR_GAP_MARKDOWN = """# Project Check Report
+
+## Literature
+- Missing PDFs: missing.pdf
+
+## Next Actions
+- Attach the missing PDF.
+"""
+
+
 class MobileResponsesTests(unittest.TestCase):
     def test_project_check_summary_uses_soft_next_action_language(self) -> None:
         summary = build_mobile_summary("project_check", PROJECT_CHECK_MARKDOWN)
@@ -75,6 +104,29 @@ class MobileResponsesTests(unittest.TestCase):
         self.assertEqual(response["action"], "project_check")
         self.assertEqual(response["markdown"], PROJECT_CHECK_MARKDOWN)
         self.assertEqual(response["summary"]["primaryMessage"], "4 items need attention")
+
+    def test_project_check_counts_named_assets_and_section_issue_bullets(self) -> None:
+        summary = build_mobile_summary("project_check", REALISH_PROJECT_CHECK_MARKDOWN)
+        cards = build_mobile_cards("project_check", REALISH_PROJECT_CHECK_MARKDOWN)
+
+        self.assertEqual(summary["primaryMessage"], "6 items need attention")
+        self.assertIn(
+            {"label": "Literature", "status": "needs_attention", "message": "2 PDFs missing, 1 note missing"},
+            cards,
+        )
+        self.assertIn(
+            {"label": "Simulation", "status": "needs_attention", "message": "2 simulation issues found"},
+            cards,
+        )
+        self.assertIn(
+            {"label": "Manuscript", "status": "needs_attention", "message": "1 manuscript issue found"},
+            cards,
+        )
+
+    def test_summary_pluralizes_single_attention_item(self) -> None:
+        summary = build_mobile_summary("project_check", SINGULAR_GAP_MARKDOWN)
+
+        self.assertEqual(summary["primaryMessage"], "1 item needs attention")
 
 
 if __name__ == "__main__":
