@@ -358,10 +358,17 @@ def _inspect_docx_hyperlink_references(root: ElementTree.Element, relationships_
         "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
     }
     relationships = _docx_relationship_targets(relationships_xml)
+    bookmark_names = {
+        node.attrib.get(f"{{{namespace['w']}}}name", "")
+        for node in root.findall(".//w:bookmarkStart", namespace)
+    }
     issues: list[ManuscriptIssue] = []
     for hyperlink in root.findall(".//w:hyperlink", namespace):
         relationship_id = hyperlink.attrib.get(f"{{{namespace['r']}}}id", "")
+        anchor = hyperlink.attrib.get(f"{{{namespace['w']}}}anchor", "")
         if not relationship_id:
+            if anchor and anchor not in bookmark_names:
+                issues.append(ManuscriptIssue(level="warning", message=f"DOCX hyperlink anchor target missing: {anchor}"))
             continue
         target = relationships.get(relationship_id)
         if target is None:

@@ -414,7 +414,7 @@ The check reports:
 - Whether the library contains entries that are not cited.
 - Whether English figure markers are duplicated, such as repeated `Figure 1`.
 - Whether English figure numbers are skipped, such as `Figure 1` and `Figure 3` with no `Figure 2`.
-- Whether `.docx` images or drawing objects reference missing embedded image targets or lack alternative text.
+- Whether `.docx` images or drawing objects reference missing embedded image targets, lack alternative text, or internal hyperlinks point to missing bookmarks.
 - Whether `.docx` files still contain Word tracked changes or comment markers.
 
 ## 15. View Project Status and Run a Health Check
@@ -501,5 +501,5 @@ The first version does not directly control ANSYS, Abaqus, or COMSOL. Model, sol
 
 ### Can It Automatically Check Word Layout?
 
-Currently it can read `.docx` text and inspect several package-level Word signals: missing `styles.xml`, missing page margins or page size settings, incomplete page width/height attributes, missing header/footer target parts, missing embedded image targets, missing footnote/endnote targets, broken or empty hyperlink relationships, undefined paragraph styles, missing citation/reference fields, missing bibliography fields, images or drawing objects without alternative text, and leftover tracked changes or comments. It still does not render Word pages or replace final template review in Word.
+Currently it can read `.docx` text and inspect several package-level Word signals: missing `styles.xml`, missing page margins or page size settings, incomplete page width/height attributes, missing header/footer target parts, missing embedded image targets, missing footnote/endnote targets, broken or empty hyperlink relationships, internal hyperlinks pointing to missing bookmarks, undefined paragraph styles, missing citation/reference fields, missing bibliography fields, images or drawing objects without alternative text, and leftover tracked changes or comments. It still does not render Word pages or replace final template review in Word.
 

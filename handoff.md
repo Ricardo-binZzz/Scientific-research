@@ -2,6 +2,7 @@
 
 ## Status
 
+- DOCX hyperlink bookmark QA on 2026-05-25: manuscript checks now report internal `.docx` hyperlinks whose `w:anchor` target has no matching `w:bookmarkStart`; the full test baseline is 174 tests.
 - DOCX hyperlink QA on 2026-05-25: manuscript checks now report unresolved or empty `w:hyperlink` relationships in `.docx` body XML; the full test baseline is 173 tests.
 - DOCX note-reference QA on 2026-05-25: manuscript checks now report missing footnote and endnote target definitions referenced from `.docx` body XML; the full test baseline is 172 tests.
 - DOCX embedded-image target QA on 2026-05-25: manuscript checks now report unresolved embedded image relationships and missing image target parts in `.docx`; the full test baseline is 170 tests.
