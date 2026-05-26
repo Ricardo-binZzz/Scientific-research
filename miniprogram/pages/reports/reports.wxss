@@ -1,0 +1,3 @@
+.soft-card:first-of-type {
+  background: var(--warm-soft);
+}

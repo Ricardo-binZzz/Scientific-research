@@ -1,0 +1,16 @@
+<view class="screen">
+  <view class="eyebrow">报告中心</view>
+  <view class="title">整理好的材料</view>
+  <view class="soft-card" wx:for="{{reports}}" wx:key="kind" bindtap="updateReport" data-kind="{{item.kind}}">
+    <text class="soft-card-title">{{item.title}}</text>
+    <text class="soft-card-text">{{item.description}}</text>
+  </view>
+  <view class="soft-card" wx:if="{{summary.primaryMessage}}">
+    <text class="soft-card-title">{{summary.primaryMessage}}</text>
+    <text class="soft-card-text">{{summary.nextAction}}</text>
+  </view>
+  <view class="soft-card" wx:if="{{markdown}}">
+    <text class="soft-card-title">完整报告</text>
+    <text class="soft-card-text">{{markdown}}</text>
+  </view>
+</view>

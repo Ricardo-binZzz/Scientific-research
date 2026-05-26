@@ -101,6 +101,23 @@ C:\Users\YourName\Documents\科研\examples\demo-project
 
 网页会记住项目根目录和最近成功操作，能复制/下载结果，也会在运行中禁用按钮，避免重复提交。结果卡片、必填字段、错误提示、重跑按钮和常用报告保存位置，都以 `WEB_GUIDE.md` 为准。
 
+### 微信小程序本地伴随服务（V1）
+
+V1 小程序定位为手机端科研助手：连接电脑上的本地伴随服务后，用手机查看项目仪表盘、开始一次项目体检、更新常用报告，并在手机上阅读柔和摘要和完整 Markdown 报告。
+
+如果已经通过可编辑安装获得命令入口，电脑端命令为：
+
+```powershell
+research-workflow-mobile --project-root C:\path\to\workspace --host 127.0.0.1 --port 8765
+```
+
+如果没有安装命令入口，也可以用当前 Python 直接启动：
+```powershell
+& $PY -m workflow.mobile_app --project-root C:\path\to\workspace --host 127.0.0.1 --port 8765
+```
+
+第一版聚焦“项目仪表盘 + 报告中心”，不在手机上编辑文献、上传仿真数据、配置图表或修改稿件。微信小程序正式发布会受到 HTTPS 和合法域名限制；本地伴随服务 V1 先面向开发和小范围测试。
+
 ## 4. 如果要用命令行，先设置 Python
 
 先进入工具目录：

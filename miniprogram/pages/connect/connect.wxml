@@ -1,0 +1,21 @@
+<view class="screen">
+  <view class="eyebrow">连接电脑</view>
+  <view class="title">连接本地研究工作台</view>
+  <view class="soft-card">
+    <text class="soft-card-title">电脑端服务</text>
+    <text class="soft-card-text">先在电脑启动 research-workflow-mobile，再输入地址、配对码和项目路径。</text>
+  </view>
+  <view class="soft-card-text">电脑服务地址</view>
+  <input class="soft-input" value="{{baseUrl}}" bindinput="onBaseUrlInput" />
+  <view class="soft-card-text">配对码</view>
+  <input class="soft-input" value="{{pin}}" bindinput="onPinInput" />
+  <view class="soft-card-text">电脑上的项目路径</view>
+  <input class="soft-input" value="{{projectRoot}}" bindinput="onProjectRootInput" />
+  <view class="action-row" bindtap="connect">
+    <text>连接工作台</text>
+    <text>本地优先</text>
+  </view>
+  <view class="soft-card" wx:if="{{message}}">
+    <text class="soft-card-text">{{message}}</text>
+  </view>
+</view>

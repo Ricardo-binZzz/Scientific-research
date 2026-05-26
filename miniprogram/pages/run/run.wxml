@@ -1,0 +1,24 @@
+<view class="screen">
+  <view class="eyebrow">运行结果</view>
+  <view class="title">先处理这些</view>
+  <view class="action-row" bindtap="runWorkflowStatus">
+    <text>更新流程状态</text>
+    <text>查看建议</text>
+  </view>
+  <view class="action-row" bindtap="runProjectReport">
+    <text>更新项目概览</text>
+    <text>整理数字</text>
+  </view>
+  <view class="action-row" bindtap="runProjectCheck">
+    <text>开始一次体检</text>
+    <text>查缺口</text>
+  </view>
+  <view class="soft-card" wx:if="{{summary.primaryMessage}}">
+    <text class="soft-card-title">{{summary.primaryMessage}}</text>
+    <text class="soft-card-text">{{summary.nextAction}}</text>
+  </view>
+  <view class="soft-card" wx:for="{{cards}}" wx:key="label">
+    <text class="soft-card-title">{{item.label}}</text>
+    <text class="soft-card-text">{{item.message}}</text>
+  </view>
+</view>

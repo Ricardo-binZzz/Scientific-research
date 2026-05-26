@@ -1,0 +1,16 @@
+<view class="screen">
+  <view class="eyebrow">本地工作台已连接</view>
+  <view class="title">今天的研究进度</view>
+  <view class="soft-card summary">
+    <text class="soft-card-title">{{summary.primaryMessage || "还没有体检结果"}}</text>
+    <text class="soft-card-text">{{summary.nextAction || "连接电脑后开始一次体检。"}}</text>
+  </view>
+  <view class="soft-card" wx:for="{{cards}}" wx:key="label">
+    <text class="soft-card-title">{{item.label}}</text>
+    <text class="soft-card-text">{{item.message}}</text>
+  </view>
+  <view class="action-row" bindtap="startProjectCheck">
+    <text>开始一次体检</text>
+    <text>约 10 秒</text>
+  </view>
+</view>

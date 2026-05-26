@@ -1,4 +1,5 @@
 import json
+import socket
 import tempfile
 import threading
 import unittest
@@ -153,6 +154,54 @@ class MobileAppHttpServerTests(unittest.TestCase):
         self.assertEqual(body["status"], 401)
         self.assertEqual(body["action"], "auth")
 
+    def test_http_server_rejects_invalid_utf8_body_with_json_400(self) -> None:
+        state = MobileCompanionState(allowed_roots=[], pairing_pin="123456")
+        server = _create_mobile_server("127.0.0.1", 0, _make_mobile_handler(state))
+        thread = self._serve_in_thread(server)
+        try:
+            response = self._raw_http_request(
+                server,
+                b"POST /api/pair HTTP/1.1\r\n"
+                b"Host: 127.0.0.1\r\n"
+                b"Content-Type: application/json\r\n"
+                b"Content-Length: 1\r\n"
+                b"\r\n"
+                b"\xff",
+            )
+            status, body = self._parse_raw_json_response(response)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
+        self.assertEqual(status, 400)
+        self.assertFalse(body["ok"])
+        self.assertEqual(body["status"], 400)
+
+    def test_http_server_rejects_malformed_content_length_with_json_400(self) -> None:
+        state = MobileCompanionState(allowed_roots=[], pairing_pin="123456")
+        server = _create_mobile_server("127.0.0.1", 0, _make_mobile_handler(state))
+        thread = self._serve_in_thread(server)
+        try:
+            response = self._raw_http_request(
+                server,
+                b"POST /api/pair HTTP/1.1\r\n"
+                b"Host: 127.0.0.1\r\n"
+                b"Content-Type: application/json\r\n"
+                b"Content-Length: nope\r\n"
+                b"\r\n"
+                b'{"pin":"123456"}',
+            )
+            status, body = self._parse_raw_json_response(response)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
+        self.assertEqual(status, 400)
+        self.assertFalse(body["ok"])
+        self.assertEqual(body["status"], 400)
+
     def _post_json(self, base_url: str, path: str, payload: dict[str, str], token: str = "") -> dict[str, object]:
         headers = {"Content-Type": "application/json"}
         if token:
@@ -170,6 +219,27 @@ class MobileAppHttpServerTests(unittest.TestCase):
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         return thread
+
+    def _raw_http_request(self, server, request: bytes) -> bytes:
+        with socket.create_connection(server.server_address, timeout=5) as client:
+            client.settimeout(5)
+            client.sendall(request)
+            chunks = []
+            while True:
+                try:
+                    chunk = client.recv(4096)
+                except TimeoutError:
+                    break
+                if not chunk:
+                    break
+                chunks.append(chunk)
+        return b"".join(chunks)
+
+    def _parse_raw_json_response(self, response: bytes) -> tuple[int, dict[str, object]]:
+        header_bytes, body_bytes = response.split(b"\r\n\r\n", 1)
+        status_line = header_bytes.splitlines()[0].decode("ascii")
+        status = int(status_line.split()[1])
+        return status, json.loads(body_bytes.decode("utf-8"))
 
 
 if __name__ == "__main__":

@@ -193,11 +193,13 @@ def _make_mobile_handler(state: MobileCompanionState):
             return
 
         def _read_json_payload(self) -> dict[str, Any] | None:
-            length = int(self.headers.get("Content-Length", "0") or "0")
-            raw_body = self.rfile.read(length).decode("utf-8")
             try:
+                length = int(self.headers.get("Content-Length", "0") or "0")
+                if length < 0:
+                    return None
+                raw_body = self.rfile.read(length).decode("utf-8")
                 decoded = json.loads(raw_body or "{}")
-            except json.JSONDecodeError:
+            except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
                 return None
             return decoded if isinstance(decoded, dict) else None
 

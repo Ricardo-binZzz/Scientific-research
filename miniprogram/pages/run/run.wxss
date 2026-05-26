@@ -1,0 +1,5 @@
+.action-row:nth-of-type(3) {
+  background: var(--blue-soft);
+  border-color: #d8e5f2;
+  color: var(--blue);
+}

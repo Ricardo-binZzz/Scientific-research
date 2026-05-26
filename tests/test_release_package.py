@@ -4,7 +4,7 @@ import zipfile
 from pathlib import Path
 
 from tools.build_windows_release import build_release_package, collect_release_files, read_project_version, release_zip_name
-from tools.check_release_package import check_release_package
+from tools.check_release_package import REQUIRED_SUFFIXES, check_release_package
 
 
 class ReleasePackageTests(unittest.TestCase):
@@ -33,6 +33,14 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("start_web.bat", names)
         self.assertIn("pyproject.toml", names)
         self.assertIn("workflow/web_app.py", names)
+        self.assertIn("workflow/mobile_app.py", names)
+        self.assertIn("workflow/mobile_responses.py", names)
+        self.assertIn("miniprogram/app.json", names)
+        self.assertIn("miniprogram/utils/api.ts", names)
+        self.assertIn("miniprogram/pages/connect/connect.wxml", names)
+        self.assertIn("miniprogram/pages/dashboard/dashboard.ts", names)
+        self.assertIn("miniprogram/pages/run/run.wxss", names)
+        self.assertIn("miniprogram/pages/reports/reports.json", names)
         self.assertIn("examples/demo-project/project-check.json", names)
         self.assertIn("docs/screenshots/project-check.png", names)
         self.assertIn("tools/check_release_package.py", names)
@@ -44,6 +52,15 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertFalse(any(name.startswith("dist/") for name in names))
         self.assertFalse(any("__pycache__" in name for name in names))
         self.assertFalse(any(name.endswith(".pyc") for name in names))
+
+    def test_release_checker_requires_mobile_companion_assets(self) -> None:
+        self.assertIn("workflow/mobile_app.py", REQUIRED_SUFFIXES)
+        self.assertIn("workflow/mobile_responses.py", REQUIRED_SUFFIXES)
+        self.assertIn("miniprogram/app.json", REQUIRED_SUFFIXES)
+        self.assertIn("miniprogram/utils/api.ts", REQUIRED_SUFFIXES)
+        for page in ("connect", "dashboard", "run", "reports"):
+            for suffix in ("json", "wxml", "ts", "wxss"):
+                self.assertIn(f"miniprogram/pages/{page}/{page}.{suffix}", REQUIRED_SUFFIXES)
 
     def test_build_windows_release_zip_and_validate_manifest(self) -> None:
         root = Path.cwd()

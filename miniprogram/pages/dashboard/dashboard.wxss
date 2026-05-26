@@ -1,0 +1,4 @@
+.summary {
+  background: var(--green-soft);
+  border-color: #dce8df;
+}

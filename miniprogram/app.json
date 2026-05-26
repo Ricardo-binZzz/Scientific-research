@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/connect/connect",
+    "pages/dashboard/dashboard",
+    "pages/run/run",
+    "pages/reports/reports"
+  ],
+  "window": {
+    "navigationBarTitleText": "科研工作台",
+    "navigationBarBackgroundColor": "#f8fafb",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f8fafb"
+  },
+  "tabBar": {
+    "color": "#8a95a3",
+    "selectedColor": "#3f8b63",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/dashboard/dashboard",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/run/run",
+        "text": "运行"
+      },
+      {
+        "pagePath": "pages/reports/reports",
+        "text": "报告"
+      }
+    ]
+  }
+}
