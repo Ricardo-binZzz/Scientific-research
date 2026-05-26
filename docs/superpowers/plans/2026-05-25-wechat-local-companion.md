@@ -1244,7 +1244,7 @@ git commit -m "Document mobile companion workflow"
 Run:
 
 ```powershell
-research-workflow-mobile --project-root C:\Users\22676\Documents\科研\examples\demo-project --host 127.0.0.1 --port 8765 --pin 123456
+research-workflow-mobile --project-root C:\Users\YourName\Documents\科研\examples\demo-project --host 127.0.0.1 --port 8765 --pin 123456
 ```
 
 Expected output includes:
@@ -1252,7 +1252,7 @@ Expected output includes:
 ```text
 Mobile companion listening on http://127.0.0.1:8765
 Pairing PIN: 123456
-Authorized project: C:\Users\22676\Documents\科研\examples\demo-project
+Authorized project: C:\Users\YourName\Documents\科研\examples\demo-project
 ```
 
 - [ ] **Step 2: Open `miniprogram/` in WeChat Developer Tools**
@@ -1262,7 +1262,7 @@ Use a test AppID or mini program test mode. Configure the local request domain a
 ```text
 Base URL: http://127.0.0.1:8765
 PIN: 123456
-Project root: C:\Users\22676\Documents\科研\examples\demo-project
+Project root: C:\Users\YourName\Documents\科研\examples\demo-project
 ```
 
 - [ ] **Step 3: Verify the V1 user journey manually**
