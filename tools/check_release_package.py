@@ -37,6 +37,7 @@ REQUIRED_SUFFIXES = {
     "examples/demo-project/project-check.json",
     "docs/screenshots/project-check.png",
     "tools/check_release_package.py",
+    "tools/check_release_readiness.py",
     "tools/smoke_test_windows_release.py",
     "RELEASE_MANIFEST.txt",
 }

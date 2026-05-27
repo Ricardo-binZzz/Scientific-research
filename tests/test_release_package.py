@@ -1,3 +1,5 @@
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -5,6 +7,7 @@ from pathlib import Path
 
 from tools.build_windows_release import build_release_package, collect_release_files, read_project_version, release_zip_name
 from tools.check_release_package import REQUIRED_SUFFIXES, check_release_package
+from tools.check_release_readiness import check_release_readiness
 
 
 class ReleasePackageTests(unittest.TestCase):
@@ -59,6 +62,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("workflow/mobile_responses.py", REQUIRED_SUFFIXES)
         self.assertIn("miniprogram/app.json", REQUIRED_SUFFIXES)
         self.assertIn("miniprogram/project.config.json", REQUIRED_SUFFIXES)
+        self.assertIn("tools/check_release_readiness.py", REQUIRED_SUFFIXES)
         self.assertIn("miniprogram/utils/api.ts", REQUIRED_SUFFIXES)
         for page in ("connect", "dashboard", "run", "reports"):
             for suffix in ("json", "wxml", "ts", "wxss"):
@@ -110,6 +114,59 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("projectRoot", source)
         self.assertIn("project", source)
         self.assertIn("check", source)
+
+    def test_release_readiness_accepts_valid_package_and_warns_for_stale_tag(self) -> None:
+        root = Path.cwd()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            package_path = build_release_package(root, output_dir=Path(tmpdir), version="9.9.9-test")
+
+            checks = check_release_readiness(
+                root,
+                package_path=package_path,
+                head_commit="new-head",
+                tag_commit="old-tag",
+            )
+
+        statuses = {(check.name, check.level) for check in checks}
+        self.assertIn(("release package", "ok"), statuses)
+        self.assertIn(("release tag", "warn"), statuses)
+        self.assertTrue(any("v0.1.0 points to old-tag" in check.message for check in checks))
+
+    def test_release_readiness_reports_missing_package_as_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            checks = check_release_readiness(
+                Path.cwd(),
+                package_path=Path(tmpdir) / "missing.zip",
+                head_commit="same",
+                tag_commit="same",
+            )
+
+        self.assertTrue(any(check.name == "release package" and check.level == "error" for check in checks))
+
+    def test_release_readiness_script_runs_directly(self) -> None:
+        root = Path.cwd()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            package_path = build_release_package(root, output_dir=Path(tmpdir), version="9.9.9-test")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "tools/check_release_readiness.py",
+                    "--package",
+                    str(package_path),
+                    "--tag",
+                    "missing-test-tag",
+                ],
+                cwd=root,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("OK: release package", result.stdout)
+        self.assertIn("WARN: release tag", result.stdout)
 
 
 if __name__ == "__main__":

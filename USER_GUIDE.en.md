@@ -69,9 +69,10 @@ If you maintain a copy for another Windows user, build and check a release zip f
 & $PY tools/build_windows_release.py
 & $PY tools/check_release_package.py dist/research-workflow-workbench-0.1.0-windows.zip
 & $PY tools/smoke_test_windows_release.py dist/research-workflow-workbench-0.1.0-windows.zip
+& $PY tools/check_release_readiness.py
 ```
 
-Send the zip, not your working `.venv` or generated local launcher. The smoke test runs the installer, starts the web app, and checks the demo project from a temporary extraction directory. The recipient extracts the zip, runs `install_windows.bat`, then opens `Research Workflow Web.bat`.
+Send the zip, not your working `.venv` or generated local launcher. The smoke test runs the installer, starts the web app, and checks the demo project from a temporary extraction directory. The readiness check revalidates zip contents, confirms the smoke-test script is present, and warns if the local release tag is behind the current commit. The recipient extracts the zip, runs `install_windows.bat`, then opens `Research Workflow Web.bat`.
 
 ## 4. Ten-Minute Quick Check
 

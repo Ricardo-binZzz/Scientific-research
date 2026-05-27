@@ -12,6 +12,7 @@ All notable changes to this project are summarized here.
 - Added `tools/check_js_syntax.py` to run `node --check` against web assets and the screenshot driver before regenerating real browser screenshots.
 - Added `tools/build_windows_release.py` and `tools/check_release_package.py` for creating and validating a distributable Windows zip package.
 - Added `tools/smoke_test_windows_release.py` and noninteractive installer mode for end-to-end Windows release zip smoke testing.
+- Added `tools/check_release_readiness.py` to summarize package validity, smoke-test availability, and local release-tag drift before publishing.
 - Added WeChat mini program local debugging configuration and release-package coverage for `miniprogram/project.config.json`.
 - The WeChat mini program report center now exposes the full V1 report set, including project check, writing pack, writing dashboard, literature table, literature map, and literature tracker.
 - DOCX manuscript QA now flags Word images and drawing objects that lack `descr` or `title` alternative text metadata.
@@ -53,6 +54,8 @@ All notable changes to this project are summarized here.
 - Updated README maturity notes after Windows release smoke-test coverage brought the baseline to 183 tests.
 - WeChat mini program pairing now returns authorized project roots, the connect page verifies dashboard access before storing a session, and dashboard/run/reports pages surface reconnect actions.
 - Updated README maturity notes after mobile companion polish brought the baseline to 211 tests.
+- Release package checks now require the release readiness checker, and README/user guide release commands include it.
+- Updated README maturity notes after release-readiness coverage brought the baseline to 214 tests.
 
 ## v0.1.0 - 2026-05-23
 
