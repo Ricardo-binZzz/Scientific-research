@@ -180,7 +180,7 @@ Run `python tools/check_js_syntax.py` before regenerating screenshots, then use 
 
 ## Project Maturity
 
-This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, release-package checks, and 183 unittest cases covering the main workflow modules, web action handlers, release tooling, and JavaScript syntax check tooling.
+This is an early-stage local-first workbench, not a mature package ecosystem. The current baseline is suitable for trial use, workflow evaluation, and focused contributions. It has a documented demo project, a web UI, a CLI, CI, privacy checks, citation metadata, release-package checks, mobile companion coverage, and 211 unittest cases covering the main workflow modules, web action handlers, release tooling, mini program assets, and JavaScript syntax check tooling.
 
 ## Project Layout
 

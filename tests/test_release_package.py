@@ -36,6 +36,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("workflow/mobile_app.py", names)
         self.assertIn("workflow/mobile_responses.py", names)
         self.assertIn("miniprogram/app.json", names)
+        self.assertIn("miniprogram/project.config.json", names)
         self.assertIn("miniprogram/utils/api.ts", names)
         self.assertIn("miniprogram/pages/connect/connect.wxml", names)
         self.assertIn("miniprogram/pages/dashboard/dashboard.ts", names)
@@ -57,6 +58,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIn("workflow/mobile_app.py", REQUIRED_SUFFIXES)
         self.assertIn("workflow/mobile_responses.py", REQUIRED_SUFFIXES)
         self.assertIn("miniprogram/app.json", REQUIRED_SUFFIXES)
+        self.assertIn("miniprogram/project.config.json", REQUIRED_SUFFIXES)
         self.assertIn("miniprogram/utils/api.ts", REQUIRED_SUFFIXES)
         for page in ("connect", "dashboard", "run", "reports"):
             for suffix in ("json", "wxml", "ts", "wxss"):

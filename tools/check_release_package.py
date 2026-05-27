@@ -16,6 +16,7 @@ REQUIRED_SUFFIXES = {
     "workflow/mobile_responses.py",
     "workflow/cli.py",
     "miniprogram/app.json",
+    "miniprogram/project.config.json",
     "miniprogram/utils/api.ts",
     "miniprogram/pages/connect/connect.json",
     "miniprogram/pages/connect/connect.wxml",

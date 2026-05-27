@@ -108,6 +108,17 @@ class MobileAppDispatchTests(unittest.TestCase):
 
         self.assertIn("token", encoded)
 
+    def test_pair_response_lists_authorized_project_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project = Path(tmpdir) / "demo"
+            project.mkdir()
+            state = MobileCompanionState(allowed_roots=[project], pairing_pin="123456")
+
+            response = dispatch_mobile_request(state, "/api/pair", {"pin": "123456"}, token="")
+
+        self.assertTrue(response["ok"])
+        self.assertEqual(response["authorizedProjects"], [str(project.resolve())])
+
 
 class MobileAppHttpServerTests(unittest.TestCase):
     def test_http_server_pairs_then_accepts_dashboard_with_bearer_token(self) -> None:

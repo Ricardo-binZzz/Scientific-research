@@ -117,6 +117,7 @@ def _pair_response(state: MobileCompanionState, payload: dict[str, Any]) -> dict
         "ok": True,
         "token": state.issue_token(),
         "expiresInSeconds": state.token_ttl_seconds,
+        "authorizedProjects": [str(root.expanduser().resolve()) for root in state.allowed_roots],
     }
 
 

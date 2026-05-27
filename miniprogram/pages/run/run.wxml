@@ -17,6 +17,14 @@
     <text class="soft-card-title">{{summary.primaryMessage}}</text>
     <text class="soft-card-text">{{summary.nextAction}}</text>
   </view>
+  <view class="soft-card" wx:if="{{message}}">
+    <text class="soft-card-title">运行没有完成</text>
+    <text class="soft-card-text">{{message}}</text>
+  </view>
+  <view class="action-row" wx:if="{{message}}" bindtap="openConnect">
+    <text>重新连接工作台</text>
+    <text>打开连接页</text>
+  </view>
   <view class="soft-card" wx:for="{{cards}}" wx:key="label">
     <text class="soft-card-title">{{item.label}}</text>
     <text class="soft-card-text">{{item.message}}</text>

@@ -1,0 +1,18 @@
+{
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "libVersion": "latest",
+  "miniprogramRoot": "./",
+  "projectname": "research-workflow-companion",
+  "setting": {
+    "babelSetting": {
+      "ignore": [],
+      "outputPath": ""
+    },
+    "compileHotReLoad": true,
+    "es6": true,
+    "minified": false,
+    "postcss": true,
+    "urlCheck": false
+  }
+}

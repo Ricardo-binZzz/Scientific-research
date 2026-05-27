@@ -19,6 +19,7 @@ export interface MobileResponse {
   project?: { name: string; root: string }
   token?: string
   expiresInSeconds?: number
+  authorizedProjects?: string[]
 }
 
 function request<T>(baseUrl: string, path: string, payload: object, token = ""): Promise<T> {
